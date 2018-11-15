@@ -12,9 +12,13 @@ import EditAddress from './components/EditAddress'
 import OrderSuccess from './components/OrderSuccess'
 import MyOrder from './components/OrderSuccess'
 import axios from 'axios'
+import  { AlertPlugin ,LoadingPlugin ,ToastPlugin } from 'vux'
 
 
 Vue.use(VueRouter);
+Vue.use(AlertPlugin);
+Vue.use(LoadingPlugin);
+Vue.use(ToastPlugin, {position: 'middle'});
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
