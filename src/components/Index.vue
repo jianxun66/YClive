@@ -12,8 +12,8 @@
             <dl>
                 <dt>
                     <h1>
-                        <span>刘老头米店 五常稻花香</span><span>1284</span></h1>
-                    <p>黑龙江五常市向阳镇电力村</p>
+                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.click_num}}</span></h1>
+                    <p>{{roomBasic.addr}}</p>
                 </dt>
                 <dd>
                     <span class="live"><i></i>正在直播</span>
@@ -35,7 +35,7 @@
 
         <div class="swiper-container gallery-top">
             <div class="swiper-wrapper tabCon">
-                <div class="swiper-slide con" >
+                <div class="swiper-slide con">
                     <h2 class="tit videoIcon">实时直播</h2>
                     <div class="videoList swiper-no-swiping">
                         <dl class="live-1" @click="switchVideo('live_1')">
@@ -43,11 +43,13 @@
                             <dd>实时全景1号</dd>
                         </dl>
                         <dl class="hf-1" @click="switchVideo('hf_1')">
-                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg"></dt>
+                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg">
+                            </dt>
                             <dd>9月收割前</dd>
                         </dl>
                         <dl class="hf-2" @click="switchVideo('hf_2')">
-                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg"></dt>
+                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg">
+                            </dt>
                             <dd>10月雪景</dd>
                         </dl>
                     </div>
@@ -66,7 +68,8 @@
                         </dl>
                         <div class="remarks">
                             <span>生态简介：</span>
-                            <p class="hide" @click.native="showMoreInfo(this)">寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
+                            <p class="hide" @click.native="showMoreInfo(this)">
+                                寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
                         </div>
                     </div>
 
@@ -74,9 +77,8 @@
                     <div><img src="../../static/images/homewc001.png"></div>
 
 
-
                 </div>
-                <div class="swiper-slide con" >
+                <div class="swiper-slide con">
                     <h2 class="tit shopCarIcon">生态商城</h2>
                     <div class="company">
                         <dl>
@@ -92,7 +94,8 @@
                         </dl>
                         <div class="remarks">
                             <span>生态简介：</span>
-                            <p class="hide" @click.native="showMoreInfo(this)">寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
+                            <p class="hide" @click.native="showMoreInfo(this)">
+                                寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
                         </div>
                     </div>
                     <div class="shopList">
@@ -138,7 +141,7 @@
 
                     </div>
                 </div>
-                <div class="swiper-slide con" >
+                <div class="swiper-slide con">
                     <h2 class="tit messIcon">互动评论</h2>
                     <h3 class="tit allMessIcon">全部评论(4)</h3>
                     <div class="messList">
@@ -204,7 +207,7 @@
                         </dl>
                     </div>
                 </div>
-                <div class="swiper-slide con" >
+                <div class="swiper-slide con">
                     <h2 class="tit videoIcon">精彩短片</h2>
                     <div class="filmList">
                         <dl>
@@ -274,7 +277,7 @@
             </div>
         </div>
 
-        <div class="shoppingCarBox"style="display: none">
+        <div class="shoppingCarBox" style="display: none">
             <dl>
                 <dt>
                     <h4>&yen;0</h4>
@@ -294,68 +297,81 @@
 
 
 <script>
-    import importJs from "../../static/js/importJs";
+    import importJs from '../../static/js/importJs'
     export default {
-        name: "index",
-        data(){
+        name: 'index',
+        data () {
             return {
                 player_souce: {
                     live_1: {
-                        source: "http://aliplay.adaxiang.com/kr/wc001.m3u8",
-                        cover: "http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg",
+                        source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
+                        cover: 'http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg',
                     },
                     hf_1: {
-                        source: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.mp4",
-                        cover: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg",
+                        source: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.mp4',
+                        cover: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg',
                     },
                     hf_2: {
-                        source: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.mp4",
-                        cover: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg",
+                        source: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.mp4',
+                        cover: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg',
                     },
                 },
-                player:{},
-                aliplayer_config:{
+                player: {},
+                aliplayer_config: {
                     id: 'J_prismPlayer',
                     width: '100%',
-                    height:'240px',
+                    height: '240px',
                     autoplay: false,
-                    playsinline:true,
-                    showBuffer:true,
-                    isLive:true,
-                    x5_type:true,
+                    playsinline: true,
+                    showBuffer: true,
+                    isLive: true,
+                    x5_type: true,
                     //支持播放地址播放,此播放优先级最高
-                    source : 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
-                    cover: "",
-                    skinLayout:[
-                        {name: "bigPlayButton", align: "cc", x: 30, y: 80},
-                        {name: "H5Loading", align: "cc"},
+                    source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
+                    cover: '',
+                    skinLayout: [
+                        {name: 'bigPlayButton', align: 'cc', x: 30, y: 80},
+                        {name: 'H5Loading', align: 'cc'},
                         //{name: "errorDisplay", align: "tlabs", x: 0, y: 0},
                         //{name: "infoDisplay"},
-                        {name:"tooltip", align:"blabs",x: 0, y: 56},
-                        {name: "thumbnail"},
+                        {name: 'tooltip', align: 'blabs', x: 0, y: 56},
+                        {name: 'thumbnail'},
                         {
-                            name: "controlBar", align: "blabs", x: 0, y: 0,
+                            name: 'controlBar', align: 'blabs', x: 0, y: 0,
                             children: [
-                                {name:"liveDisplay", align:"tlabs", x: 15, y:6},
-                                {name: "progress", align: "blabs", x: 0, y: 44},
-                                {name: "playButton", align: "tl", x: 15, y: 12},
-                                {name: "timeDisplay", align: "tl", x: 10, y: 7},
-                                {name: "fullScreenButton", align: "tr", x: 10, y: 12},
+                                {name: 'liveDisplay', align: 'tlabs', x: 15, y: 6},
+                                {name: 'progress', align: 'blabs', x: 0, y: 44},
+                                {name: 'playButton', align: 'tl', x: 15, y: 12},
+                                {name: 'timeDisplay', align: 'tl', x: 10, y: 7},
+                                {name: 'fullScreenButton', align: 'tr', x: 10, y: 12},
                                 //{name:"subtitle", align:"tr",x:15, y:12},
                                 //{name:"setting", align:"tr",x:15, y:12},
-                                {name: "volume", align: "tr", x: 5, y: 10}
+                                {name: 'volume', align: 'tr', x: 5, y: 10}
 
                             ]
                         }
                     ]
                 },
+                roomBasic: {
+                    room_name: '',
+                    click_num: '',
+                    introduce: '',
+                    content: '',
+                    cover_img: '',
+                    coordinate: '',
+                    addr_url: '',
+                    addr: '',
+                    logo_img: '',
+                }
             }
         },
-
-        mounted(){
-            $(".prism-big-play-btn").click(function(){
-                $(".videoCover").fadeOut();
-            });
+        created() {
+            this.getData();
+        },
+        mounted () {
+            $('.prism-big-play-btn').click(function () {
+                $('.videoCover').fadeOut()
+            })
 
             var galleryThumbs = new Swiper('.gallery-thumbs', {
                 spaceBetween: 10,
@@ -363,7 +379,7 @@
                 freeMode: true,
                 watchSlidesVisibility: true,
                 watchSlidesProgress: true,
-            });
+            })
 
             var galleryTop = new Swiper('.gallery-top', {
                 autoHeight: true, //enable auto height
@@ -375,69 +391,83 @@
                 thumbs: {
                     swiper: galleryThumbs
                 }
-            });
+            })
 
-            this.player = new Aliplayer(this.aliplayer_config);
+            this.player = new Aliplayer(this.aliplayer_config)
 
-            var height = $(".prism-player").width();
-            $(".prism-player").height(height/16*9);
+            var height = $('.prism-player').width()
+            $('.prism-player').height(height / 16 * 9)
 
-            $('.liveHome').click(function(){
-                $(window).scrollTop(0);
-                $(this).fadeOut(800);
-            });
+            $('.liveHome').click(function () {
+                $(window).scrollTop(0)
+                $(this).fadeOut(800)
+            })
 
-            $(".company .remarks p").click(function(){
-                if($(this).hasClass('hide')){
-                    $(this).removeClass('hide');
-                }else{
-                    $(this).addClass('hide');
+            $('.company .remarks p').click(function () {
+                if ($(this).hasClass('hide')) {
+                    $(this).removeClass('hide')
+                } else {
+                    $(this).addClass('hide')
                 }
-            });
+            })
         },
-        methods:{
-            showMoreInfo(obj){
-                if($(obj).hasClass('hide')){
-                    $(obj).removeClass('hide');
-                }else{
-                    $(obj).addClass('hide');
+        methods: {
+            showMoreInfo (obj) {
+                if ($(obj).hasClass('hide')) {
+                    $(obj).removeClass('hide')
+                } else {
+                    $(obj).addClass('hide')
                 }
             },
-            switchVideo(target){
-                $(".videoCover").fadeOut();
-                this.player.dispose(); //销毁
-                $('#J_prismPlayer').empty(); //id为html里指定的播放器的容器id
-                var cover = this.player_souce[target].cover;
-                var source = this.player_souce[target].source;
-                this.aliplayer_config.cover = cover;
-                this.aliplayer_config.source = source;
+            switchVideo (target) {
+                $('.videoCover').fadeOut()
+                this.player.dispose() //销毁
+                $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
+                var cover = this.player_souce[target].cover
+                var source = this.player_souce[target].source
+                this.aliplayer_config.cover = cover
+                this.aliplayer_config.source = source
 
-                this.player = new Aliplayer(this.aliplayer_config);
+                this.player = new Aliplayer(this.aliplayer_config)
             },
-            switchContent(index){
+            switchContent (index) {
                 switch (index) {
                     case 0:
-                        $(".shoppingCarBox").hide();
-                        $(".sendMessMenu").hide();
-                        break;
+                        $('.shoppingCarBox').hide()
+                        $('.sendMessMenu').hide()
+                        break
                     case 1:
-                        $(".shoppingCarBox").fadeIn();
-                        $(".sendMessMenu").hide();
-                        break;
+                        $('.shoppingCarBox').fadeIn()
+                        $('.sendMessMenu').hide()
+                        break
                     case 2:
-                        $(".sendMessMenu").fadeIn();
-                        $(".shoppingCarBox").hide();
-                        break;
+                        $('.sendMessMenu').fadeIn()
+                        $('.shoppingCarBox').hide()
+                        break
                     case 3:
-                        $(".shoppingCarBox").hide();
-                        $(".sendMessMenu").hide();
-                        break;
+                        $('.shoppingCarBox').hide()
+                        $('.sendMessMenu').hide()
+                        break
                     default:
                 }
+            },
+            getData(){
+                let that = this;
+                that.axiosGet("/room/info?id=1").then((res) => {
+                    that.roomBasic.room_name = res.data.room_name;
+                    that.roomBasic.logo_img = res.data.logo_img;
+                    that.roomBasic.click_num = res.data.click_num;
+                    that.roomBasic.addr_url = res.data.addr_url;
+                    that.roomBasic.addr = res.data.addr;
+                    that.roomBasic.coordinate = res.data.coordinate;
+                    that.roomBasic.cover_img = res.data.cover_img;
+                    that.roomBasic.introduce = res.data.introduce;
+                    that.roomBasic.content = res.data.content;
+                }, (err) => {
+                    console.log(err);
+                });
             }
         }
-
-
 
     }
 
