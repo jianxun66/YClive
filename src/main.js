@@ -4,7 +4,6 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import Home from './components/Home'
 import Index from './components/Home'
 import LiveRoom from './components/LiveRoom'
 import Order from './components/Order'
@@ -50,11 +49,6 @@ const routes = [
     {
         path: '/',
         component: Index,
-        meta: { title: '直播间' },
-    },
-    {
-        path: '/home',
-        component: Home,
         meta: { title: '直播间' },
     },
     {
