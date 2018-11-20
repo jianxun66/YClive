@@ -99,46 +99,7 @@
                         </div>
                     </div>
                     <div class="shopList">
-                        <dl>
-                            <dt><img src="../../static/images/demo/6.png"></dt>
-                            <dd>
-                                <h3>正宗五常稻花香大米500g</h3>
-                                <p>寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。</p>
-                                <span class="money">&yen;5.8</span>
-                                <span class="num">
-							<a href="javascript:void(0);">-</a>
-							<i>0</i>
-							<a href="javascript:void(0);">+</a>
-						</span>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt><img src="../../static/images/demo/6.png"></dt>
-                            <dd>
-                                <h3>正宗五常稻花香大米5kg包邮简装</h3>
-                                <p>寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。</p>
-                                <span class="money">&yen;55</span>
-                                <span class="num">
-							<a href="javascript:void(0);">-</a>
-							<i>0</i>
-							<a href="javascript:void(0);">+</a>
-						</span>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt><img src="../../static/images/demo/6.png"></dt>
-                            <dd>
-                                <h3>正宗五常稻花香大米5kg包邮礼盒</h3>
-                                <p>寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。</p>
-                                <span class="money">&yen;68</span>
-                                <span class="num">
-							<a href="javascript:void(0);">-</a>
-							<i>0</i>
-							<a href="javascript:void(0);">+</a>
-						</span>
-                            </dd>
-                        </dl>
-
+                        <product  ref="product" v-on:buy_price="countPrice"></product>
                     </div>
                 </div>
                 <div class="swiper-slide con">
@@ -210,58 +171,7 @@
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">精彩短片</h2>
                     <div class="filmList">
-                        <dl>
-                            <dt><img src="http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg"></dt>
-                            <dd>
-                                <h3>8月清晨云雾生态</h3>
-                                <p>
-                                    <span>片长：10秒&nbsp;热度：2,289</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt><img src="http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg"></dt>
-                            <dd>
-                                <h3>8月清晨云雾生态</h3>
-                                <p>
-                                    <span>片长：10秒&nbsp;热度：2,289</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt></dt>
-                            <dd>
-                                <h3>8月清晨云雾生态</h3>
-                                <p>
-                                    <span>片长：10秒&nbsp;热度：2,289</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt></dt>
-                            <dd>
-                                <h3>8月清晨云雾生态</h3>
-                                <p>
-                                    <span>片长：10秒&nbsp;热度：2,289</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
+                        <room-video></room-video>
                     </div>
                     <div class="footerLogo">
                         <img src="../../static/images/footerLogo.png">
@@ -280,11 +190,11 @@
         <div class="shoppingCarBox" style="display: none">
             <dl>
                 <dt>
-                    <h4>&yen;0</h4>
+                    <h4>&yen;{{total_price}}</h4>
                     <p>满100元起送，包邮顺丰次日达</p>
                 </dt>
                 <dd>
-                    <a href="javascript:void(0)">去结算</a>
+                    <a href="javascript:void(0)" @click="tobuy">去结算</a>
                 </dd>
             </dl>
         </div>
@@ -298,10 +208,17 @@
 
 <script>
     import importJs from '../../static/js/importJs'
+    import RoomVideo from "./RoomVideo"
+    import Product from "./Product"
     export default {
         name: 'index',
+        components:{
+            "room-video": RoomVideo,
+            "Product": Product,
+        },
         data () {
             return {
+                total_price: 0,
                 player_souce: {
                     live_1: {
                         source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
@@ -393,7 +310,6 @@
                 }
             })
 
-            this.player = new Aliplayer(this.aliplayer_config)
 
             var height = $('.prism-player').width()
             $('.prism-player').height(height / 16 * 9)
@@ -410,6 +326,8 @@
                     $(this).addClass('hide')
                 }
             })
+
+            this.player = new Aliplayer(this.aliplayer_config);
         },
         methods: {
             showMoreInfo (obj) {
@@ -466,6 +384,12 @@
                 }, (err) => {
                     console.log(err);
                 });
+            },
+            countPrice(price){
+                this.total_price = price;
+            },
+            tobuy(){
+                this.$refs.product.buy_product();
             }
         }
 

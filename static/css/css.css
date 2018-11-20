@@ -19,6 +19,7 @@ body{ background: #fff }
 .messIcon{ background: url('../images/messIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
 .allMessIcon{ background: url('../images/allMessIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
 .zanIcon{ background: url('../images/zanIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
+.zanIcon2{ background: url('../images/zanIcon2.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
 .replyIcon{ background: url('../images/replyIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
 .wrongIcon{ background: url('../images/wrongIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }
 .rightIcon{ background: url('../images/rightIcon.png') no-repeat left center; background-size: 15px; padding-left: 20px; }

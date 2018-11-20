@@ -1,19 +1,20 @@
 <template>
     <div>
-        <div class="video_info" v-for="item in videoList">
+
+        <div class="video_info" v-for=" item in videoList">
             <dl>
-                <dt>
-                    <div class="prism-player " id="J_prismPlayer"></div>
-                    <div class="videoCover">
-                        <img :src="item.pic_path">
+                <dt class="video_title">
+                    <div class="video_item">
+                        <div class="prism-player "  :id="item.vno" @click="clickNum(item)"></div>
                     </div>
+                    <img :src="item.pic" @click="playervideo(item.vno, item.vurl, item)">
                 </dt>
                 <dd>
                     <h3>{{item.name}}</h3>
                     <p>
                         <span>片长：{{item.vlength}}&nbsp;热度：{{item.click}}</span>
                         <span>
-                        <a href="javascript:void(0);" class="zanIcon">赞</a>
+                        <a href="javascript:void(0);"  @click="videoStart(item)" :class="[item.start ? 'zanIcon2' : 'zanIcon']">赞</a>
                             <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
                     </span>
                     </p>
@@ -28,13 +29,14 @@
         name: "room-video",
         data(){
             return {
+                subStatus: false,
                 videoList:[],
                 player:{},
                 aliplayer_config:{
-                    id: 'J_prismPlayer',
+                    id: '',
                     width: '100%',
-                    height:'240px',
-                    autoplay: false,
+                    height:'195px',
+                    autoplay: true,
                     playsinline:true,
                     showBuffer:true,
                     isLive:true,
@@ -70,6 +72,9 @@
         created(){
             this.getData();
         },
+        mounted(){
+
+        },
         methods:{
             getData(){
                 let that = this;
@@ -82,25 +87,101 @@
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.videoList = res.data.videos;
+
                         if(that.videoList.length > 0){
-                            for(var video in that.videoList){
-                                //that.aliplayer_config.source = video.
-                                //    new Aliplayer(that.aliplayer_config);
+                            var player_list = [];
+                            for(var i = 0; i < that.videoList.length; i++){
+                                that.videoList[i].vno = "J_prismPlayer"+(i+1);
+                                that.aliplayer_config.source = that.videoList[i].vurl;
+                                that.aliplayer_config.id = "J_prismPlayer"+(i+1);
+                                //player_list['player_'+i] =  new Aliplayer(that.aliplayer_config);
                             }
                         }
+
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
-                            content: res.data.info});
+                            content: res.message});
                     }
                 }, (err) => {
                     that.$vux.loading.hide();
                 });
+            },
+            playervideo(id, source, item){
+                if(this.player.length > 0){
+                    this.player.dispose() //销毁
+                }
+                var that = this;
+                that.aliplayer_config.source = source;
+                that.aliplayer_config.id = id;
+                this.player =  new Aliplayer(that.aliplayer_config);
+                this.clickNum(item);
+            },
+
+            clickNum(item){
+                var that = this;
+                item.click ++;
+
+                if(that.subStatus){
+                    return false;
+                }
+
+                var formdata = new FormData();
+                formdata.append('cid', item.id);
+                formdata.append('ctype', 'video');
+
+                that.subStatus = true;
+                that.axiosPost("/room/click-num", formdata).then((res) => {
+                    that.subStatus = false;
+                    if(res.status == 200){
+
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message
+                        });
+                    }
+                }, (err) => {
+                    that.subStatus = false;
+                });
+            },
+
+            videoStart(item){
+                var that = this;
+
+                if(that.subStatus){
+                    return false;
+                }
+
+                item.start = item.start == 1 ? 0 : 1;
+                that.subStatus = true;
+
+
+                var formdata = new FormData();
+                formdata.append('vid', item.id);
+                formdata.append('user_id', '10');
+
+                that.axiosPost("/room/video-start", formdata).then((res) => {
+                    that.subStatus = false;
+                    if(res.status == 200){
+
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message});
+                    }
+                }, (err) => {
+                    that.subStatus = false;
+                });
+
             }
+
         }
     }
 </script>
 
 <style scoped>
-
+    .video_info{}
+    .video_title{position: relative}
+    .video_item{position: absolute; width: 100%}
 </style>
