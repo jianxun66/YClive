@@ -381,6 +381,7 @@
                     that.roomBasic.cover_img = res.data.cover_img;
                     that.roomBasic.introduce = res.data.introduce;
                     that.roomBasic.content = res.data.content;
+                    that.roomBasic.logo_pic = res.data.logo_pic;
                 }, (err) => {
                     console.log(err);
                 });
@@ -389,7 +390,12 @@
                 this.total_price = price;
             },
             tobuy(){
-                this.$refs.product.buy_product();
+                var that = this;
+                this.$refs.product.buy_product(that.roomBasic.id,
+                    that.roomBasic.room_name,
+                    that.roomBasic.logo_pic,
+                    "13750509674",
+                );
             }
         }
 

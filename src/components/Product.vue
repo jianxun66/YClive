@@ -74,8 +74,38 @@
                 this.$emit('buy_price', this.totalPrice);
             },
 
-            buy_product(){
-                
+            buy_product(room_id, room_name, room_logo, room_tel){
+                var buy_product = [];
+
+                var total = 0;
+                for(var i = 0 ; i < this.productList.length; i++){
+                    if(this.productList[i].buy_num > 0){
+                        total += this.productList[i].buy_num * this.productList[i].price;
+                        total = total.toFixed(2);
+                        buy_product.push(this.productList[i]);
+                    }
+                }
+
+                console.log(buy_product);
+                if(buy_product.length > 0){
+                    localStorage.setItem("buy_room", {
+                        'room_id' : room_id,
+                        'room_name' : room_name,
+                        'room_logo' : room_logo,
+                        'room_tel' : room_tel,
+                    });
+                    localStorage.setItem('buy_total', total);
+                    localStorage.setItem('buy_product', buy_product);
+                    this.$router.push({path:'/order'});
+                } else {
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: "请选择需要购买的商品"});
+
+                    return false;
+                }
+
+
             }
 
         }

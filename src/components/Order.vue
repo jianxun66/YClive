@@ -19,45 +19,70 @@
             </div>
         </div>
         <div class="orderList">
-            <div class="tit">亚历亨生态茶园</div>
-            <dl>
-                <dt><img src="demo/4.png"></dt>
+            <div class="tit" v-bind:style="{backgroundImage:'url(' + roomInfo.room_logo +')'}">{{roomInfo.room_name}}</div>
+            <dl v-for="item in product ">
+                <dt><img :src="item.pic"></dt>
                 <dd>
-                    <h3>亚历亨有机绿茶 1斤装<span>¥2680</span></h3>
-                    <p>亚历亨生态茶园位于广东省韶关市始兴县...</p>
+                    <h3>{{item.title}}<span>¥{{item.price}}</span></h3>
+                    <p>{{item.desc}}</p>
                     <span class="num">
-				<a href="javascript:void(0);">-</a>
-				<i>0</i>
-				<a href="javascript:void(0);">+</a>
+				<a href="javascript:void(0);" @click="changeNum(1, item)">-</a>
+				<i>{{item.buy_num}}</i>
+				<a href="javascript:void(0);" @click="changeNum(2, item)">+</a>
 			</span>
                 </dd>
             </dl>
-            <dl>
-                <dt><img src="demo/4.png"></dt>
-                <dd>
-                    <h3>亚历亨有机绿茶 1斤装<span>¥2680</span></h3>
-                    <p>亚历亨生态茶园位于广东省韶关市始兴县...</p>
-                    <span class="num">
-				<a href="javascript:void(0);">-</a>
-				<i>0</i>
-				<a href="javascript:void(0);">+</a>
-			</span>
-                </dd>
-            </dl>
-            <div class="total">
-                <p>配送费<span>顺丰包邮</span></p>
-                <p>已优惠&yen;20<span>小计</span><span>&yen;4200</span></p>
-            </div>
+
         </div>
         <div class="payBtn">
-            <a href="orderPaySuccess.html">微信支付&yen;4200<span>已优惠&yen;20</span></a>
+            <a href="orderPaySuccess.html">微信支付&yen;{{total}}<span>已优惠&yen;20</span></a>
         </div>
     </div>
 </template>
 
 <script>
     export default {
-        name: "order"
+        name: "order",
+        data(){
+            return {
+                roomInfo : {},
+                totalPrice: 0,
+                product: {},
+                addr:{},
+
+            }
+        },
+        created(){
+            this.roomInfo = localStorage.getItem('buy_room');
+            this.totalPrice = localStorage.getItem('buy_total');
+            this.product = localStorage.getItem('buy_product');
+
+            this.getAddr();
+        },
+        methods:{
+            getAddr(){
+
+            },
+            changeNum(type, item){
+
+                if(type == 1){ // 减少
+                    item.buy_num --;
+                    if(item.buy_num < 0){
+                        item.buy_num = 0;
+                    }
+                } else { // 增加
+                    item.buy_num ++;
+                }
+
+                var buy_price = 0;
+                for(var i = 0 ; i < this.product.length; i++){
+                    buy_price+= this.product[i].buy_num * this.product[i].price;
+                    if(buy_price ){
+                        this.totalPrice = buy_price.toFixed(2);
+                    }
+                }
+            },
+        }
     }
 </script>
 
