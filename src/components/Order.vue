@@ -7,11 +7,11 @@
             </div>
             <div class="orderAddress">
                 <div class="addNewAddress">
-                    <a href="editAddress.html">+新增收货地址</a>
+                    <a href="javascript:void(0);" @click="addAddr">+新增收货地址</a>
                 </div>
                 <dl>
-                    <dt>深圳市福田区下梅林</dt>
-                    <dd>韦炯良&nbsp;先生&nbsp;15013627372</dd>
+                    <dt>{{addr.addr}}{{addr.detail}}</dt>
+                    <dd>{{addr.client_name}}&nbsp;{{addr.sex}}&nbsp;{{addr.mobile}}</dd>
                 </dl>
                 <div class="orderTime">
                     立即打包<span>顺丰次日达</span>
@@ -35,7 +35,7 @@
 
         </div>
         <div class="payBtn">
-            <a href="orderPaySuccess.html">微信支付&yen;{{total}}<span>已优惠&yen;20</span></a>
+            <a href="orderPaySuccess.html">微信支付&yen;{{totalPrice}}<span>已优惠&yen;20</span></a>
         </div>
     </div>
 </template>
@@ -53,15 +53,31 @@
             }
         },
         created(){
-            this.roomInfo = localStorage.getItem('buy_room');
+            var room_info = localStorage.getItem('buy_room');
+            var buy_product = localStorage.getItem('buy_product');
+            this.roomInfo = room_info ? JSON.parse(room_info) : '';
             this.totalPrice = localStorage.getItem('buy_total');
-            this.product = localStorage.getItem('buy_product');
+            this.product = buy_product ? JSON.parse(buy_product) : '';
 
             this.getAddr();
         },
         methods:{
             getAddr(){
-
+                var that = this;
+                var formdata = new FormData();
+                formdata.append('ctype', 'video');
+                that.axiosPost("/client/addr", formdata).then((res) => {
+                    that.$vux.loading.hide();
+                    if(res.status == 200){
+                        that.addr = res.data;
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message});
+                    }
+                }, (err) => {
+                    that.$vux.loading.hide();
+                });
             },
             changeNum(type, item){
 
@@ -81,6 +97,9 @@
                         this.totalPrice = buy_price.toFixed(2);
                     }
                 }
+            },
+            addAddr(){
+                this.$router.push({path:'/addr/edit'});
             },
         }
     }

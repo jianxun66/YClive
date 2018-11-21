@@ -99,7 +99,7 @@
                         }
 
                     } else {
-                        this.$vux.alert.show({
+                        that.$vux.alert.show({
                             title: '温馨提示',
                             content: res.message});
                     }
@@ -136,7 +136,7 @@
                     if(res.status == 200){
 
                     } else {
-                        this.$vux.alert.show({
+                        that.$vux.alert.show({
                             title: '温馨提示',
                             content: res.message
                         });
@@ -166,7 +166,7 @@
                     if(res.status == 200){
 
                     } else {
-                        this.$vux.alert.show({
+                        that.$vux.alert.show({
                             title: '温馨提示',
                             content: res.message});
                     }
