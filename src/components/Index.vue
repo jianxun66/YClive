@@ -38,19 +38,9 @@
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">实时直播</h2>
                     <div class="videoList swiper-no-swiping">
-                        <dl class="live-1" @click="switchVideo('live_1')">
-                            <dt><img src="http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg"></dt>
-                            <dd>实时全景1号</dd>
-                        </dl>
-                        <dl class="hf-1" @click="switchVideo('hf_1')">
-                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg">
-                            </dt>
-                            <dd>9月收割前</dd>
-                        </dl>
-                        <dl class="hf-2" @click="switchVideo('hf_2')">
-                            <dt><img src="https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg">
-                            </dt>
-                            <dd>10月雪景</dd>
+                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len.pic, len.vurl)">
+                            <dt><img :src="len.pic"></dt>
+                            <dd>{{len.name}}</dd>
                         </dl>
                     </div>
                     <h2 class="tit shopCarIcon">生态介绍</h2>
@@ -219,6 +209,7 @@
         data () {
             return {
                 total_price: 0,
+                lens:{},
                 player_souce: {
                     live_1: {
                         source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
@@ -284,6 +275,7 @@
         },
         created() {
             this.getData();
+            this.getLens();
         },
         mounted () {
             $('.prism-big-play-btn').click(function () {
@@ -337,14 +329,12 @@
                     $(obj).addClass('hide')
                 }
             },
-            switchVideo (target) {
+            switchVideo (pic, url) {
                 $('.videoCover').fadeOut()
                 this.player.dispose() //销毁
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
-                var cover = this.player_souce[target].cover
-                var source = this.player_souce[target].source
-                this.aliplayer_config.cover = cover
-                this.aliplayer_config.source = source
+                this.aliplayer_config.cover = pic
+                this.aliplayer_config.source = url
 
                 this.player = new Aliplayer(this.aliplayer_config)
             },
@@ -384,6 +374,21 @@
                     that.roomBasic.logo_pic = res.data.logo_pic;
                 }, (err) => {
                     console.log(err);
+                });
+            },
+            getLens(){
+                var that = this;
+                that.axiosGet("/room/lens?id=9").then((res) => {
+                    that.$vux.loading.hide();
+                    if(res.status == 200){
+                        that.lens = res.data;
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message});
+                    }
+                }, (err) => {
+                    that.$vux.loading.hide();
                 });
             },
             countPrice(price){

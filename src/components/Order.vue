@@ -9,7 +9,7 @@
                 <div class="addNewAddress">
                     <a href="javascript:void(0);" @click="addAddr">+新增收货地址</a>
                 </div>
-                <dl>
+                <dl @click="addresList">
                     <dt>{{addr.addr}}{{addr.detail}}</dt>
                     <dd>{{addr.client_name}}&nbsp;{{addr.sex}}&nbsp;{{addr.mobile}}</dd>
                 </dl>
@@ -100,6 +100,9 @@
             },
             addAddr(){
                 this.$router.push({path:'/addr/edit'});
+            },
+            addresList(){
+                this.$router.push({path:'/addr'});
             },
         }
     }

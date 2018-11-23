@@ -152,8 +152,7 @@ width: 50px; height: 36px; float: right; border: none;}
 
 /* 选择地址 */
 .addressList{  }
-.addressList dl{ padding: 10px 0; margin: 0 15px; border-bottom: 1px solid #dcdcdc; background: url('../images/editIcon.png') no-repeat right center;
-background-size: 20px; overflow: hidden; }
+.addressList dl{ padding: 10px 0; margin: 0 15px; border-bottom: 1px solid #dcdcdc; overflow: hidden; }
 .addressList dl dt{ width: 50px; height: 50px; float: left;  }
 .addressList dl.cur dt{ background: url('../images/rightIcon.png') no-repeat center center;
  background-size: 20px; }
