@@ -3,7 +3,7 @@
         <div class="orderHead">
             <div class="orderTabMenu">
                 <a href="#">产地到家</a>
-                <a href="tel:15013627372">联系园主</a>
+                <a :href="tel">联系园主</a>
             </div>
             <div class="orderAddress">
                 <div class="addNewAddress">
@@ -49,6 +49,7 @@
                 totalPrice: 0,
                 product: {},
                 addr:{},
+                tel:"",
 
             }
         },
@@ -58,7 +59,7 @@
             this.roomInfo = room_info ? JSON.parse(room_info) : '';
             this.totalPrice = localStorage.getItem('buy_total');
             this.product = buy_product ? JSON.parse(buy_product) : '';
-
+            this.tel = "tel:"+this.roomInfo.room_tel;
             this.getAddr();
         },
         methods:{
