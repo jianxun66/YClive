@@ -156,12 +156,11 @@
                 item.start = item.start == 1 ? 0 : 1;
                 that.subStatus = true;
 
-
                 var formdata = new FormData();
-                formdata.append('vid', item.id);
-                formdata.append('user_id', '10');
+                formdata.append('id', item.id);
 
-                that.axiosPost("/room/video-start", formdata).then((res) => {
+
+                that.axiosPost("/client/user-start", formdata).then((res) => {
                     that.subStatus = false;
                     if(res.status == 200){
 

@@ -94,69 +94,7 @@
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit messIcon">互动评论</h2>
-                    <h3 class="tit allMessIcon">全部评论(4)</h3>
-                    <div class="messList">
-                        <dl>
-                            <dt>
-                                <span></span>云霄守日
-                            </dt>
-                            <dd>
-                                <p>风景真好看，生态真的好！</p>
-                                <p>
-                                    <span>第1楼&nbsp;昨日16:11</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>
-                                <span></span>云霄守日
-                            </dt>
-                            <dd>
-                                <p>风景真好看，生态真的好！</p>
-                                <p>
-                                    <span>第1楼&nbsp;昨日16:11</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>
-                                <span></span>云霄守日
-                            </dt>
-                            <dd>
-                                <p>风景真好看，生态真的好！</p>
-                                <p>
-                                    <span>第1楼&nbsp;昨日16:11</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>
-                                <span></span>云霄守日
-                            </dt>
-                            <dd>
-                                <p>风景真好看，生态真的好！</p>
-                                <p>
-                                    <span>第1楼&nbsp;昨日16:11</span>
-                                    <span>
-								<a href="javascript:void(0);" class="zanIcon">赞</a>
-								<a href="javascript:void(0);" class="replyIcon">回复</a>
-							</span>
-                                </p>
-                            </dd>
-                        </dl>
-                    </div>
+                    <comments ref="comment" v-if="showComment"></comments>
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">精彩短片</h2>
@@ -172,8 +110,8 @@
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
-                <input type="text" value="" placeholder="输入评论内容...">
-                <button></button>
+                <input type="text" value="" placeholder="输入评论内容..." v-model="comment">
+                <button @click="subComment"></button>
             </div>
         </div>
 
@@ -200,30 +138,20 @@
     import importJs from '../../static/js/importJs'
     import RoomVideo from "./RoomVideo"
     import Product from "./Product"
+    import Comments from "./Comment"
     export default {
         name: 'index',
         components:{
             "room-video": RoomVideo,
             "Product": Product,
+            "Comments": Comments,
         },
         data () {
             return {
+                showComment: true,
+                comment:"",
                 total_price: 0,
                 lens:{},
-                player_souce: {
-                    live_1: {
-                        source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
-                        cover: 'http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg',
-                    },
-                    hf_1: {
-                        source: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.mp4',
-                        cover: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg',
-                    },
-                    hf_2: {
-                        source: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.mp4',
-                        cover: 'https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg',
-                    },
-                },
                 player: {},
                 aliplayer_config: {
                     id: 'J_prismPlayer',
@@ -273,9 +201,15 @@
                 }
             }
         },
+        provide() {
+            return {
+                reload: this.reload
+            }
+        },
         created() {
             this.getData();
             this.getLens();
+            localStorage.setItem('roomid', 9); // 直播间ID
         },
         mounted () {
             $('.prism-big-play-btn').click(function () {
@@ -401,6 +335,17 @@
                     that.roomBasic.logo_pic,
                     "13750509674",
                 );
+            },
+            subComment(){
+                this.$refs.comment.setComment(this.comment);
+            },
+            reload() {
+                this.showComment = false;
+                this.$nextTick(function(){
+                    this.showComment = true;
+
+
+                })
             }
         }
 

@@ -92,11 +92,15 @@
                 }
 
                 var buy_price = 0;
+                this.totalPrice = 0;
                 for(var i = 0 ; i < this.product.length; i++){
-                    buy_price+= this.product[i].buy_num * this.product[i].price;
-                    if(buy_price ){
-                        this.totalPrice = buy_price.toFixed(2);
+                    if(this.product[i].buy_num > 0){
+                        buy_price+= this.product[i].buy_num * this.product[i].price;
+                        if(buy_price ){
+                            this.totalPrice = buy_price.toFixed(2);
+                        }
                     }
+
                 }
             },
             addAddr(){
