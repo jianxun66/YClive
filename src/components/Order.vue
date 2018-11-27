@@ -35,7 +35,7 @@
 
         </div>
         <div class="payBtn">
-            <a href="orderPaySuccess.html">微信支付&yen;{{totalPrice}}<span>已优惠&yen;20</span></a>
+            <a href="javascript:void(0);" @click="subOrder">微信支付&yen;{{totalPrice}}<span>已优惠&yen;20</span></a>
         </div>
     </div>
 </template>
@@ -50,6 +50,8 @@
                 product: {},
                 addr:{},
                 tel:"",
+                openid: "",
+                roomid: "",
 
             }
         },
@@ -60,6 +62,8 @@
             this.totalPrice = localStorage.getItem('buy_total');
             this.product = buy_product ? JSON.parse(buy_product) : '';
             this.tel = "tel:"+this.roomInfo.room_tel;
+            this.openid = localStorage.getItem('openid');
+            this.roomid = localStorage.getItem('roomid');
             this.getAddr();
         },
         methods:{
@@ -109,6 +113,56 @@
             addresList(){
                 this.$router.push({path:'/addr'});
             },
+            subOrder(){
+                var that = this;
+                var buy_product = [];
+                for(var i = 0 ; i < this.product.length; i++){
+                    if(this.product[i].buy_num > 0){
+                        buy_product.push({"product_id": this.product[i].id, "num" : this.product[i].buy_num});
+                    }
+                }
+
+                if(that.totalPrice <= 0 || buy_product.length <= 0){
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: "请勾选需要购买的商品"});
+                    return false;
+                }
+                console.log(that.addr);
+                if(!that.addr.client_name){
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: "请填写收件人信息"});
+                    return false;
+                }
+
+
+                that.$vux.loading.show({
+                    text: '提交中~'
+                });
+                console.log(that.roomid)
+                var formdata = new FormData();
+                formdata.append('open_id', that.openid);
+                formdata.append('room_id', that.roomid);
+                formdata.append('products', JSON.stringify(buy_product));
+                formdata.append('user_name', that.addr.client_name);
+                formdata.append('user_sex', that.addr.sex);
+                formdata.append('user_phone', that.addr.mobile);
+                formdata.append('address', that.addr.addr+that.addr.detail);
+
+                that.axiosPost("/client/order-sub", formdata).then((res) => {
+                    that.$vux.loading.hide();
+                    if(res.status == 200){
+                        console.log(res);
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message});
+                    }
+                }, (err) => {
+                    that.$vux.loading.hide();
+                });
+            }
         }
     }
 </script>

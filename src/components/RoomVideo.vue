@@ -158,7 +158,7 @@
 
                 var formdata = new FormData();
                 formdata.append('id', item.id);
-
+                formdata.append('stype', 1);
 
                 that.axiosPost("/client/user-start", formdata).then((res) => {
                     that.subStatus = false;

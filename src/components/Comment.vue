@@ -11,7 +11,7 @@
                     <p>
                         <span>第{{++index}}楼&nbsp;{{item.date}}</span>
                         <span>
-                            <a href="javascript:void(0);" class="zanIcon" @click="setStart(item)">赞</a>
+                            <a href="javascript:void(0);" :class="[item.start ? 'zanIcon2' : 'zanIcon']" @click="setStart(item)" >赞</a>
                             <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
                         </span>
                     </p>
@@ -65,8 +65,33 @@
                 });
             },
 
-            setStart(){
+            setStart(item){
+                var that = this;
 
+                if(that.subStatus){
+                    return false;
+                }
+
+                item.start = item.start == 1 ? 0 : 1;
+                that.subStatus = true;
+
+                var formdata = new FormData();
+                formdata.append('id', item.id);
+                formdata.append('stype', 2);
+
+
+                that.axiosPost("/client/user-start", formdata).then((res) => {
+                    that.subStatus = false;
+                    if(res.status == 200){
+
+                    } else {
+                        that.$vux.alert.show({
+                            title: '温馨提示',
+                            content: res.message});
+                    }
+                }, (err) => {
+                    that.subStatus = false;
+                });
             },
             setComment($content){
                 var that = this;
