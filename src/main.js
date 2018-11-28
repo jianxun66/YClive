@@ -14,13 +14,22 @@ import MyOrder from './components/OrderSuccess'
 import axios from 'axios'
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin } from 'vux'
 
+import { WechatPlugin } from 'vux'
+import VConsole from 'vconsole'
+
+
+//const vConsole = new VConsole();
+
+//console.log(vConsole.version)
 
 Vue.use(VueRouter);
 Vue.use(AlertPlugin);
 Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
+Vue.use(WechatPlugin);
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
+axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
 
 Vue.prototype.$axios = axios;

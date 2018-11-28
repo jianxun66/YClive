@@ -258,14 +258,6 @@
                         source: "http://aliplay.adaxiang.com/kr/wc001.m3u8",
                         cover: "http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg",
                     },
-                    hf_1: {
-                        source: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.mp4",
-                        cover: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0001.jpg",
-                    },
-                    hf_2: {
-                        source: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.mp4",
-                        cover: "https://24live.oss-cn-shanghai.aliyuncs.com/live-jingcai/wc001/wc0002.jpg",
-                    },
                 },
                 player:{},
                 aliplayer_config:{

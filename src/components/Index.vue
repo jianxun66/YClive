@@ -129,7 +129,7 @@
 
 
         <div class="liveHome"><img src="../../static/images/homewc001.png"></div>
-        <remote-script src="http://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
+        <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
 

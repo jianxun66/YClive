@@ -52,6 +52,18 @@
                 tel:"",
                 openid: "",
                 roomid: "",
+                wechatJssdk:{
+                    debug: true,
+                    appId: '',
+                    timestamp: '',
+                    nonceStr: '',
+                    signature: '',
+                    jsApiList: [
+                        'chooseWXPay',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage'
+                    ],
+                },
 
             }
         },
@@ -64,6 +76,7 @@
             this.tel = "tel:"+this.roomInfo.room_tel;
             this.openid = localStorage.getItem('openid');
             this.roomid = localStorage.getItem('roomid');
+            this.wechatConfig();
             this.getAddr();
         },
         methods:{
@@ -128,7 +141,7 @@
                         content: "请勾选需要购买的商品"});
                     return false;
                 }
-                console.log(that.addr);
+
                 if(!that.addr.client_name){
                     this.$vux.alert.show({
                         title: '温馨提示',
@@ -140,7 +153,7 @@
                 that.$vux.loading.show({
                     text: '提交中~'
                 });
-                console.log(that.roomid)
+
                 var formdata = new FormData();
                 formdata.append('open_id', that.openid);
                 formdata.append('room_id', that.roomid);
@@ -153,7 +166,7 @@
                 that.axiosPost("/client/order-sub", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                        console.log(res);
+                        that.wechatPay(res.data.pay, res.data.order_no);
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -161,6 +174,49 @@
                     }
                 }, (err) => {
                     that.$vux.loading.hide();
+                });
+            },
+            wechatConfig(){
+                this.$vux.loading.show("加载中");
+                var url = window.location.href.split('#')[0];
+                var that = this;
+                var formdata = new FormData();
+                formdata.append('url', url);
+                formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");
+                that.axiosPost("/wechat/jssdk", formdata).then((res) => {
+                    that.$vux.loading.hide();
+                    if(res.status == 200){
+                        that.$wechat.config(JSON.parse(res.data));
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: "微信参数错误"});
+                    }
+                }, (err) => {
+                    that.$vux.loading.hide();
+                });
+            },
+            wechatPay(config, order_no){
+                var that = this;
+                that.$wechat.chooseWXPay({
+                    timestamp: config.timeStamp, // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                    nonceStr: config.nonceStr, // 支付签名随机串，不长于 32 位
+                    package: config.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=***）
+                    signType: config.signType, // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                    paySign: config.paySign, // 支付签名
+                    success: function (response) {
+                        // 支付成功后的回调函数
+                        //window.localStorageclear()
+                        that.$vux.toast.show('支付成功!')
+                        //window.location.href = "/order/success"
+                    },
+                    cancel: function (re) {
+
+                        that.$vux.toast.show({
+                            text: '支付已取消',
+                            type: 'cancel'
+                        })
+                    }
                 });
             }
         }
