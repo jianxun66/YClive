@@ -44,9 +44,11 @@
         data () {
             return {
                 orders: {},
+                order_id : '',
             }
         },
         created () {
+            this.order_id = this.$route.query.order_id;
             this.getOrderList()
         },
         methods: {
@@ -57,8 +59,19 @@
                 this.$router.push({path: '/'})
             },
             getOrderList () {
-                let that = this
-                that.axiosGet('/client/orders?last=1').then((res) => {
+                if(!that.order_id){
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: "无效订单号"});
+                    return false;
+                }
+
+                let that = this;
+                var formdata = new FormData();
+                formdata.append('order_id', that.order_id);
+                formdata.append('open_id', localStorage.getItem('openid'));
+
+                that.axiosPost('/client/orders', formdata).then((res) => {
                     that.orders = res.data[0]
                     console.log(that.orders)
                 }, (err) => {

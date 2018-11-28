@@ -207,15 +207,16 @@
                     success: function (response) {
                         // 支付成功后的回调函数
                         //window.localStorageclear()
-                        that.$vux.toast.show('支付成功!')
+                        //that.$vux.toast.show('支付成功!')
                         //window.location.href = "/order/success"
+                        that.$router.push({path:'/order/mylist', query:{'order_id': order_no}});
                     },
                     cancel: function (re) {
-
-                        that.$vux.toast.show({
+                        that.$router.push({path:'/order/mylist'});
+                        /*that.$vux.toast.show({
                             text: '支付已取消',
                             type: 'cancel'
-                        })
+                        })*/
                     }
                 });
             }
