@@ -11,8 +11,8 @@
         },
         methods:{
             login(){
-                var that
-                var url= that.axios.defaults.baseURL+ "wechat/auth-login";
+                var that = this;
+                var url= "https://yc.adaxiang.com/rest/v1/wechat/auth-login";
                 var urld = window.location.href.split('#')[0];
                 var refer = '';
                 if(cookie.get('refer') != null ){
@@ -23,7 +23,8 @@
 
                 var auth_code = cookie.get('auth');
                 if(auth_code){
-                    that.$router.push({path:cookie.get('refer')});
+                    localStorage.setItem('openid', auth_code);
+                    that.$router.push({path:'/'});
                 }else{
                     location.href = url;
                 }

@@ -43,8 +43,7 @@
                 })
 
                 var formdata = new FormData();
-                formdata.append('openid', that.openid);
-                that.axiosPost("/product/room?id="+this.room_id).then((res) => {
+                that.axiosPost("/product/room?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.productList = res.data;

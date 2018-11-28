@@ -11,16 +11,19 @@ import Address from './components/AddressList'
 import EditAddress from './components/EditAddress'
 import OrderSuccess from './components/OrderSuccess'
 import MyOrderList from './components/MyOrder'
+import Auth from './components/Auth'
 import axios from 'axios'
-import  { AlertPlugin ,LoadingPlugin ,ToastPlugin } from 'vux'
+
+
+import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
 import VConsole from 'vconsole'
 
 
-//const vConsole = new VConsole();
+/*const vConsole = new VConsole();
 
-//console.log(vConsole.version)
+console.log(vConsole.version)*/
 
 Vue.use(VueRouter);
 Vue.use(AlertPlugin);
@@ -35,8 +38,7 @@ axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.c
 Vue.prototype.$axios = axios;
 
 axios.interceptors.response.use(response => {
-    console.log(response);
-    if (response.data.code === 401) { // token过期
+    if (response.code === 4007 || response.code == 4008) { // token过期
         // window.localStorage.removeItem('auth');
         router.replace({
             path: '/auth',
@@ -51,6 +53,11 @@ axios.interceptors.response.use(response => {
 });
 
 Vue.prototype.axiosPost = function (url, data = {}) {
+    if(data.length == 0){
+        data = new FormData();
+    }
+
+    data.append('openid', cookie.get('auth'));
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(
             response => {
@@ -76,6 +83,7 @@ Vue.prototype.axiosGet = function (url) {
 
 
 const routes = [
+
     {
         path: '/',
         component: Index,
@@ -111,6 +119,11 @@ const routes = [
         component: EditAddress,
         meta: { title: '地址管理' },
     },
+    {
+        path: '/auth',
+        component: Auth,
+        meta: { title: '微信授权' },
+    },
 ]
 
 
@@ -119,12 +132,34 @@ const router = new VueRouter({
 })
 
 
+
 router.beforeEach((to, from, next) => {
     if (to.meta.title) {
         document.title = to.meta.title
     }
 
-    next();
+    var auth_code = cookie.get('auth');
+
+    if(auth_code){
+        if(!localStorage.getItem('openid')){
+            localStorage.setItem('openid', auth_code);
+        }
+        next();
+    } else {
+        if(to.path.indexOf('/auth') == -1){
+            cookie.set('refer', to.path, {
+                path: '/',
+                expires: 7200
+            });
+        }
+
+        if(to.path.indexOf('auth') > -1){ //如果是登录页面路径，就直接next()
+            next();
+        } else { //不然就跳转到登录；
+            next('/auth');
+            // next();
+        }
+    }
 });
 
 FastClick.attach(document.body)

@@ -46,8 +46,7 @@
             getData(){
                 var that = this;
                 var formdata = new FormData();
-                formdata.append('openid', that.openid);
-                formdata.append('id', that.roomid);
+                formdata.append('id', that.room_id);
                 that.axiosPost("/room/comments", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
@@ -96,7 +95,6 @@
             setComment($content){
                 var that = this;
                 var formdata = new FormData();
-                formdata.append('openid', that.openid);
                 formdata.append('content', $content);
                 formdata.append('id', that.roomid);
 
