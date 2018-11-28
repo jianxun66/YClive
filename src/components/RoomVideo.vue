@@ -27,8 +27,10 @@
 <script>
     export default {
         name: "room-video",
+        props: ['room_id'],
         data(){
             return {
+                openid: "",
                 subStatus: false,
                 videoList:[],
                 player:{},
@@ -70,6 +72,7 @@
             }
         },
         created(){
+            this.openid = localStorage.getItem('openid');
             this.getData();
         },
         mounted(){
@@ -83,7 +86,9 @@
                     text: '加载中~'
                 })
 
-                that.axiosGet("/room/videos?id=9").then((res) => {
+                var formdata = new FormData();
+                formdata.append('openid', that.openid);
+                that.axiosPost("/room/videos?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.videoList = res.data.videos;
@@ -127,6 +132,7 @@
                 }
 
                 var formdata = new FormData();
+                formdata.append('openid', that.openid);
                 formdata.append('cid', item.id);
                 formdata.append('ctype', 'video');
 
@@ -157,6 +163,7 @@
                 that.subStatus = true;
 
                 var formdata = new FormData();
+                formdata.append('openid', that.openid);
                 formdata.append('id', item.id);
                 formdata.append('stype', 1);
 

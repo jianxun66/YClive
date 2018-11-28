@@ -28,18 +28,18 @@
     export default {
         name: "comment",
         inject: ['reload'],
+        props: ['room_id'],
         data(){
           return {
             commentList:[],
               total:0,
-              openid:"",
               roomid: 0,
+              openid: "",
 
           };
         },
         created(){
             this.openid = localStorage.getItem('openid');
-            this.roomid = localStorage.getItem('roomid');
             this.getData();
         },
         methods:{
@@ -76,9 +76,9 @@
                 that.subStatus = true;
 
                 var formdata = new FormData();
+                formdata.append('openid', that.openid);
                 formdata.append('id', item.id);
                 formdata.append('stype', 2);
-
 
                 that.axiosPost("/client/user-start", formdata).then((res) => {
                     that.subStatus = false;
@@ -96,6 +96,7 @@
             setComment($content){
                 var that = this;
                 var formdata = new FormData();
+                formdata.append('openid', that.openid);
                 formdata.append('content', $content);
                 formdata.append('id', that.roomid);
 

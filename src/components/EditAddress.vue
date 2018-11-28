@@ -34,6 +34,8 @@
         name: "edit-address",
         data(){
             return {
+                room_id : 0,
+                openid: "",
                 subStatus: 0,
                 addrInfo: {
                     aid: 0,
@@ -47,6 +49,7 @@
             };
         },
         created(){
+            this.openid = localStorage.getItem('openid');
             var address = localStorage.getItem('address_edit');
             if(address){
                 this.addrInfo = JSON.parse(address);
@@ -63,7 +66,7 @@
                 if(this.subStatus){
                     return false;
                 }
-                console.log(addrInfo);
+
                 if(!addrInfo.name){
                     that.$vux.alert.show({
                         title: '温馨提示',
@@ -104,6 +107,7 @@
                 formdata.append('mobile', addrInfo.mobile);
                 formdata.append('addr', addrInfo.addr);
                 formdata.append('detail', addrInfo.detail);
+                formdata.append('openid', that.openid);
 
                 that.$vux.loading.show({
                     text: '加载中~'

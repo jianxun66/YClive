@@ -89,17 +89,17 @@
                         </div>
                     </div>
                     <div class="shopList">
-                        <product  ref="product" v-on:buy_price="countPrice"></product>
+                        <product  :room_id="room_id" ref="product" v-on:buy_price="countPrice"></product>
                     </div>
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit messIcon">互动评论</h2>
-                    <comments ref="comment" v-if="showComment"></comments>
+                    <comments :room_id="room_id" ref="comment" v-if="showComment"></comments>
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">精彩短片</h2>
                     <div class="filmList">
-                        <room-video></room-video>
+                        <room-video :room_id="room_id"></room-video>
                     </div>
                     <div class="footerLogo">
                         <img src="../../static/images/footerLogo.png">
@@ -148,6 +148,7 @@
         },
         data () {
             return {
+                room_id: 0,
                 showComment: true,
                 comment:"",
                 total_price: 0,
@@ -207,6 +208,7 @@
             }
         },
         created() {
+            this.room_id = 9;
             this.getData();
             this.getLens();
             localStorage.setItem('roomid', 9); // 直播间ID

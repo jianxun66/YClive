@@ -45,6 +45,7 @@
         name: "order",
         data(){
             return {
+                subStatus: false,
                 roomInfo : {},
                 totalPrice: 0,
                 product: {},
@@ -83,7 +84,7 @@
             getAddr(){
                 var that = this;
                 var formdata = new FormData();
-                formdata.append('ctype', 'video');
+                formdata.append('open_id', this.openid);
                 that.axiosPost("/client/addr", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
@@ -127,6 +128,10 @@
                 this.$router.push({path:'/addr'});
             },
             subOrder(){
+                if(this.subStatus){
+                    return false;
+                }
+
                 var that = this;
                 var buy_product = [];
                 for(var i = 0 ; i < this.product.length; i++){
@@ -154,6 +159,7 @@
                     text: '提交中~'
                 });
 
+                this.subStatus = true;
                 var formdata = new FormData();
                 formdata.append('open_id', that.openid);
                 formdata.append('room_id', that.roomid);
@@ -164,6 +170,7 @@
                 formdata.append('address', that.addr.addr+that.addr.detail);
 
                 that.axiosPost("/client/order-sub", formdata).then((res) => {
+                    that.subStatus = false;
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.wechatPay(res.data.pay, res.data.order_no);
@@ -173,14 +180,16 @@
                             content: res.message});
                     }
                 }, (err) => {
+                    that.subStatus = false;
                     that.$vux.loading.hide();
                 });
             },
             wechatConfig(){
-                this.$vux.loading.show("加载中");
+                //this.$vux.loading.show("加载中");
                 var url = window.location.href.split('#')[0];
                 var that = this;
                 var formdata = new FormData();
+                formdata.append('open_id', this.openid);
                 formdata.append('url', url);
                 formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");
                 that.axiosPost("/wechat/jssdk", formdata).then((res) => {
@@ -209,7 +218,7 @@
                         //window.localStorageclear()
                         //that.$vux.toast.show('支付成功!')
                         //window.location.href = "/order/success"
-                        that.$router.push({path:'/order/mylist', query:{'order_id': order_no}});
+                        that.$router.push({path:'/order/success', query:{'order_id': order_no}});
                     },
                     cancel: function (re) {
                         that.$router.push({path:'/order/mylist'});

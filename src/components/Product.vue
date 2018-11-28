@@ -22,13 +22,16 @@
 
     export default {
         name: "product",
+        props: ['room_id'],
         data(){
             return {
+                openid: "",
                 productList:[],
                 totalPrice: 0,
             };
         },
         created(){
+            this.openid = localStorage.getItem('openid');
             this.getData();
         },
         methods:{
@@ -39,7 +42,9 @@
                     text: '加载中~'
                 })
 
-                that.axiosGet("/product/room?id=9").then((res) => {
+                var formdata = new FormData();
+                formdata.append('openid', that.openid);
+                that.axiosPost("/product/room?id="+this.room_id).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.productList = res.data;

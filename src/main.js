@@ -28,11 +28,28 @@ Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
 
-axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
+//axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
 
 Vue.prototype.$axios = axios;
+
+axios.interceptors.response.use(response => {
+    console.log(response);
+    if (response.data.code === 401) { // token过期
+        // window.localStorage.removeItem('auth');
+        router.replace({
+            path: '/auth',
+            query: {
+                redirect: router.currentRoute.fullPath
+            }
+        })
+    }
+    return response
+}, error => {
+    return Promise.reject(error)
+});
+
 Vue.prototype.axiosPost = function (url, data = {}) {
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(

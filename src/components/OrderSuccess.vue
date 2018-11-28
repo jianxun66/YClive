@@ -45,10 +45,12 @@
             return {
                 orders: {},
                 order_id : '',
+                openid : '',
             }
         },
         created () {
             this.order_id = this.$route.query.order_id;
+            this.openid = localStorage.getItem('openid');
             this.getOrderList()
         },
         methods: {

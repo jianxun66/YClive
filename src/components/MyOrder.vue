@@ -31,7 +31,9 @@
         methods: {
             getOrderList () {
                 let that = this
-                that.axiosGet('/client/orders').then((res) => {
+                var formdata = new FormData();
+                formdata.append('openid', that.openid);
+                that.axiosPost('/client/orders').then((res) => {
                     that.orderList = res.data
                 }, (err) => {
                     console.log(err)
