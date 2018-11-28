@@ -5,41 +5,13 @@
             <!--<a href="tel:15013627372">联系客服</a>-->
         </div>
         <div class="myOrder ">
-            <div class="orderBox">
-                <h4 class="tit">亚历亨生态茶园<span>订单号码：2223 2322 2323</span></h4>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
+            <div class="orderBox" v-for="item in orderList">
+                <h4 class="tit">{{item.room_name}}<span>订单号码：{{item.order_id}}</span></h4>
+                <dl v-for="details in item.list">
+                    <dt>{{details.title}} X {{details.num}}</dt>
+                    <dd>{{details.title}}</dd>
                 </dl>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
-                </dl>
-                <p>合计<span>&yen;4200</span></p>
-            </div>
-            <div class="orderBox">
-                <h4 class="tit">亚历亨生态茶园<span>订单号码：2223 2322 2323</span></h4>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
-                </dl>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
-                </dl>
-                <p>合计<span>&yen;4200</span></p>
-            </div>
-            <div class="orderBox">
-                <h4 class="tit">亚历亨生态茶园<span>订单号码：2223 2322 2323</span></h4>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
-                </dl>
-                <dl>
-                    <dt>亚历亨有机茶 1斤装 x 1</dt>
-                    <dd>一斤陶瓷礼盒装，三斤陶瓷礼盒装</dd>
-                </dl>
-                <p>合计<span>&yen;4200</span></p>
+                <p>合计<span>&yen;{{item.total_money}}</span></p>
             </div>
         </div>
     </div>
@@ -49,26 +21,21 @@
     export default {
         name: 'my-order',
         data () {
-            return {}
+            return {
+                orderList: {}
+            }
+        },
+        created () {
+            this.getOrderList()
         },
         methods: {
             getOrderList () {
-                let that = this;
-                that.axiosGet("/room/info?id=1").then((res) => {
-                    
-                    // that.roomBasic.room_name = res.data.room_name;
-                    // that.roomBasic.logo_img = res.data.logo_img;
-                    // that.roomBasic.click_num = res.data.click_num;
-                    // that.roomBasic.addr_url = res.data.addr_url;
-                    // that.roomBasic.addr = res.data.addr;
-                    // that.roomBasic.coordinate = res.data.coordinate;
-                    // that.roomBasic.cover_img = res.data.cover_img;
-                    // that.roomBasic.introduce = res.data.introduce;
-                    // that.roomBasic.content = res.data.content;
-                    // that.roomBasic.logo_pic = res.data.logo_pic;
+                let that = this
+                that.axiosGet('/client/orders').then((res) => {
+                    that.orderList = res.data
                 }, (err) => {
-                    console.log(err);
-                });
+                    console.log(err)
+                })
             }
         }
     }

@@ -10,7 +10,6 @@ import Order from './components/Order'
 import Address from './components/AddressList'
 import EditAddress from './components/EditAddress'
 import OrderSuccess from './components/OrderSuccess'
-import MyOrder from './components/OrderSuccess'
 import MyOrderList from './components/MyOrder'
 import axios from 'axios'
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin } from 'vux'
@@ -60,11 +59,6 @@ const routes = [
         path: '/order',
         component: Order,
         meta: { title: '订单' },
-    },
-    {
-        path: '/order/my',
-        component: MyOrder,
-        meta: { title: '我的订单' },
     },
     {
         path: '/order/mylist',

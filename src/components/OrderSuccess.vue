@@ -8,36 +8,29 @@
             <div class="paySuccess">
                 <h1>订单支付成功</h1>
                 <p>感性您对我们的支持，期待再次光临。</p>
-                <a href="index_live.html">返回主页</a>
-                <a href="">订单列表</a>
+                <a @click="homePath">返回主页</a>
+                <a @click="myOrderListPath">订单列表</a>
             </div>
         </div>
         <div class="orderList">
-            <div class="tit">亚历亨生态茶园</div>
-            <dl>
+            <div class="tit">{{orders.room_name}}</div>
+            <dl v-for="item in orders.list">
                 <dt><img src="demo/4.png"></dt>
                 <dd>
-                    <h3>亚历亨有机绿茶 1斤装<span>¥2680</span></h3>
-                    <p>亚历亨生态茶园位于广东省韶关市始兴县...</p>
-                </dd>
-            </dl>
-            <dl>
-                <dt><img src="demo/4.png"></dt>
-                <dd>
-                    <h3>亚历亨有机绿茶 1斤装<span>¥2680</span></h3>
-                    <p>亚历亨生态茶园位于广东省韶关市始兴县...</p>
+                    <h3>{{item.title}}<span>¥{{item.price}}</span></h3>
+                    <p>{{item.title}}</p>
                 </dd>
             </dl>
             <div class="total">
-                <p>配送费<span>顺丰包邮</span></p>
-                <p>已优惠&yen;20<span>小计</span><span>&yen;4200</span></p>
+                <p>配送费&yen;{{orders.deliver_money}}<span>{{orders.express_name}}</span></p>
+                <p>已优惠{{orders.discount_money}}<span>小计</span><span>&yen;{{orders.total_money}}</span></p>
             </div>
             <div class="total orderInfo">
                 <p>订单信息</p>
                 <ul>
-                    <li>订单号码<span>2323 3232 3232</span></li>
-                    <li>下单时间<span>2018-10-16 12:22:33</span></li>
-                    <li>配送地址<span>李先生 1234423241<br>广东省深圳市南山区鑫海名城11号</span></li>
+                    <li>订单号码<span>{{orders.order_id}}</span></li>
+                    <li>下单时间<span>{{orders.create_time}}</span></li>
+                    <li>配送地址<span>{{orders.user_name}} {{orders.user_phone}}<br>{{orders.user_address}}</span></li>
                 </ul>
             </div>
         </div>
@@ -47,10 +40,31 @@
 
 <script>
     export default {
-        name: "order-success"
+        name: 'order-success',
+        data () {
+            return {
+                orders: {},
+            }
+        },
+        created () {
+            this.getOrderList()
+        },
+        methods: {
+            myOrderListPath () {
+                this.$router.push({path: '/order/mylist'})
+            },
+            homePath () {
+                this.$router.push({path: '/'})
+            },
+            getOrderList () {
+                let that = this
+                that.axiosGet('/client/orders?last=1').then((res) => {
+                    that.orders = res.data[0]
+                    console.log(that.orders)
+                }, (err) => {
+                    console.log(err)
+                })
+            }
+        }
     }
 </script>
-
-<style scoped>
-
-</style>
