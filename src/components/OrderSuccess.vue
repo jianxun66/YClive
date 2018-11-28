@@ -9,7 +9,7 @@
                 <h1>订单支付成功</h1>
                 <p>感性您对我们的支持，期待再次光临。</p>
                 <a href="index_live.html">返回主页</a>
-                <a href="order.html">订单列表</a>
+                <a href="">订单列表</a>
             </div>
         </div>
         <div class="orderList">
