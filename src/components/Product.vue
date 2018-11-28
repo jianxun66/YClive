@@ -64,6 +64,7 @@
                 }
 
                 var buy_price = 0;
+                this.totalPrice = 0;
                 for(var i = 0 ; i < this.productList.length; i++){
                     buy_price+= this.productList[i].buy_num * this.productList[i].price;
                     if(buy_price ){
