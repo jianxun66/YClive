@@ -96,7 +96,7 @@
                 var that = this;
                 var formdata = new FormData();
                 formdata.append('content', $content);
-                formdata.append('id', that.roomid);
+                formdata.append('id', that.room_id);
 
                 that.axiosPost("/client/comment", formdata).then((res) => {
                     that.$vux.loading.hide();
