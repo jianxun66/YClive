@@ -140,6 +140,7 @@ router.beforeEach((to, from, next) => {
 
     var auth_code = cookie.get('auth');
 
+
     if(auth_code){
         if(!localStorage.getItem('openid')){
             localStorage.setItem('openid', auth_code);

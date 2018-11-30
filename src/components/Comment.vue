@@ -92,16 +92,18 @@
                     that.subStatus = false;
                 });
             },
-            setComment($content){
+            setComment(content){
                 var that = this;
                 var formdata = new FormData();
-                formdata.append('content', $content);
+                formdata.append('content', content);
                 formdata.append('id', that.room_id);
 
                 that.axiosPost("/client/comment", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
+                        content = "";
                         //that.commentList.push(res.data);
+                        that.$emit('clearComment', '')
                         that.reload();
                     } else {
                         this.$vux.alert.show({

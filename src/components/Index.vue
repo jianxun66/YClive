@@ -3,7 +3,7 @@
         <div class="video">
             <div class="prism-player " id="J_prismPlayer"></div>
             <div class="videoCover">
-                <img src="http://24live.oss-cn-shanghai.aliyuncs.com/live-image/kr/wc001.jpg">
+                <img :src="roomBasic.online_cover">
             </div>
             <div class="logo"><img src="../../static/images/logo.png"></div>
         </div>
@@ -12,12 +12,12 @@
             <dl>
                 <dt>
                     <h1>
-                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.click_num}}</span></h1>
+                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.start_num}}</span></h1>
                     <p>{{roomBasic.addr}}</p>
                 </dt>
                 <dd>
-                    <span class="live"><i></i>正在直播</span>
-                    <!-- <span class="playback"><i></i>晚间回放</span>  -->
+                    <span class="live" v-if="play_status == 1"><i></i>正在直播</span>
+                     <span class="playback" v-if="play_status == 2"><i></i>晚间回放</span>
                     <!-- <span class="notPlay"><i></i>暂无直播</span>  -->
                 </dd>
             </dl>
@@ -47,24 +47,26 @@
                     <div class="company">
                         <dl>
                             <dt>
-                                <img src="../../static/images/brandLogo-2.png">
+                                <img :src="roomBasic.logo_img">
                             </dt>
                             <dd>
-                                <h3><strong>刘老头米店</strong>五常稻花香</h3>
+                                <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
                                 <p>
-                                    <span>淘宝月销1万件</span>
+                                    <span>{{roomBasic.intro}}</span>
                                 </p>
                             </dd>
                         </dl>
                         <div class="remarks">
                             <span>生态简介：</span>
                             <p class="hide" @click.native="showMoreInfo(this)">
-                                寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
+                                {{roomBasic.introduce}}</p>
                         </div>
                     </div>
 
 
-                    <div><img src="../../static/images/homewc001.png"></div>
+                    <!--<div class="room_content" v-html="roomBasic.content">
+                    </div>-->
+                    <div><img src="../../static/images/homewc001.png?2"></div>
 
 
                 </div>
@@ -73,19 +75,19 @@
                     <div class="company">
                         <dl>
                             <dt>
-                                <img src="../../static/images/brandLogo-2.png">
+                                <img :src="roomBasic.logo_img">
                             </dt>
                             <dd>
-                                <h3><strong>刘老头米店</strong>五常稻花香</h3>
+                                <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
                                 <p>
-                                    <span>淘宝月销1万件</span>
+                                    <span>{{roomBasic.intro}}</span>
                                 </p>
                             </dd>
                         </dl>
                         <div class="remarks">
                             <span>生态简介：</span>
                             <p class="hide" @click.native="showMoreInfo(this)">
-                                寒地黑土，一年种植一次。生米清香，米饭香甜劲道，松软可口不可回生。店家自产自销纯正五常稻花香大米，原生态种植，稻田里养鸭。</p>
+                             {{roomBasic.introduce}}</p>
                         </div>
                     </div>
                     <div class="shopList">
@@ -94,7 +96,7 @@
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit messIcon">互动评论</h2>
-                    <comments :room_id="room_id" ref="comment" v-if="showComment"></comments>
+                    <comments :room_id="room_id" @clearComment="clearParent" ref="comment" v-if="showComment"></comments>
                 </div>
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">精彩短片</h2>
@@ -128,7 +130,7 @@
         </div>
 
 
-        <div class="liveHome"><img src="../../static/images/homewc001.png"></div>
+        <div class="liveHome"><img :src="roomBasic.cover_img"></div>
         <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
@@ -148,7 +150,9 @@
         },
         data () {
             return {
+                play_status : 1,
                 room_id: 0,
+                room_info: {},
                 showComment: true,
                 comment:"",
                 total_price: 0,
@@ -164,7 +168,7 @@
                     isLive: true,
                     x5_type: true,
                     //支持播放地址播放,此播放优先级最高
-                    source: 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
+                    source: '',
                     cover: '',
                     skinLayout: [
                         {name: 'bigPlayButton', align: 'cc', x: 30, y: 80},
@@ -191,6 +195,10 @@
                 },
                 roomBasic: {
                     room_name: '',
+                    start_num: '',
+                    title: '',
+                    sub_title: '',
+                    intro: '',
                     click_num: '',
                     introduce: '',
                     content: '',
@@ -199,6 +207,9 @@
                     addr_url: '',
                     addr: '',
                     logo_img: '',
+                    online_url: '',
+                    online_cover: '',
+                    mobile: '',
                 }
             }
         },
@@ -208,12 +219,13 @@
             }
         },
         created() {
-            this.room_id = 9;
+            this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
             this.getData();
             this.getLens();
-            localStorage.setItem('roomid', 9); // 直播间ID
+            localStorage.setItem('roomid', this.room_id); // 直播间ID
         },
         mounted () {
+
             $('.prism-big-play-btn').click(function () {
                 $('.videoCover').fadeOut()
             })
@@ -255,7 +267,7 @@
                 }
             })
 
-            this.player = new Aliplayer(this.aliplayer_config);
+            //this.player = new Aliplayer(this.aliplayer_config);
         },
         methods: {
             showMoreInfo (obj) {
@@ -297,7 +309,8 @@
             },
             getData(){
                 let that = this;
-                that.axiosGet("/room/info?id=1").then((res) => {
+                var formdata = new FormData();
+                that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
                     that.roomBasic.room_name = res.data.room_name;
                     that.roomBasic.logo_img = res.data.logo_img;
                     that.roomBasic.click_num = res.data.click_num;
@@ -308,13 +321,26 @@
                     that.roomBasic.introduce = res.data.introduce;
                     that.roomBasic.content = res.data.content;
                     that.roomBasic.logo_pic = res.data.logo_pic;
+                    that.roomBasic.title = res.data.title;
+                    that.roomBasic.sub_title = res.data.sub_title;
+                    that.roomBasic.intro = res.data.intro;
+                    that.roomBasic.start_num = res.data.start_num;
+                    that.roomBasic.online_url = res.data.online_url;
+                    that.roomBasic.online_cover = res.data.online_cover;
+                    that.roomBasic.mobile = res.data.mobile;
+
+                    that.aliplayer_config.source = res.data.online_url;
+                    that.aliplayer_config.cover = res.data.online_cover;
+                    that.player = new Aliplayer(that.aliplayer_config);
+
                 }, (err) => {
                     console.log(err);
                 });
             },
             getLens(){
                 var that = this;
-                that.axiosGet("/room/lens?id=9").then((res) => {
+                var formdata = new FormData();
+                that.axiosPost("/room/lens?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.lens = res.data;
@@ -335,11 +361,14 @@
                 this.$refs.product.buy_product(that.roomBasic.id,
                     that.roomBasic.room_name,
                     that.roomBasic.logo_pic,
-                    "13750509674",
+                    that.roomBasic.mobile,
                 );
             },
             subComment(){
                 this.$refs.comment.setComment(this.comment);
+            },
+            clearParent(){
+                this.comment = "";
             },
             reload() {
                 this.showComment = false;
