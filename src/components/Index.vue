@@ -12,7 +12,7 @@
             <dl>
                 <dt>
                     <h1>
-                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.start_num}}</span></h1>
+                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.click_num}}</span></h1>
                     <p>{{roomBasic.addr}}</p>
                 </dt>
                 <dd>
@@ -281,6 +281,12 @@
                 $('.videoCover').fadeOut()
                 this.player.dispose() //销毁
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
+                if(url.indexOf('.m3u8') != -1){ // 直播源
+                    this.aliplayer_config.isLive = true;
+                } else {
+                    this.aliplayer_config.isLive = false;
+                }
+
                 this.aliplayer_config.cover = pic
                 this.aliplayer_config.source = url
 

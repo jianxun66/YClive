@@ -31,10 +31,11 @@ Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
 
-//axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
-axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
+axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
+//axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
-
+Vue.debug = 0;
+Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
 
 axios.interceptors.response.use(response => {
@@ -139,7 +140,10 @@ router.beforeEach((to, from, next) => {
     }
 
     var auth_code = cookie.get('auth');
-
+    if(Vue.debug){ // 调式模式
+        cookie.set('auth', Vue.debug_openid);
+        next();
+    }
 
     if(auth_code){
         if(!localStorage.getItem('openid')){

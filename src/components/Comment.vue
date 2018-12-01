@@ -9,7 +9,7 @@
                 <dd>
                     <p>{{item.content}}</p>
                     <p>
-                        <span>第{{++index}}楼&nbsp;{{item.date}}</span>
+                        <span>第{{commentList.length - index}}楼&nbsp;{{item.date}}</span>
                         <span>
                             <a href="javascript:void(0);" :class="[item.start ? 'zanIcon2' : 'zanIcon']" @click="setStart(item)" >赞</a>
                             <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
