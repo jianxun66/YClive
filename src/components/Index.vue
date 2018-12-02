@@ -17,7 +17,7 @@
                 </dt>
                 <dd>
                     <span class="live" v-if="play_status == 1"><i></i>正在直播</span>
-                     <span class="playback" v-if="play_status == 2"><i></i>晚间回放</span>
+                     <span class="playback" v-if="play_status == 2"><i></i>经常回放</span>
                     <!-- <span class="notPlay"><i></i>暂无直播</span>  -->
                 </dd>
             </dl>

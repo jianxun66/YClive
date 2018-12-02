@@ -129,8 +129,6 @@
                 this.$router.push({path:'/addr'});
             },
             subOrder(){
-                this.$router.push({path:'/order/success', query:{'order_id': '2018120259764'}});
-                return false;
                 if(this.subStatus){
                     return false;
                 }
