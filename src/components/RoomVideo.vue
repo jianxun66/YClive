@@ -5,9 +5,9 @@
             <dl>
                 <dt class="video_title">
                     <div class="video_item">
-                        <div class="prism-player "  :id="item.vno" @click="clickNum(item)"></div>
+                        <div class="prism-player"  :id="item.vno" @click="clickNum(item)"></div>
                     </div>
-                    <img :src="item.pic" @click="playervideo(item.vno, item.vurl, item)">
+                    <img :src="item.pic" v-if="item.status == 1" @click="playervideo(item.vno, item.vurl, item)" >
                 </dt>
                 <dd>
                     <h3>{{item.name}}</h3>
@@ -76,7 +76,8 @@
             this.getData();
         },
         mounted(){
-
+            var height = $(".prism-player").width();
+            $(".prism-player").height(height/16*9);
         },
         methods:{
             getData(){
@@ -96,6 +97,7 @@
                         if(that.videoList.length > 0){
                             var player_list = [];
                             for(var i = 0; i < that.videoList.length; i++){
+                                that.videoList[i].status = 1;
                                 that.videoList[i].vno = "J_prismPlayer"+(i+1);
                                 that.aliplayer_config.source = that.videoList[i].vurl;
                                 that.aliplayer_config.id = "J_prismPlayer"+(i+1);
@@ -113,6 +115,7 @@
                 });
             },
             playervideo(id, source, item){
+                item.status = 0;
                 if(this.player.length > 0){
                     this.player.dispose() //销毁
                 }
@@ -121,6 +124,7 @@
                 that.aliplayer_config.id = id;
                 this.player =  new Aliplayer(that.aliplayer_config);
                 this.clickNum(item);
+
             },
 
             clickNum(item){
@@ -188,6 +192,4 @@
 
 <style scoped>
     .video_info{}
-    .video_title{position: relative}
-    .video_item{position: absolute; width: 100%}
 </style>

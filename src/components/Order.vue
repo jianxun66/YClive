@@ -6,13 +6,14 @@
                 <a :href="tel">联系园主</a>
             </div>
             <div class="orderAddress">
-                <div class="addNewAddress">
-                    <a href="javascript:void(0);" @click="addAddr">+新增收货地址</a>
-                </div>
-                <dl @click="addresList">
+
+                <dl @click="addresList" v-if="addr.client_name">
                     <dt>{{addr.addr}}{{addr.detail}}</dt>
                     <dd>{{addr.client_name}}&nbsp;{{addr.sex}}&nbsp;{{addr.mobile}}</dd>
                 </dl>
+                <div class="addNewAddress" v-else>
+                    <a href="javascript:void(0);" @click="addAddr">+新增收货地址</a>
+                </div>
                 <div class="orderTime">
                     立即打包<span>顺丰次日达</span>
                 </div>
@@ -128,6 +129,8 @@
                 this.$router.push({path:'/addr'});
             },
             subOrder(){
+                this.$router.push({path:'/order/success', query:{'order_id': '2018120259764'}});
+                return false;
                 if(this.subStatus){
                     return false;
                 }
@@ -221,7 +224,7 @@
                         that.$router.push({path:'/order/success', query:{'order_id': order_no}});
                     },
                     cancel: function (re) {
-                        that.$router.push({path:'/order/mylist'});
+                        //that.$router.push({path:'/order/mylist'});
                         /*that.$vux.toast.show({
                             text: '支付已取消',
                             type: 'cancel'

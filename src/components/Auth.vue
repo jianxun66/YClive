@@ -24,7 +24,8 @@
                 var auth_code = cookie.get('auth');
                 if(auth_code){
                     localStorage.setItem('openid', auth_code);
-                    that.$router.push({path:'/'});
+                    refer_url = cookie.get('refer') ? cookie.get('refer') : "front/";
+                    that.$router.push({path:refer_url});
                 }else{
                     location.href = url;
                 }

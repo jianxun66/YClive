@@ -64,9 +64,9 @@
                     </div>
 
 
-                    <!--<div class="room_content" v-html="roomBasic.content">
-                    </div>-->
-                    <div><img src="../../static/images/homewc001.png?2"></div>
+                    <div class="room_content" v-html="roomBasic.content">
+                        {{roomBasic.content}}
+                    </div>
 
 
                 </div>
@@ -150,6 +150,7 @@
         },
         data () {
             return {
+                galleryTop: {},
                 play_status : 1,
                 room_id: 0,
                 room_info: {},
@@ -225,7 +226,7 @@
             localStorage.setItem('roomid', this.room_id); // 直播间ID
         },
         mounted () {
-
+            var that = this;
             $('.prism-big-play-btn').click(function () {
                 $('.videoCover').fadeOut()
             })
@@ -238,16 +239,22 @@
                 watchSlidesProgress: true,
             })
 
-            var galleryTop = new Swiper('.gallery-top', {
+            that.galleryTop = new Swiper('.gallery-top', {
                 autoHeight: true, //enable auto height
                 spaceBetween: 10,
+                observer: true,
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
                 },
                 thumbs: {
                     swiper: galleryThumbs
-                }
+                },
+                on: {
+                    slideChangeTransitionStart: function(){
+                        that.switchContent(this.activeIndex);
+                    },
+                },
             })
 
 
@@ -283,14 +290,16 @@
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
                 if(url.indexOf('.m3u8') != -1){ // 直播源
                     this.aliplayer_config.isLive = true;
+                    this.play_status = 1;
                 } else {
                     this.aliplayer_config.isLive = false;
+                    this.play_status = 2;
                 }
 
                 this.aliplayer_config.cover = pic
                 this.aliplayer_config.source = url
-
                 this.player = new Aliplayer(this.aliplayer_config)
+                this.checkVideoPlayer();
             },
             switchContent (index) {
                 switch (index) {
@@ -335,10 +344,9 @@
                     that.roomBasic.online_cover = res.data.online_cover;
                     that.roomBasic.mobile = res.data.mobile;
 
-                    that.aliplayer_config.source = res.data.online_url;
-                    that.aliplayer_config.cover = res.data.online_cover;
-                    that.player = new Aliplayer(that.aliplayer_config);
-
+                    setTimeout(function () {
+                        that.galleryTop.slideTo(0, 0);
+                    },100)
                 }, (err) => {
                     console.log(err);
                 });
@@ -350,6 +358,19 @@
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.lens = res.data;
+
+                        if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
+                            that.aliplayer_config.isLive = true;
+                            that.play_status = 1;
+                        } else {
+                            that.aliplayer_config.isLive = false;
+                            that.play_status = 2;
+                        }
+
+                        that.aliplayer_config.source = that.lens[0].vurl;
+                        that.aliplayer_config.cover = that.lens[0].pic;
+                        that.player = new Aliplayer(that.aliplayer_config);
+                        that.checkVideoPlayer();
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -383,6 +404,26 @@
 
 
                 })
+            },
+            checkVideoPlayer(item){ // 断流切换
+                var that = this;
+                setTimeout(function () {
+                    var play_time = that.player.getCurrentTime();
+                    if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
+                        if(item.vurl_reback.indexOf('.m3u8') != -1){ // 直播源
+                            that.aliplayer_config.isLive = true;
+                            that.play_status = 1;
+                        } else {
+                            that.aliplayer_config.isLive = false;
+                            that.play_status = 2;
+                        }
+
+                        that.aliplayer_config.source = item.vurl_reback;
+                        that.player = new Aliplayer(that.aliplayer_config);
+                        that.checkVideoPlayer();
+
+                    }
+                }, 3000)
             }
         }
 

@@ -3,7 +3,7 @@
         <div class="orderHead">
             <div class="orderTabMenu">
                 <a href="javascript:void(0);">我的订单</a>
-                <a href="tel:15013627372">联系园主</a>
+                <a :href="tel">联系园主</a>
             </div>
             <div class="paySuccess">
                 <h1>订单支付成功</h1>
@@ -15,9 +15,9 @@
         <div class="orderList">
             <div class="tit">{{orders.room_name}}</div>
             <dl v-for="item in orders.list">
-                <dt><img src="demo/4.png"></dt>
+                <dt><img :src="item.cover_img"></dt>
                 <dd>
-                    <h3>{{item.title}}<span>¥{{item.price}}</span></h3>
+                    <h3>{{item.title}}<span>¥{{item.price}} × {{item.num}}</span></h3>
                     <p>{{item.title}}</p>
                 </dd>
             </dl>
@@ -46,11 +46,11 @@
                 orders: {},
                 order_id : '',
                 openid : '',
+                tel:'',
             }
         },
         created () {
             this.order_id = this.$route.query.order_id;
-            this.openid = localStorage.getItem('openid');
             this.getOrderList()
         },
         methods: {
@@ -61,6 +61,7 @@
                 this.$router.push({path: '/'})
             },
             getOrderList () {
+                var that = this;
                 if(!that.order_id){
                     this.$vux.alert.show({
                         title: '温馨提示',
@@ -68,14 +69,13 @@
                     return false;
                 }
 
-                let that = this;
+
                 var formdata = new FormData();
                 formdata.append('order_id', that.order_id);
-                formdata.append('open_id', localStorage.getItem('openid'));
 
                 that.axiosPost('/client/orders', formdata).then((res) => {
                     that.orders = res.data[0]
-                    console.log(that.orders)
+                    that.tel = that.orders.mobile ? "tel:"+that.orders.mobile : "";
                 }, (err) => {
                     console.log(err)
                 })

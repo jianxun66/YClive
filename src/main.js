@@ -140,9 +140,8 @@ router.beforeEach((to, from, next) => {
     }
 
     var auth_code = cookie.get('auth');
-    if(Vue.debug){ // 调式模式
+    if(Vue.debug){
         cookie.set('auth', Vue.debug_openid);
-        next();
     }
 
     if(auth_code){
