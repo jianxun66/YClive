@@ -290,9 +290,11 @@
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
                 if(url.indexOf('.m3u8') != -1){ // 直播源
                     this.aliplayer_config.isLive = true;
+                    this.aliplayer_config.autoplay = false;
                     this.play_status = 1;
                 } else {
                     this.aliplayer_config.isLive = false;
+                    this.aliplayer_config.autoplay = true;
                     this.play_status = 2;
                 }
 
@@ -365,9 +367,11 @@
 
                         if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
+                            that.aliplayer_config.autoplay = false;
                             that.play_status = 1;
                         } else {
                             that.aliplayer_config.isLive = false;
+                            that.aliplayer_config.autoplay = true;
                             that.play_status = 2;
                         }
 
@@ -415,9 +419,11 @@
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
                         if(item.vurl_reback.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
+                            that.aliplayer_config.autoplay = false;
                             that.play_status = 1;
                         } else {
                             that.aliplayer_config.isLive = false;
+                            that.aliplayer_config.autoplay = true;
                             that.play_status = 2;
                         }
 
