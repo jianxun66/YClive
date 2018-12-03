@@ -130,7 +130,7 @@
         </div>
 
 
-        <div class="liveHome" v-if="roomBasic.cover_img"><img :src="roomBasic.cover_img"></div>
+        <div class="liveHome" v-if="showCover" @clic="showCoverImg"><img :src="roomBasic.cover_img"></div>
         <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
@@ -150,6 +150,7 @@
         },
         data () {
             return {
+                showCover: false,
                 galleryTop: {},
                 play_status : 1,
                 room_id: 0,
@@ -343,6 +344,10 @@
                     that.roomBasic.online_cover = res.data.online_cover;
                     that.roomBasic.mobile = res.data.mobile;
 
+                    if(that.roomBasic.cover_img ){
+                        that.showCover = true;
+                    }
+                    that.WxShare();
                     setTimeout(function () {
                         that.galleryTop.slideTo(0, 0);
                     },100)
@@ -401,7 +406,6 @@
                 this.$nextTick(function(){
                     this.showComment = true;
 
-
                 })
             },
             checkVideoPlayer(item){ // 断流切换
@@ -425,6 +429,61 @@
             },
             imgCover() {
                 $(".videoCover").css("z-index", -1)
+            },
+            showCoverImg(){
+                if(this.roomBasic.cover_img && this.showCover){
+                    this.showCover = false;
+                }
+            },
+            WxShare(){
+                var url = window.location.href.split('#')[0];
+                var that = this;
+                var formdata = new FormData();
+                formdata.append('open_id', this.openid);
+                formdata.append('url', url);
+                formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");
+                that.axiosPost("/wechat/jssdk", formdata).then((res) => {
+                    that.$vux.loading.hide();
+                    if(res.status == 200){
+                        that.$wechat.config(JSON.parse(res.data));
+                    } else {
+                        this.$vux.alert.show({
+                            title: '温馨提示',
+                            content: "微信参数错误"});
+                    }
+                }, (err) => {
+                    that.$vux.loading.hide();
+                });
+
+                that.$wechat.onMenuShareAppMessage({
+                    title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                    desc: that.roomBasic.introduce,   // 分享描述
+                    link: window.location.href,       // 分享链接 默认以当前链接
+                    imgUrl: that.roomBasic.logo_img,// 分享图标
+                    // 用户确认分享后执行的回调函数
+                    success: function () {
+
+                    },
+                    cancel: function () {
+                        //console.log('分享到朋友取消');
+                    }
+                });
+
+                that.$wechat.onMenuShareTimeline({
+                    title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                    link: window.location.href,       // 分享链接 默认以当前链接
+                    imgUrl: that.roomBasic.logo_img,// 分享图标
+                    success: function () {
+                        // 用户确认分享后执行的回调函数
+                        alert('分享成功');
+                    },
+
+                    cancel: function () {
+                        // 用户取消分享后执行的回调函数
+                    }
+                });
+
+                
             }
         }
 
