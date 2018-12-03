@@ -129,8 +129,7 @@
             </dl>
         </div>
 
-
-        <div class="liveHome" v-if="showCover" @clic="showCoverImg"><img :src="roomBasic.cover_img"></div>
+        <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
         <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
@@ -261,10 +260,10 @@
             var height = $('.prism-player').width()
             $('.prism-player').height(height / 16 * 9)
 
-            $('.liveHome').click(function () {
+            /*$('.liveHome').click(function () {
                 $(window).scrollTop(0)
                 $(this).fadeOut(800)
-            })
+            })*/
 
             $('.company .remarks p').click(function () {
                 if ($(this).hasClass('hide')) {
@@ -436,7 +435,7 @@
             imgCover() {
                 $(".videoCover").css("z-index", -1)
             },
-            showCoverImg(){
+            hideCoverImg(){
                 if(this.roomBasic.cover_img && this.showCover){
                     this.showCover = false;
                 }

@@ -118,10 +118,6 @@
                     that.subStatus = false;
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                        that.$vux.alert.show({
-                            title: '温馨提示',
-                            content: "操作成功"});
-
                         that.$router.push({path:'/order'});
                     } else {
                         that.$vux.alert.show({
