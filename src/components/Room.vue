@@ -1,6 +1,6 @@
 <template>
     <div class="room-info">
-        <div class="video">
+        <div class="video" @click="imgCover()">
             <div class="prism-player " id="J_prismPlayer"></div>
             <div class="videoCover">
                 <img :src="roomBasic.online_cover">
@@ -17,7 +17,7 @@
                 </dt>
                 <dd>
                     <span class="live" v-if="play_status == 1"><i></i>正在直播</span>
-                     <span class="playback" v-if="play_status == 2"><i></i>经常回放</span>
+                     <span class="playback" v-if="play_status == 2"><i></i>精彩回放</span>
                     <!-- <span class="notPlay"><i></i>暂无直播</span>  -->
                 </dd>
             </dl>
@@ -130,7 +130,7 @@
         </div>
 
 
-        <div class="liveHome"><img :src="roomBasic.cover_img"></div>
+        <div class="liveHome" v-if="roomBasic.cover_img"><img :src="roomBasic.cover_img"></div>
         <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
@@ -256,7 +256,6 @@
                     },
                 },
             })
-
 
             var height = $('.prism-player').width()
             $('.prism-player').height(height / 16 * 9)
@@ -421,9 +420,11 @@
                         that.aliplayer_config.source = item.vurl_reback;
                         that.player = new Aliplayer(that.aliplayer_config);
                         that.checkVideoPlayer();
-
                     }
                 }, 3000)
+            },
+            imgCover() {
+                $(".videoCover").css("z-index", -1)
             }
         }
 
