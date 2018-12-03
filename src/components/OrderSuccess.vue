@@ -58,7 +58,8 @@
                 this.$router.push({path: '/order/mylist'})
             },
             homePath () {
-                this.$router.push({path: '/'})
+                tmp_room_id = localStorage.getItem('roomid')
+                this.$router.push({path: '/room', query:{room_id:tmp_room_id}})
             },
             getOrderList () {
                 var that = this;

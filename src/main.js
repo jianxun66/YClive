@@ -4,14 +4,13 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueRouter from 'vue-router'
 import App from './App'
-import Index from './components/Index'
-import LiveRoom from './components/LiveRoom'
+import Room from './components/Room'
 import Order from './components/Order'
 import Address from './components/AddressList'
 import EditAddress from './components/EditAddress'
 import OrderSuccess from './components/OrderSuccess'
 import MyOrderList from './components/MyOrder'
-import RoomList from './components/RoomList'
+import Index from './components/Index'
 import Auth from './components/Auth'
 import axios from 'axios'
 
@@ -19,7 +18,7 @@ import axios from 'axios'
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
-import VConsole from 'vconsole'
+// import VConsole from 'vconsole'
 
 
 /*const vConsole = new VConsole();
@@ -39,20 +38,22 @@ Vue.debug = 0;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
 
-axios.interceptors.response.use(response => {
-    if (response.code === 4007 || response.code == 4008) { // token过期
-        // window.localStorage.removeItem('auth');
-        router.replace({
-            path: '/auth',
-            query: {
-                redirect: router.currentRoute.fullPath
-            }
-        })
-    }
-    return response
-}, error => {
-    return Promise.reject(error)
-});
+if (Vue.debug != 1) {
+    axios.interceptors.response.use(response => {
+        if (response.code === 4007 || response.code == 4008) { // token过期
+            // window.localStorage.removeItem('auth');
+            router.replace({
+                path: '/auth',
+                query: {
+                    redirect: router.currentRoute.fullPath
+                }
+            })
+        }
+        return response
+    }, error => {
+        return Promise.reject(error)
+    });
+}
 
 Vue.prototype.axiosPost = function (url, data = {}) {
     if(data.length == 0){
@@ -87,8 +88,8 @@ Vue.prototype.axiosGet = function (url) {
 const routes = [
 
     {
-        path: '/',
-        component: Index,
+        path: '/room',
+        component: Room,
         meta: { title: '直播间' },
     },
     {
@@ -107,11 +108,6 @@ const routes = [
         meta: { title: '下单成功' },
     },
     {
-        path: '/room',
-        component: LiveRoom,
-        meta: { title: '直播间' },
-    },
-    {
         path: '/addr',
         component: Address,
         meta: { title: '地址管理' },
@@ -127,8 +123,8 @@ const routes = [
         meta: { title: '微信授权' },
     },
     {
-        path: '/room/list',
-        component: RoomList,
+        path: '/',
+        component: Index,
         meta: { title: '直播间列表' },
     },
 ]

@@ -100,7 +100,7 @@
                     localStorage.setItem("buy_room", JSON.stringify(room_info));
                     localStorage.setItem('buy_total', total);
                     localStorage.setItem('buy_product', JSON.stringify(buy_product));
-                    this.$router.push({path:'/order'});
+                    this.$router.push({path:'/order', query:{room_id:room_id}});
                 } else {
                     this.$vux.alert.show({
                         title: '温馨提示',
