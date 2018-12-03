@@ -11,6 +11,7 @@ import Address from './components/AddressList'
 import EditAddress from './components/EditAddress'
 import OrderSuccess from './components/OrderSuccess'
 import MyOrderList from './components/MyOrder'
+import RoomList from './components/RoomList'
 import Auth from './components/Auth'
 import axios from 'axios'
 
@@ -124,6 +125,11 @@ const routes = [
         path: '/auth',
         component: Auth,
         meta: { title: '微信授权' },
+    },
+    {
+        path: '/room/list',
+        component: RoomList,
+        meta: { title: '直播间列表' },
     },
 ]
 

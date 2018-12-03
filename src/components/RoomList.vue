@@ -7,15 +7,18 @@
                 <!--<room-video :room_id="room_id"></room-video>-->
             </div>
             <div class="roomFooter">
-                <img :src="item.online_cover" @click="roomPath">
+                <img :src="item.online_cover" @click="roomPath(item.id)">
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import Index from "./Index"
+
     export default {
         name: 'room-list',
+        props: ['room_id'],
         data () {
             return {
                 roomList: {},
@@ -27,8 +30,9 @@
             this.getRoomList()
         },
         methods: {
-            roomPath () {
+            roomPath (id) {
                 this.$router.push({path: '/'})
+                Index.room_id = id
             },
           getRoomList () {
                 let that = this;
