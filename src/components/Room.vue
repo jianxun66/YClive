@@ -3,7 +3,7 @@
         <div class="video" @click="imgCover()">
             <div class="prism-player " id="J_prismPlayer"></div>
             <div class="videoCover">
-                <img :src="roomBasic.online_cover">
+                <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../static/images/logo.png"></div>
         </div>
@@ -38,7 +38,7 @@
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">实时直播</h2>
                     <div class="videoList swiper-no-swiping">
-                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len.pic, len.vurl)">
+                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len.pic, len.vurl, len.cover_img)">
                             <dt><img :src="len.pic"></dt>
                             <dd>{{len.name}}</dd>
                         </dl>
@@ -149,6 +149,7 @@
         },
         data () {
             return {
+                VideoCoverImg: "",
                 showCover: false,
                 galleryTop: {},
                 play_status : 1,
@@ -283,13 +284,14 @@
                     $(obj).addClass('hide')
                 }
             },
-            switchVideo (pic, url) {
+            switchVideo (pic, url,cover_img) {
                 $('.videoCover').fadeOut()
                 this.player.dispose() //销毁
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
                 if(url.indexOf('.m3u8') != -1){ // 直播源
                     this.aliplayer_config.isLive = true;
                     this.aliplayer_config.autoplay = false;
+                    this.VideoCoverImg = cover_img;
                     this.play_status = 1;
                 } else {
                     this.aliplayer_config.isLive = false;
@@ -367,6 +369,7 @@
                         if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
+                            that.VideoCoverImg = that.lens[0].cover_img;
                             that.play_status = 1;
                         } else {
                             that.aliplayer_config.isLive = false;
@@ -420,6 +423,7 @@
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
                             that.play_status = 1;
+                            that.VideoCoverImg = item.cover_img;
                         } else {
                             that.aliplayer_config.isLive = false;
                             that.aliplayer_config.autoplay = true;
