@@ -1,8 +1,8 @@
 <template>
     <div class="room-info">
-        <div class="video" @click="imgCover()">
+        <div class="video" @click="imgCover">
             <div class="prism-player " id="J_prismPlayer"></div>
-            <div class="videoCover">
+            <div v-bind:class="play_status == 1 && playing == false? 'videoCover online_video' : 'videoCover outline_video'" >
                 <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../static/images/logo.png"></div>
@@ -38,8 +38,8 @@
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">实时直播</h2>
                     <div class="videoList swiper-no-swiping">
-                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len.pic, len.vurl, len.cover_img)">
-                            <dt><img :src="len.pic"></dt>
+                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len)">
+                            <dt><img :src="len.cover_img"></dt>
                             <dd>{{len.name}}</dd>
                         </dl>
                     </div>
@@ -149,6 +149,7 @@
         },
         data () {
             return {
+                playing: false,
                 VideoCoverImg: "",
                 showCover: false,
                 galleryTop: {},
@@ -284,14 +285,14 @@
                     $(obj).addClass('hide')
                 }
             },
-            switchVideo (pic, url,cover_img) {
+            switchVideo (item) {
                 $('.videoCover').fadeOut()
                 this.player.dispose() //销毁
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
-                if(url.indexOf('.m3u8') != -1){ // 直播源
+                if(item.vurl.indexOf('.m3u8') != -1){ // 直播源
                     this.aliplayer_config.isLive = true;
                     this.aliplayer_config.autoplay = false;
-                    this.VideoCoverImg = cover_img;
+                    this.VideoCoverImg = item.cover_img;
                     this.play_status = 1;
                 } else {
                     this.aliplayer_config.isLive = false;
@@ -299,10 +300,12 @@
                     this.play_status = 2;
                 }
 
-                this.aliplayer_config.cover = pic
-                this.aliplayer_config.source = url
+                this.playing = false;
+                this.aliplayer_config.cover = item.pic
+                this.aliplayer_config.source = item.vurl
                 this.player = new Aliplayer(this.aliplayer_config)
-                this.checkVideoPlayer();
+
+                this.checkVideoPlayer(item);
             },
             switchContent (index) {
                 switch (index) {
@@ -380,7 +383,7 @@
                         that.aliplayer_config.source = that.lens[0].vurl;
                         that.aliplayer_config.cover = that.lens[0].pic;
                         that.player = new Aliplayer(that.aliplayer_config);
-                        that.checkVideoPlayer();
+                        that.checkVideoPlayer(that.lens[0]);
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -424,20 +427,23 @@
                             that.aliplayer_config.autoplay = false;
                             that.play_status = 1;
                             that.VideoCoverImg = item.cover_img;
+                            that.playing = false;
                         } else {
                             that.aliplayer_config.isLive = false;
                             that.aliplayer_config.autoplay = true;
                             that.play_status = 2;
+                            that.playing = true;
                         }
 
                         that.aliplayer_config.source = item.vurl_reback;
                         that.player = new Aliplayer(that.aliplayer_config);
-                        that.checkVideoPlayer();
+                        that.checkVideoPlayer(item);
                     }
                 }, 3000)
             },
             imgCover() {
-                $(".videoCover").css("z-index", -1)
+                this.playing = true;
+                $(".videoCover").css("z-index", "-1 !important");
             },
             hideCoverImg(){
                 if(this.roomBasic.cover_img && this.showCover){
@@ -480,11 +486,11 @@
 
                 that.$wechat.onMenuShareTimeline({
                     title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                    link: window.location.href,       // 分享链接 默认以当前链接
+                    link: encodeURIComponent(window.location.href),       // 分享链接 默认以当前链接
                     imgUrl: that.roomBasic.logo_img,// 分享图标
                     success: function () {
                         // 用户确认分享后执行的回调函数
-                        alert('分享成功');
+                        //alert('分享成功');
                     },
 
                     cancel: function () {
@@ -503,5 +509,6 @@
 
 
 <style scoped>
-
+    .online_video{display: block !important; z-index: 10}
+    .outline_video{display: none;}
 </style>
