@@ -422,22 +422,25 @@
                 setTimeout(function () {
                     var play_time = that.player.getCurrentTime();
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
+                        $('.videoCover').fadeOut()
+                        that.player.dispose() //销毁
+                        $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
+
                         if(item.vurl_reback.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
                             that.play_status = 1;
                             that.VideoCoverImg = item.cover_img;
-                            that.playing = false;
                         } else {
                             that.aliplayer_config.isLive = false;
                             that.aliplayer_config.autoplay = true;
                             that.play_status = 2;
-                            that.playing = true;
                         }
-
+                        console.log(that.aliplayer_config.autoplay);
+                        that.playing = false;
                         that.aliplayer_config.source = item.vurl_reback;
                         that.player = new Aliplayer(that.aliplayer_config);
-                        that.checkVideoPlayer(item);
+                        //that.checkVideoPlayer(item);
                     }
                 }, 3000)
             },
@@ -451,7 +454,7 @@
                 }
             },
             WxShare(){
-                var url = window.location.href.split('#')[0];
+                var url = window.location.href;
                 var that = this;
                 var formdata = new FormData();
                 formdata.append('open_id', this.openid);
@@ -469,36 +472,37 @@
                 }, (err) => {
                     that.$vux.loading.hide();
                 });
-
-                that.$wechat.onMenuShareAppMessage({
-                    title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                    desc: that.roomBasic.introduce,   // 分享描述
-                    link: window.location.href,       // 分享链接 默认以当前链接
-                    imgUrl: that.roomBasic.logo_img,// 分享图标
-                    // 用户确认分享后执行的回调函数
-                    success: function () {
-
-                    },
-                    cancel: function () {
-                        //console.log('分享到朋友取消');
-                    }
-                });
-
-                that.$wechat.onMenuShareTimeline({
-                    title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                    link: encodeURIComponent(window.location.href),       // 分享链接 默认以当前链接
-                    imgUrl: that.roomBasic.logo_img,// 分享图标
-                    success: function () {
+                that.$wechat.ready(function () {
+                    var share_url = location.protocol + '//' + document.domain+'/front/#/room/room_id='+that.room_id;
+                    that.$wechat.onMenuShareAppMessage({
+                        title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                        desc: that.roomBasic.introduce,   // 分享描述
+                        link: share_url,       // 分享链接 默认以当前链接
+                        imgUrl: that.roomBasic.logo_img,// 分享图标
                         // 用户确认分享后执行的回调函数
-                        //alert('分享成功');
-                    },
+                        success: function () {
 
-                    cancel: function () {
-                        // 用户取消分享后执行的回调函数
-                    }
+                        },
+                        cancel: function () {
+                            //console.log('分享到朋友取消');
+                        }
+                    });
+
+                    that.$wechat.onMenuShareTimeline({
+                        title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                        link: share_url,       // 分享链接 默认以当前链接
+                        imgUrl: that.roomBasic.logo_img,// 分享图标
+                        success: function () {
+                            // 用户确认分享后执行的回调函数
+                            //alert('分享成功');
+                        },
+
+                        cancel: function () {
+                            // 用户取消分享后执行的回调函数
+                        }
+                    });
                 });
 
-                
             }
         }
 
