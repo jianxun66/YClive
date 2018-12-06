@@ -466,6 +466,7 @@
             },
             WxShare(){
                 var url = window.location.href;
+                alert(url);
                 var that = this;
                 var formdata = new FormData();
                 formdata.append('open_id', this.openid);
