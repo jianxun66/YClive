@@ -277,6 +277,16 @@
 
             //this.player = new Aliplayer(this.aliplayer_config);
         },
+        watch: {
+            "$route"(){
+                /*if (/iPhone|mac|iPod|iPad/i.test(navigator.userAgent)) {
+                    location.href = window.location.href + this.$route.path
+                }*/
+                /*if (window.location.href.indexOf('room') == -1) {
+                    location.assign('/room?room_id='+this.$route.query.room_id);
+                }*/
+            },
+        },
         methods: {
             showMoreInfo (obj) {
                 if ($(obj).hasClass('hide')) {

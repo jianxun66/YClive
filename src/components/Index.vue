@@ -7,7 +7,7 @@
                 <!--<room-video :room_id="room_id"></room-video>-->
             </div>
             <div class="roomFooter">
-                <img :src="item.online_cover" @click="roomPath(item.id)">
+                    <img :src="item.online_cover" @click="roomPath(item.id)"/>
             </div>
         </div>
     </div>
@@ -29,7 +29,8 @@
         },
         methods: {
             roomPath (id) {
-                this.$router.push({path: '/room', query:{room_id:id}})
+                //this.$router.push({path: '/room', query:{room_id:id}})
+                window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+id;
             },
           getRoomList () {
                 let that = this;

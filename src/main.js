@@ -37,8 +37,6 @@ axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/res
 Vue.debug = 0;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
-const userAgent = window.navigator.userAgent;
-const inIOS = /iPhone|iPad|iPod/i.test(userAgent);
 if (Vue.debug != 1) {
     axios.interceptors.response.use(response => {
         if (response.code === 4007 || response.code == 4008) { // token过期
@@ -132,6 +130,7 @@ const routes = [
 
 
 const router = new VueRouter({
+    mode:'hash',
   routes
 })
 
@@ -151,6 +150,7 @@ router.beforeEach((to, from, next) => {
         if(!localStorage.getItem('openid')){
             localStorage.setItem('openid', auth_code);
         }
+
         next();
     } else {
         if(to.path.indexOf('/auth') == -1){
