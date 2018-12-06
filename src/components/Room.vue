@@ -223,6 +223,7 @@
         },
         created() {
             this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
+            alert(this.room_id)
             this.getData();
             this.getLens();
             localStorage.setItem('roomid', this.room_id); // 直播间ID
@@ -484,6 +485,7 @@
                 });
                 that.$wechat.ready(function () {
                     var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
+                    alert(share_url)
                     that.$wechat.onMenuShareAppMessage({
                         title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
                         desc: that.roomBasic.introduce,   // 分享描述
