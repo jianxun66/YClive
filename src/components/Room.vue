@@ -149,6 +149,7 @@
         },
         data () {
             return {
+                currentVideo : {},
                 playing: false,
                 VideoCoverImg: "",
                 showCover: false,
@@ -262,10 +263,11 @@
             var height = $('.prism-player').width()
             $('.prism-player').height(height / 16 * 9)
 
-            /*$('.liveHome').click(function () {
-                $(window).scrollTop(0)
-                $(this).fadeOut(800)
-            })*/
+            $('#J_prismPlayer').click(function () {
+                // $(window).scrollTop(0)
+                // $(this).fadeOut(800)
+                that.checkVideoPlayer(that.currentVideo);
+            })
 
             $('.company .remarks p').click(function () {
                 if ($(this).hasClass('hide')) {
@@ -314,8 +316,8 @@
                 this.aliplayer_config.cover = item.pic
                 this.aliplayer_config.source = item.vurl
                 this.player = new Aliplayer(this.aliplayer_config)
-
-                this.checkVideoPlayer(item);
+                this.currentVideo = item
+                // this.checkVideoPlayer(item);
             },
             switchContent (index) {
                 switch (index) {
@@ -393,7 +395,8 @@
                         that.aliplayer_config.source = that.lens[0].vurl;
                         that.aliplayer_config.cover = that.lens[0].pic;
                         that.player = new Aliplayer(that.aliplayer_config);
-                        that.checkVideoPlayer(that.lens[0]);
+                        // that.checkVideoPlayer(that.lens[0]);
+                        that.currentVideo = that.lens[0]
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -434,7 +437,7 @@
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
                         item.vurl = item.vurl_reback; // 替换镜头回放地址
                         that.switchVideo(item); //切换视频
-                        //that.checkVideoPlayer(item);
+                        // that.checkVideoPlayer(item);
                     }
                 }, 3000)
             },
