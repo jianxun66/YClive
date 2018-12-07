@@ -223,7 +223,6 @@
         },
         created() {
             this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
-            alert(this.room_id)
             this.getData();
             this.getLens();
             localStorage.setItem('roomid', this.room_id); // 直播间ID
@@ -433,24 +432,8 @@
                 setTimeout(function () {
                     var play_time = that.player.getCurrentTime();
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
-                        $('.videoCover').fadeOut()
-                        that.player.dispose() //销毁
-                        $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
-
-                        if(item.vurl_reback.indexOf('.m3u8') != -1){ // 直播源
-                            that.aliplayer_config.isLive = true;
-                            that.aliplayer_config.autoplay = false;
-                            that.play_status = 1;
-                            that.VideoCoverImg = item.cover_img;
-                        } else {
-                            that.aliplayer_config.isLive = false;
-                            that.aliplayer_config.autoplay = true;
-                            that.play_status = 2;
-                        }
-                        console.log(that.aliplayer_config.autoplay);
-                        that.playing = false;
-                        that.aliplayer_config.source = item.vurl_reback;
-                        that.player = new Aliplayer(that.aliplayer_config);
+                        item.vurl = item.vurl_reback; // 替换镜头回放地址
+                        that.switchVideo(item); //切换视频
                         //that.checkVideoPlayer(item);
                     }
                 }, 3000)
@@ -466,7 +449,6 @@
             },
             WxShare(){
                 var url = window.location.href;
-                alert(url);
                 var that = this;
                 var formdata = new FormData();
                 formdata.append('open_id', this.openid);
@@ -486,7 +468,6 @@
                 });
                 that.$wechat.ready(function () {
                     var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
-                    alert(share_url)
                     that.$wechat.onMenuShareAppMessage({
                         title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
                         desc: that.roomBasic.introduce,   // 分享描述

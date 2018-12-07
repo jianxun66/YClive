@@ -34,7 +34,7 @@ Vue.use(WechatPlugin);
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
-Vue.debug = 0;
+Vue.debug = 1;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
 if (Vue.debug != 1) {

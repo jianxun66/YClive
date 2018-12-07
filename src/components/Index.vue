@@ -29,8 +29,8 @@
         },
         methods: {
             roomPath (id) {
-                this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
-                // window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+id;
+                //this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
+                window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+id;
             },
           getRoomList () {
                 let that = this;
