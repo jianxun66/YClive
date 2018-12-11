@@ -97,6 +97,7 @@
                         'room_logo' : room_logo,
                         'room_tel' : room_tel,
                     };
+
                     localStorage.setItem("buy_room", JSON.stringify(room_info));
                     localStorage.setItem('buy_total', total);
                     localStorage.setItem('buy_product', JSON.stringify(buy_product));

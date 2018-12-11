@@ -93,6 +93,14 @@
                 });
             },
             setComment(content){
+                content = content.replace(/\s+/g,"");
+                if(!content){
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: '请填写评论内容'});
+                    return false;
+                }
+
                 var that = this;
                 var formdata = new FormData();
                 formdata.append('content', content);
@@ -106,7 +114,7 @@
                         that.$emit('clearComment', '')
                         that.reload();
                     } else {
-                        this.$vux.alert.show({
+                        that.$vux.alert.show({
                             title: '温馨提示',
                             content: res.message});
                     }

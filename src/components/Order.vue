@@ -15,7 +15,7 @@
                     <a href="javascript:void(0);" @click="addAddr">+新增收货地址</a>
                 </div>
                 <div class="orderTime">
-                    立即打包<span>顺丰次日达</span>
+                    立即打包<span>准时发货</span>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
 
         </div>
         <div class="payBtn">
-            <a href="javascript:void(0);" @click="subOrder">微信支付&yen;{{totalPrice}}<span>已优惠&yen;20</span></a>
+            <a href="javascript:void(0);" @click="subOrder">微信支付&yen;{{totalPrice}}<!--<span>已优惠&yen;20</span>--></a>
         </div>
     </div>
 </template>

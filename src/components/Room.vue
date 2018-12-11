@@ -1,5 +1,5 @@
 <template>
-    <div class="room-info">
+    <div class="room-info" v-wechat-title="$route.meta.title">
         <div class="video" @click="imgCover">
             <div class="prism-player " id="J_prismPlayer"></div>
             <div v-bind:class="play_status == 1 && playing == false? 'videoCover online_video' : 'videoCover outline_video'" >
@@ -38,7 +38,7 @@
                 <div class="swiper-slide con">
                     <h2 class="tit videoIcon">实时直播</h2>
                     <div class="videoList swiper-no-swiping">
-                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len)">
+                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
                             <dt><img :src="len.cover_img"></dt>
                             <dd>{{len.name}}</dd>
                         </dl>
@@ -71,6 +71,9 @@
 
                 </div>
                 <div class="swiper-slide con">
+                    <div class="my-order">
+                        <router-link :to="{path:'order/mylist'}"><span>我的订单></span></router-link>
+                    </div>
                     <h2 class="tit shopCarIcon">生态商城</h2>
                     <div class="company">
                         <dl>
@@ -140,6 +143,8 @@
     import RoomVideo from "./RoomVideo"
     import Product from "./Product"
     import Comments from "./Comment"
+    import Swiper from 'swiper';
+    import 'swiper/dist/css/swiper.min.css';
     export default {
         name: 'room',
         components:{
@@ -149,6 +154,7 @@
         },
         data () {
             return {
+                contentSwiper: {},
                 currentVideo : {},
                 playing: false,
                 VideoCoverImg: "",
@@ -174,6 +180,8 @@
                     //支持播放地址播放,此播放优先级最高
                     source: '',
                     cover: '',
+                    rePlay: false,
+                    preload: false,
                     skinLayout: [
                         {name: 'bigPlayButton', align: 'cc', x: 30, y: 80},
                         {name: 'H5Loading', align: 'cc'},
@@ -260,7 +268,7 @@
                 },
             })
 
-            var height = $('.prism-player').width()
+            var height = $('.prism-player').width() ;
             $('.prism-player').height(height / 16 * 9)
 
             $('#J_prismPlayer').click(function () {
@@ -297,22 +305,29 @@
                     $(obj).addClass('hide')
                 }
             },
-            switchVideo (item) {
+            switchVideo (item, isreplay) {
                 $('.videoCover').fadeOut()
                 this.player.dispose() //销毁
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
                 if(item.vurl.indexOf('.m3u8') != -1){ // 直播源
                     this.aliplayer_config.isLive = true;
                     this.aliplayer_config.autoplay = false;
-                    this.VideoCoverImg = item.cover_img;
+                    this.aliplayer_config.rePlay = false;
                     this.play_status = 1;
                 } else {
                     this.aliplayer_config.isLive = false;
                     this.aliplayer_config.autoplay = true;
+                    this.aliplayer_config.rePlay = true;
                     this.play_status = 2;
                 }
 
+
+                if(isreplay == 2){ // 切流播放
+                    this.aliplayer_config.autoplay = false;
+                }
+
                 this.playing = false;
+                this.VideoCoverImg = item.cover_img;
                 this.aliplayer_config.cover = item.pic
                 this.aliplayer_config.source = item.vurl
                 this.player = new Aliplayer(this.aliplayer_config)
@@ -353,7 +368,7 @@
                     that.roomBasic.cover_img = res.data.cover_img;
                     that.roomBasic.introduce = res.data.introduce;
                     that.roomBasic.content = res.data.content;
-                    that.roomBasic.logo_pic = res.data.logo_pic;
+                    that.roomBasic.logo_pic = res.data.logo_img;
                     that.roomBasic.title = res.data.title;
                     that.roomBasic.sub_title = res.data.sub_title;
                     that.roomBasic.intro = res.data.intro;
@@ -362,13 +377,16 @@
                     that.roomBasic.online_cover = res.data.online_cover;
                     that.roomBasic.mobile = res.data.mobile;
 
+                    that.$route.meta.title = res.data.room_name;
+
                     if(that.roomBasic.cover_img ){
                         that.showCover = true;
                     }
                     that.WxShare();
-                    setTimeout(function () {
+
+                    that.$nextTick(function() {
                         that.galleryTop.slideTo(0, 0);
-                    },100)
+                    })
                 }, (err) => {
                     console.log(err);
                 });
@@ -436,7 +454,8 @@
                     var play_time = that.player.getCurrentTime();
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
                         item.vurl = item.vurl_reback; // 替换镜头回放地址
-                        that.switchVideo(item); //切换视频
+                        item.pic = item.reback_img; // 替换镜头回放封面地址
+                        that.switchVideo(item, 2); //切换视频
                         // that.checkVideoPlayer(item);
                     }
                 }, 3000)

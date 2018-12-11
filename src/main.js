@@ -13,6 +13,7 @@ import MyOrderList from './components/MyOrder'
 import Index from './components/Index'
 import Auth from './components/Auth'
 import axios from 'axios'
+import VueWechatTitle from 'vue-wechat-title'
 
 
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
@@ -30,14 +31,15 @@ Vue.use(AlertPlugin);
 Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
+Vue.use(VueWechatTitle)
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
-Vue.debug = 1;
+Vue.prototype.DEBUG = 0;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
-if (Vue.debug != 1) {
+if (Vue.prototype.DEBUG != 1) {
     axios.interceptors.response.use(response => {
         if (response.code === 4007 || response.code == 4008) { // token过期
             // window.localStorage.removeItem('auth');
@@ -142,7 +144,7 @@ router.beforeEach((to, from, next) => {
     }
 
     var auth_code = cookie.get('auth');
-    if(Vue.debug){
+    if(Vue.prototype.DEBUG){
         cookie.set('auth', Vue.debug_openid);
     }
 
@@ -154,7 +156,7 @@ router.beforeEach((to, from, next) => {
         next();
     } else {
         if(to.path.indexOf('/auth') == -1){
-            cookie.set('refer', to.path, {
+            cookie.set('refer', to.fullPath, {
                 path: '/',
                 expires: 7200
             });

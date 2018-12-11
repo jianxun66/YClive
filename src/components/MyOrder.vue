@@ -6,7 +6,7 @@
         </div>
         <div class="myOrder ">
             <div class="orderBox" v-for="item in orderList">
-                <h4 class="tit">{{item.room_name}}<span>订单号码：{{item.order_id}}</span></h4>
+                <h4 class="tit" v-bind:style="{backgroundImage:'url(' + item.logo_img +')'}">{{item.room_name}}<span>订单号码：{{item.order_id}}</span></h4>
                 <dl v-for="details in item.list">
                     <dt>{{details.title}} X {{details.num}}</dt>
                     <dd>{{details.title}}</dd>

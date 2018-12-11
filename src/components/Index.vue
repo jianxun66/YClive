@@ -29,8 +29,12 @@
         },
         methods: {
             roomPath (id) {
-                //this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
-                window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+id;
+
+                if(this.DEBUG == 1){
+                    this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
+                } else {
+                    window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+id;
+                }
             },
           getRoomList () {
                 let that = this;
@@ -39,7 +43,7 @@
                 // formdata.append('open_id', localStorage.getItem('openid'));
                 that.axiosPost('/room/list', formdata).then((res) => {
                     that.roomList = res.data
-                    console.log(that.roomList)
+                    //console.log(that.roomList)
                 }, (err) => {
                     console.log(err)
                 })

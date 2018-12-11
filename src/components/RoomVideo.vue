@@ -1,11 +1,11 @@
 <template>
     <div>
 
-        <div class="video_info" v-for=" item in videoList">
+        <div class="video_info" v-for=" item in videoList" ref="videoStyle">
             <dl>
                 <dt class="video_title">
                     <div class="video_item">
-                        <div class="prism-player"  :id="item.vno" @click="clickNum(item)"></div>
+                        <div class="prism-player-video"  :id="item.vno" @click="clickNum(item)" :style="{display: item.status == 1 ? 'none' : 'block', }"></div>
                     </div>
                     <img :src="item.pic" v-if="item.status == 1" @click="playervideo(item.vno, item.vurl, item)" >
                 </dt>
@@ -34,6 +34,7 @@
                 subStatus: false,
                 videoList:[],
                 player:{},
+                video_height : 0,
                 aliplayer_config:{
                     id: '',
                     width: '100%',
@@ -72,12 +73,26 @@
             }
         },
         created(){
+            var width = document.body.clientWidth - 30;
+            var height = (width * 9 ) / 16;
+            this.video_height = height+ "px";
+            this.aliplayer_config.height = this.video_height;
+
             this.openid = localStorage.getItem('openid');
             this.getData();
         },
         mounted(){
-            var height = $(".prism-player").width();
-            $(".prism-player").height(height/16*9);
+
+            //this.aliplayer_config.height = this.video_height;
+            //$(".prism-player").height(height);
+            //$(".video_title").height(height);
+            /*$('.video_item').height(height);
+            $(".prism-player-video").each(function () {
+                console.log('aaaa');
+            });
+
+            console.log($(".prism-player-video").length);*/
+
         },
         methods:{
             getData(){
@@ -191,5 +206,5 @@
 </script>
 
 <style scoped>
-    .video_info{}
+
 </style>
