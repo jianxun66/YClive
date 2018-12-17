@@ -36,7 +36,7 @@
         },
         methods:{
             getData(){
-                let that = this;
+                var that = this;
 
                 that.$vux.loading.show({
                     text: '加载中~'

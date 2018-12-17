@@ -124,7 +124,8 @@
             <dl>
                 <dt>
                     <h4>&yen;{{total_price}}</h4>
-                    <p>满100元起送，包邮顺丰次日达</p>
+                    <p v-if="deliver == 0">基地到家，全场免运费</p>
+                    <p v-else>满{{deliver}}元起送，基地包邮到家</p>
                 </dt>
                 <dd>
                     <a href="javascript:void(0)" @click="tobuy">去结算</a>
@@ -143,8 +144,6 @@
     import RoomVideo from "./RoomVideo"
     import Product from "./Product"
     import Comments from "./Comment"
-    import Swiper from 'swiper';
-    import 'swiper/dist/css/swiper.min.css';
     export default {
         name: 'room',
         components:{
@@ -154,6 +153,7 @@
         },
         data () {
             return {
+                contabObj: {},
                 contentSwiper: {},
                 currentVideo : {},
                 playing: false,
@@ -168,6 +168,7 @@
                 total_price: 0,
                 lens:{},
                 player: {},
+                deliver: 0, //起送金额
                 aliplayer_config: {
                     id: 'J_prismPlayer',
                     width: '100%',
@@ -242,32 +243,9 @@
                 $('.videoCover').fadeOut()
             })
 
-            var galleryThumbs = new Swiper('.gallery-thumbs', {
-                spaceBetween: 10,
-                slidesPerView: 4,
-                freeMode: true,
-                watchSlidesVisibility: true,
-                watchSlidesProgress: true,
-            })
 
-            that.galleryTop = new Swiper('.gallery-top', {
-                autoHeight: true, //enable auto height
-                spaceBetween: 10,
-                observer: true,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                thumbs: {
-                    swiper: galleryThumbs
-                },
-                on: {
-                    slideChangeTransitionStart: function(){
-                        that.switchContent(this.activeIndex);
-                    },
-                },
-            })
 
+          setTimeout(that.initSwiper, 1000)
             var height = $('.prism-player').width() ;
             $('.prism-player').height(height / 16 * 9)
 
@@ -284,6 +262,8 @@
                     $(this).addClass('hide')
                 }
             })
+
+
 
             //this.player = new Aliplayer(this.aliplayer_config);
         },
@@ -305,33 +285,71 @@
                     $(obj).addClass('hide')
                 }
             },
+            initSwiper(){
+                var that = this;
+                var galleryThumbs = new Swiper('.gallery-thumbs', {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    freeMode: true,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                })
+
+                that.galleryTop = new Swiper('.gallery-top', {
+                    autoHeight: true, //enable auto height
+                    spaceBetween: 10,
+                    observer: true,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    thumbs: {
+                        swiper: galleryThumbs
+                    },
+                    on: {
+                        slideChangeTransitionStart: function(){
+                            that.switchContent(this.activeIndex);
+                        },
+                    },
+                })
+            },
             switchVideo (item, isreplay) {
+                clearTimeout(this.contabObj);// 清除定时器
                 $('.videoCover').fadeOut()
-                this.player.dispose() //销毁
+                this.player.dispose(); //销毁
+                this.VideoCoverImg = '';
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
+                this.play_status = 1;
+                var that = this;
+
                 if(item.vurl.indexOf('.m3u8') != -1){ // 直播源
-                    this.aliplayer_config.isLive = true;
-                    this.aliplayer_config.autoplay = false;
-                    this.aliplayer_config.rePlay = false;
-                    this.play_status = 1;
+                    that.aliplayer_config.isLive = true;
+                    that.aliplayer_config.autoplay = false;
+                    that.aliplayer_config.rePlay = false;
+                    that.play_status = 1;
                 } else {
-                    this.aliplayer_config.isLive = false;
-                    this.aliplayer_config.autoplay = true;
-                    this.aliplayer_config.rePlay = true;
-                    this.play_status = 2;
+                    that.aliplayer_config.isLive = false;
+                    that.aliplayer_config.autoplay = true;
+                    that.aliplayer_config.rePlay = true;
+                    that.play_status = 2;
                 }
 
 
+                that.playing = false;
+                that.VideoCoverImg = item.cover_img;
+                that.aliplayer_config.cover = item.pic;
+                that.aliplayer_config.source = item.vurl;
                 if(isreplay == 2){ // 切流播放
-                    this.aliplayer_config.autoplay = false;
+                    that.play_status = 2;
+                    that.aliplayer_config.autoplay = false;
+                    that.aliplayer_config.cover = item.reback_img; // 替换镜头回放封面地址
+                    that.aliplayer_config.source = item.vurl_reback; // 替换镜头回放地址
+                    //item.vurl = item.vurl_reback;
+                    //item.pic = item.reback_img;
                 }
 
-                this.playing = false;
-                this.VideoCoverImg = item.cover_img;
-                this.aliplayer_config.cover = item.pic
-                this.aliplayer_config.source = item.vurl
-                this.player = new Aliplayer(this.aliplayer_config)
-                this.currentVideo = item
+                that.currentVideo = item;
+                that.player = new Aliplayer(that.aliplayer_config)
                 // this.checkVideoPlayer(item);
             },
             switchContent (index) {
@@ -356,7 +374,7 @@
                 }
             },
             getData(){
-                let that = this;
+                var that = this;
                 var formdata = new FormData();
                 that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
                     that.roomBasic.room_name = res.data.room_name;
@@ -378,14 +396,16 @@
                     that.roomBasic.mobile = res.data.mobile;
 
                     that.$route.meta.title = res.data.room_name;
-
+                    that.deliver = res.data.deliver;
                     if(that.roomBasic.cover_img ){
                         that.showCover = true;
                     }
                     that.WxShare();
 
                     that.$nextTick(function() {
-                        that.galleryTop.slideTo(0, 0);
+                        //that.galleryTop.slideTo(0, 0);
+                        //that.galleryTop.update();
+                        //alert(that.galleryTop.height);
                     })
                 }, (err) => {
                     console.log(err);
@@ -429,6 +449,14 @@
             },
             tobuy(){
                 var that = this;
+                // 检测金额 起送金额
+                if(that.deliver > 0 && that.total_price < that.deliver){
+                    this.$vux.alert.show({
+                        title: '温馨提示',
+                        content: "满"+that.deliver+"元起送，基地包邮到家"});
+                    return false;
+                }
+
                 this.$refs.product.buy_product(that.roomBasic.id,
                     that.roomBasic.room_name,
                     that.roomBasic.logo_pic,
@@ -450,11 +478,11 @@
             },
             checkVideoPlayer(item){ // 断流切换
                 var that = this;
-                setTimeout(function () {
+                that.contabObj = setTimeout(function () {
                     var play_time = that.player.getCurrentTime();
                     if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
-                        item.vurl = item.vurl_reback; // 替换镜头回放地址
-                        item.pic = item.reback_img; // 替换镜头回放封面地址
+                        //item.vurl = item.vurl_reback; // 替换镜头回放地址
+                        //item.pic = item.reback_img; // 替换镜头回放封面地址
                         that.switchVideo(item, 2); //切换视频
                         // that.checkVideoPlayer(item);
                     }

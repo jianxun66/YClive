@@ -19,12 +19,9 @@ import VueWechatTitle from 'vue-wechat-title'
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
-// import VConsole from 'vconsole'
+/*import VConsole from 'vconsole'
+const vConsole = new VConsole();*/
 
-
-/*const vConsole = new VConsole();
-
-console.log(vConsole.version)*/
 
 Vue.use(VueRouter);
 Vue.use(AlertPlugin);
@@ -152,9 +149,10 @@ router.beforeEach((to, from, next) => {
         if(!localStorage.getItem('openid')){
             localStorage.setItem('openid', auth_code);
         }
-
+        console.log('has auth');
         next();
     } else {
+        console.log('go to auth');
         if(to.path.indexOf('/auth') == -1){
             cookie.set('refer', to.fullPath, {
                 path: '/',

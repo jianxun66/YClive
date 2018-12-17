@@ -11,6 +11,7 @@
         },
         methods:{
             login(){
+                console.log('auth');
                 var that = this;
                 var url= "https://yc.adaxiang.com/rest/v1/wechat/auth-login";
                 var urld = window.location.href.split('#')[0];
@@ -23,6 +24,8 @@
 
                 var auth_code = cookie.get('auth');
                 if(auth_code){
+                    console.log('has auth');
+                    console.log(auth_code);
                     localStorage.setItem('openid', auth_code);
                     refer_url = cookie.get('refer') ? cookie.get('refer') : "front/";
                     that.$router.push({path:refer_url});

@@ -30,7 +30,7 @@
         },
         methods: {
             getOrderList () {
-                let that = this
+                var that = this
                 var formdata = new FormData();
                 that.axiosPost('/client/orders', formdata).then((res) => {
                     that.orderList = res.data
