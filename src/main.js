@@ -12,6 +12,9 @@ import OrderSuccess from './components/OrderSuccess'
 import MyOrderList from './components/MyOrder'
 import Index from './components/Index'
 import Auth from './components/Auth'
+import RoomTemplate from './components/RoomTemplate'
+import RoomNew from './components/RoomNews'
+import RoomTest from './components/RoomTeset'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 
@@ -84,7 +87,11 @@ Vue.prototype.axiosGet = function (url) {
 
 
 const routes = [
-
+  {
+    path: '/detail',
+    component: RoomNew,
+    meta: { title: '直播间-新版' },
+  },
     {
         path: '/room',
         component: Room,
@@ -149,10 +156,8 @@ router.beforeEach((to, from, next) => {
         if(!localStorage.getItem('openid')){
             localStorage.setItem('openid', auth_code);
         }
-        console.log('has auth');
         next();
     } else {
-        console.log('go to auth');
         if(to.path.indexOf('/auth') == -1){
             cookie.set('refer', to.fullPath, {
                 path: '/',

@@ -24,12 +24,13 @@
                 openid : '',
             }
         },
+		inject:['reloadPage'],
         created () {
             this.getRoomList()
         },
         methods: {
             roomPath (id) {
-
+				this.reloadPage();
                 if(this.DEBUG == 1){
                     this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
                 } else {

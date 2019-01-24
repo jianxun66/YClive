@@ -145,7 +145,7 @@
     import Product from "./Product"
     import Comments from "./Comment"
     export default {
-        name: 'room',
+        name: 'test',
         components:{
             "room-video": RoomVideo,
             "Product": Product,
@@ -245,6 +245,7 @@
             })
 
 
+
           setTimeout(that.initSwiper, 1000)
             var height = $('.prism-player').width() ;
             $('.prism-player').height(height / 16 * 9)
@@ -268,7 +269,6 @@
               if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
                 that.playinit = true;
               }
-
             //this.player = new Aliplayer(this.aliplayer_config);
         },
         watch: {
@@ -510,7 +510,6 @@
                 formdata.append('open_id', this.openid);
                 formdata.append('url', url);
                 formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");
-
                 that.axiosPost("/wechat/jssdk", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
@@ -552,7 +551,6 @@
                             // 用户取消分享后执行的回调函数
                         }
                     });
-                 
                 });
 
             }
