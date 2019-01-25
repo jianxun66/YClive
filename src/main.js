@@ -36,7 +36,7 @@ Vue.use(VueWechatTitle)
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
-Vue.prototype.DEBUG = 0;
+Vue.prototype.DEBUG = 1;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
 if (Vue.prototype.DEBUG != 1) {
@@ -94,7 +94,7 @@ const routes = [
   },
     {
         path: '/room',
-        component: Room,
+        component: RoomTemplate,
         meta: { title: '直播间' },
     },
     {
