@@ -15,8 +15,10 @@ import Auth from './components/Auth'
 import RoomTemplate from './components/RoomTemplate'
 import RoomNew from './components/RoomNews'
 import RoomTest from './components/RoomTeset'
+import IndexNew from './components/IndexNew'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
+import VueScroller  from 'vue-scroller'
 
 
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
@@ -32,6 +34,7 @@ Vue.use(LoadingPlugin);
 Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
 Vue.use(VueWechatTitle)
+Vue.use(VueScroller)
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
@@ -91,6 +94,11 @@ const routes = [
     path: '/detail',
     component: RoomNew,
     meta: { title: '直播间-新版' },
+  },
+  {
+    path: '/indexNew',
+    component: IndexNew,
+    meta: { title: '溯源直播' },
   },
     {
         path: '/room',

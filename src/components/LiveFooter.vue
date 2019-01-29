@@ -1,0 +1,45 @@
+<template>
+  <div class="footer">
+    <div class="item" v-for="(item, key) in footer" :key="key">
+      <div :class="item.fclass">
+        <div :class="findex == item.fname ? 'active' : ''">
+          <div class="item-icon"></div>
+          <div class="item-text">{{item.ftext}}</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script>
+    export default {
+      name: "LiveFooter",
+      props:['findex'],
+      data(){
+        return {
+          'footer': [
+            {
+              fname: 'live',
+              fclass: 'live-foot-live',
+              ftext: '视频现场',
+            },
+            {
+              fname: 'video',
+              fclass: 'live-foot-video',
+              ftext: '视频现场',
+            },
+            {
+              fname: 'user',
+              fclass: 'live-foot-user',
+              ftext: '个人中心',
+            },
+          ],
+        }
+      },
+    }
+</script>
+
+<style scoped>
+
+</style>

@@ -1,117 +1,136 @@
 <template>
     <div class="room-info" v-wechat-title="$route.meta.title">
-        <div class="video" @click="imgCover">
+        <div class="room-deader">
+          <div class="video" @click="imgCover">
             <div class="prism-player " id="J_prismPlayer"></div>
             <div v-bind:class=" (play_status == 1 && playing === false ) || playinit === true ? 'videoCover online_video' : 'videoCover outline_video'" >
-                <img :src="VideoCoverImg">
+              <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../../static/images/logo.png"></div>
+          </div>
         </div>
 
-        <div class="title">
-            <dl>
-                <dt>
-                    <h1>
-                        <span>{{roomBasic.room_name}}</span><span>{{roomBasic.click_num}}</span></h1>
-                    <p>{{roomBasic.addr}}</p>
-                </dt>
-                <dd>
-                    <span class="live" v-if="play_status == 1"><i></i>正在直播</span>
-                     <span class="playback" v-if="play_status == 2"><i></i>精彩回放</span>
-                    <!-- <span class="notPlay"><i></i>暂无直播</span>  -->
-                </dd>
-            </dl>
-        </div>
-        <div class="line"></div>
-        <!-- Swiper -->
-        <div class="swiper-container gallery-thumbs">
+        <div class="live-room-main">
+          <!-- Swiper -->
+          <div class="swiper-container gallery-thumbs">
             <div class="swiper-wrapper tabMenu">
-                <div class="swiper-slide cur" @click="switchContent(0)">生态直播</div>
-                <div class="swiper-slide" @click="switchContent(1)">生态商城</div>
-                <div class="swiper-slide" @click="switchContent(2)">互动评论</div>
-                <div class="swiper-slide" @click="switchContent(3)">精彩短片</div>
+              <div class="swiper-slide cur" @click="switchContent(0)">生态直播</div>
+              <div class="swiper-slide" @click="switchContent(1)">生态商城</div>
+              <div class="swiper-slide" @click="switchContent(2)">互动评论</div>
+              <div class="swiper-slide" @click="switchContent(3)">精彩短片</div>
             </div>
-        </div>
-
-        <div class="swiper-container gallery-top">
-            <div class="swiper-wrapper tabCon">
+          </div>
+          <div class="live-room-content">
+            <div class="swiper-container gallery-top">
+              <div class="swiper-wrapper tabCon">
+                <!--直播间信息-->
                 <div class="swiper-slide con">
-                    <h2 class="tit videoIcon">实时直播</h2>
-                    <div class="videoList swiper-no-swiping">
-                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
+                  <div class="swiper-container scroll">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide slidescroll">
+                        <!--滑动内容-->
+                        <h2 class="tit videoIcon">实时直播</h2>
+                        <div class="videoList swiper-no-swiping">
+                          <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
                             <dt><img :src="len.cover_img"></dt>
                             <dd>{{len.name}}</dd>
-                        </dl>
-                    </div>
-                    <h2 class="tit shopCarIcon">生态介绍</h2>
-                    <div class="company">
-                        <dl>
+                          </dl>
+                        </div>
+                        <h2 class="tit shopCarIcon">生态介绍</h2>
+                        <div class="company">
+                          <dl>
                             <dt>
-                                <img :src="roomBasic.logo_img">
+                              <img :src="roomBasic.logo_img">
                             </dt>
                             <dd>
-                                <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
-                                <p>
-                                    <span>{{roomBasic.intro}}</span>
-                                </p>
+                              <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
+                              <p>
+                                <span>{{roomBasic.intro}}</span>
+                              </p>
                             </dd>
-                        </dl>
-                        <div class="remarks">
+                          </dl>
+                          <div class="remarks">
                             <span>生态简介：</span>
                             <p class="hide" @click.native="showMoreInfo(this)">
-                                {{roomBasic.introduce}}</p>
+                              {{roomBasic.introduce}}</p>
+                          </div>
                         </div>
+
+
+                        <div class="room_content" v-html="roomBasic.content">
+                          {{roomBasic.content}}
+                        </div>
+                        <!--滑动内容-->
+                      </div>
                     </div>
-
-
-                    <div class="room_content" v-html="roomBasic.content">
-                        {{roomBasic.content}}
-                    </div>
-
-
+                  </div>
                 </div>
+                <!--商品信息-->
                 <div class="swiper-slide con">
-                    <div class="my-order">
-                        <router-link :to="{path:'order/mylist'}"><span>我的订单></span></router-link>
-                    </div>
-                    <h2 class="tit shopCarIcon">生态商城</h2>
-                    <div class="company">
-                        <dl>
+                  <div class="swiper-container scroll">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide slidescroll">
+                        <div class="my-order">
+                          <router-link :to="{path:'order/mylist'}"><span>我的订单></span></router-link>
+                        </div>
+                        <h2 class="tit shopCarIcon">生态商城</h2>
+                        <div class="company">
+                          <dl>
                             <dt>
-                                <img :src="roomBasic.logo_img">
+                              <img :src="roomBasic.logo_img">
                             </dt>
                             <dd>
-                                <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
-                                <p>
-                                    <span>{{roomBasic.intro}}</span>
-                                </p>
+                              <h3><strong>{{roomBasic.title}}</strong>{{roomBasic.sub_title}}</h3>
+                              <p>
+                                <span>{{roomBasic.intro}}</span>
+                              </p>
                             </dd>
-                        </dl>
-                        <div class="remarks">
+                          </dl>
+                          <div class="remarks">
                             <span>生态简介：</span>
                             <p class="hide" @click.native="showMoreInfo(this)">
-                             {{roomBasic.introduce}}</p>
+                              {{roomBasic.introduce}}</p>
+                          </div>
                         </div>
+                        <div class="shopList">
+                          <product  :room_id="room_id" ref="product" v-on:buy_price="countPrice"></product>
+                        </div>
+                      </div>
                     </div>
-                    <div class="shopList">
-                        <product  :room_id="room_id" ref="product" v-on:buy_price="countPrice"></product>
-                    </div>
+                  </div>
                 </div>
+                <!--评论-->
                 <div class="swiper-slide con">
-                    <h2 class="tit messIcon">互动评论</h2>
-                    <comments :room_id="room_id" @clearComment="clearParent" ref="comment" v-if="showComment"></comments>
+                  <div class="swiper-container scroll">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide slidescroll">
+                        <h2 class="tit messIcon">互动评论</h2>
+                        <comments :room_id="room_id" @clearComment="clearParent" ref="comment" v-if="showComment"></comments>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <!--短片-->
                 <div class="swiper-slide con">
-                    <h2 class="tit videoIcon">精彩短片</h2>
-                    <div class="filmList">
-                        <room-video :room_id="room_id"></room-video>
+                  <div class="swiper-container scroll">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide slidescroll">
+                        <h2 class="tit videoIcon">精彩短片</h2>
+                        <div class="filmList">
+                          <room-video :room_id="room_id"></room-video>
+                        </div>
+                        <div class="footerLogo">
+                          <img src="../../../static/images/footerLogo.png">
+                        </div>
+                      </div>
                     </div>
-                    <div class="footerLogo">
-                        <img src="../../../static/images/footerLogo.png">
-                    </div>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
@@ -145,7 +164,7 @@
     import Product from "../Product"
     import Comments from "../Comment"
     export default {
-        name: 'live-old',
+        name: 'room',
         components:{
             "room-video": RoomVideo,
             "Product": Product,
@@ -178,7 +197,9 @@
                     playsinline: true,
                     showBuffer: true,
                     isLive: true,
-                    x5_type: true,
+                    x5_type: 'h5',
+                    useH5Prism: 'h5',
+                    x5_video_position: top,
                     //支持播放地址播放,此播放优先级最高
                     source: '',
                     cover: '',
@@ -316,6 +337,17 @@
                         },
                     },
                 })
+
+              //内容滚动
+              var scrollSwiper = new Swiper('.scroll', {
+                direction: 'vertical',
+                slidesPerView: 'auto',
+                scrollbarHide: true,
+                freeMode: true,
+                observer: true,
+                observeParents: true,
+                autoHeight:true,
+              });
             },
             switchVideo (item, isreplay) {
                 this.playinit = false;
@@ -515,38 +547,37 @@
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.$wechat.config(JSON.parse(res.data));
-                        console.log(that.$wechat);
-                        that.$wechat.ready(function () {
-                          var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
-                          that.$wechat.onMenuShareAppMessage({
-                            title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                            desc: that.roomBasic.introduce,   // 分享描述
-                            link: share_url,       // 分享链接 默认以当前链接
-                            imgUrl: that.roomBasic.logo_img,// 分享图标
-                            // 用户确认分享后执行的回调函数
-                            success: function () {
+                      that.$wechat.ready(function () {
+                        var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
+                        that.$wechat.onMenuShareAppMessage({
+                          title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                          desc: that.roomBasic.introduce,   // 分享描述
+                          link: share_url,       // 分享链接 默认以当前链接
+                          imgUrl: that.roomBasic.logo_img,// 分享图标
+                          // 用户确认分享后执行的回调函数
+                          success: function () {
 
-                            },
-                            cancel: function () {
-                              //console.log('分享到朋友取消');
-                            }
-                          });
-
-                          that.$wechat.onMenuShareTimeline({
-                            title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                            link: share_url,       // 分享链接 默认以当前链接
-                            imgUrl: that.roomBasic.logo_img,// 分享图标
-                            success: function () {
-                              // 用户确认分享后执行的回调函数
-                              //alert('分享成功');
-                            },
-
-                            cancel: function () {
-                              // 用户取消分享后执行的回调函数
-                            }
-                          });
-
+                          },
+                          cancel: function () {
+                            //console.log('分享到朋友取消');
+                          }
                         });
+
+                        that.$wechat.onMenuShareTimeline({
+                          title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                          link: share_url,       // 分享链接 默认以当前链接
+                          imgUrl: that.roomBasic.logo_img,// 分享图标
+                          success: function () {
+                            // 用户确认分享后执行的回调函数
+                            //alert('分享成功');
+                          },
+
+                          cancel: function () {
+                            // 用户取消分享后执行的回调函数
+                          }
+                        });
+
+                      });
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -564,8 +595,30 @@
 
 </script>
 
-
+<style>
+  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
+</style>
 <style scoped>
+  .live-room-main{
+    position: absolute;
+    top: calc(100vw/(16/9));
+    width: 100%;
+    background-color: #fff;
+    height: calc(100vh - 100vw/(16/9));
+    z-index: 10 !important;
+    overflow: hidden;
+  }
+
+  .live-room-content{
+    height: calc(100vh - 100vw/(16/9));
+    border-width: 0;
+    background-color: transparent;
+    overflow: hidden;
+    z-index: 2;
+    top: 42px;
+    right: 0;
+    /* bottom: 0px; */
+    left: 0;}
     .online_video{display: block !important; z-index: 10}
     .outline_video{display: none;}
 </style>

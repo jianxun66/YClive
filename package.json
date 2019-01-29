@@ -20,6 +20,7 @@
     "vconsole": "^3.2.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vue-scroll": "^2.1.9",
     "vue-wechat": "^1.4.3",
     "vue-wechat-title": "^2.0.5",
     "vuex": "^2.1.1",
