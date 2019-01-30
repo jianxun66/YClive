@@ -46,6 +46,7 @@
                     addr: "",
                     detail: "",
                 },
+              goBack: '',
             };
         },
         created(){
@@ -54,6 +55,12 @@
             if(address){
                 this.addrInfo = JSON.parse(address);
             }
+
+          if (this.$route.query.from == 2) {
+            this.goBack = "/addr";
+          } else {
+            this.goBack = "/order";
+          }
         },
         methods:{
             setSex(item, type){
@@ -118,7 +125,7 @@
                     that.subStatus = false;
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                        that.$router.push({path:'/order'});
+                        that.$router.push({path: that.goBack});
                     } else {
                         that.$vux.alert.show({
                             title: '温馨提示',

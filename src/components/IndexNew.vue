@@ -1,17 +1,7 @@
 <template>
     <div class="live-index-container live-h100">
       <div class="header" id="top">
-        <div class="search-bar">
-          <div class="user-head"></div>
-          <div class="live-search-box">
-            <div class="search-box">
-              <i class="live-search-icon"></i>
-              <input class="search-input" placeholder="刘老头米店"/>
-              <i class="live-search-next"></i>
-            </div>
-          </div>
-          <div class="yclive-home"></div>
-        </div>
+        <live-head :room_name="roomName"></live-head>
         <div class="live-menu-bar">
           <div class="swiper-container" id="nav">
             <div class="swiper-wrapper">
@@ -27,7 +17,7 @@
       <div class="live-main swiper-container" id="page">
           <div class="swiper-wrapper">
             <div class="swiper-slide slidepage">
-              <div class="live-main-container" id="live-main-container">
+              <div class="live-main-container" id="live-main-container1">
               <!--轮播图-->
               <div class="swiper-container banner">
                 <div class="swiper-wrapper">
@@ -91,8 +81,8 @@
             </div>
             <!--第二页面-->
             <div class="swiper-slide slidepage"
-                 v-for="(item, key) in (menuList.length )" :key="key"  v-if="key > 0">
-              <div class="live-lists-content live-main-container" id="`live-main-container${item.id}`">
+                 v-for="(item, key) in menuList" :key="key"  v-if="key > 0">
+              <div class="live-lists-content live-main-container" :id="'live-main-container'+item.id">
                 <ul class="live-items live-items-all">
                   <li class="live-item" v-for="(roomItem, roomKey) in roomList" :key="roomKey" @click="goRoom(roomItem)">
                     <div class="live-item-show">
@@ -141,14 +131,20 @@
         loadding: false,
         roomEnd: false,
         roomType: 2, // 1 列表 2 推荐
-        categoryId: 0,
-        containerId: "live-main-container",
+        categoryId: 1,
+        roomName: '',
+        containerId: "live-main-container1",
       }
     },
     created(){
       this.getHeader();
       this.getBanner();
       this.getActivity();
+
+      if(this.$route.query.room_name){ // 带搜索内容
+        this.roomType = 1;
+        this.roomName = this.$route.query.room_name;
+      }
       this.getRoomList();
     },
     mounted(){
@@ -156,6 +152,15 @@
       setTimeout(that.initSwiperBanner(), 500);
       window.addEventListener('scroll', this.handleScroll, true);
 
+      setTimeout(function () {
+        if(that.$route.query.room_name){ // 带搜索内容
+          that.pageSwiper.slideTo(1, 300);
+        }
+      }, 1500);
+
+    },
+    destroyed(){
+      window.removeEventListener('scroll',this.handleScroll, false)
     },
     methods:{
       initSwiperMenu(){
@@ -254,13 +259,16 @@
               } else if (navActiveSlideLeft > (navWidth - ((parseInt(navSlideWidth) + clientWidth) / 2) )) {
                 that.navSwiper.setTranslate(clientWidth - navWidth)
               } else {
-                console.log('aaa');
                 that.navSwiper.setTranslate((clientWidth - parseInt(navSlideWidth)) / 2 - navActiveSlideLeft)
               }
               // 初始化页面列表数据
               that.categoryId = that.navSwiper.slides.eq(activeIndex).find('span').attr('category');
               that.changeRoomList(activeIndex);
             },
+            // 下拉刷新
+            momentumBounce: function () {
+              console.log('aaa');
+            }
           }
 
         });
@@ -307,13 +315,19 @@
           return false;
         }
 
+        that.$vux.loading.show({
+          text: '加载中~'
+        })
+
         that.loadding = true;
         var formdata = new FormData();
         formdata.append('room_type', that.roomType);
+        formdata.append('room_name', that.roomName);
         formdata.append('page', that.pageSize);
         formdata.append('category', that.categoryId);
         that.axiosPost("/live/room", formdata).then((res) => {
           that.loadding = false;
+          that.$vux.loading.hide();
           if(res.status == 200){
             if(res.data.length > 0) {
               res.data.forEach((v, k) => {
@@ -337,6 +351,7 @@
       changeRoomList(index){
         this.pageSize = 1;
         this.roomList = [];
+        this.roomEnd = false;
         if(index == 0) { // 首页
           this.roomType = 2;
         } else { // 分类页面
@@ -411,14 +426,17 @@
       // 滑动监听
       handleScroll(){
         var that = this;
-        var clientHeight = document.getElementById("live-main-container").clientHeight;
-        // 设备/屏幕高度
-        var scrollObj = document.getElementById("live-main-container"); // 滚动区域
-        var scrollTop = scrollObj.scrollTop; // div 到头部的距离
-        var scrollHeight = scrollObj.scrollHeight; // 滚动条的总高度
-        if((clientHeight + scrollTop + 1) >= scrollHeight && !that.loadding && !that.roomEnd){
-          this.getRoomList();
+        if (document.getElementById("live-main-container"+that.categoryId)) {
+          var clientHeight = document.getElementById("live-main-container"+that.categoryId).clientHeight;
+          // 设备/屏幕高度
+          var scrollObj = document.getElementById("live-main-container"+that.categoryId); // 滚动区域
+          var scrollTop = scrollObj.scrollTop; // div 到头部的距离
+          var scrollHeight = scrollObj.scrollHeight; // 滚动条的总高度
+          if((clientHeight + scrollTop + 1) >= scrollHeight && !that.loadding && !that.roomEnd){
+            this.getRoomList();
+          }
         }
+
       },
     }
   }

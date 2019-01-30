@@ -123,10 +123,10 @@
                 }
             },
             addAddr(){
-                this.$router.push({path:'/addr/edit'});
+                this.$router.push({path:'/addr/edit', query:{'from': 1}});
             },
             addresList(){
-                this.$router.push({path:'/addr'});
+                this.$router.push({path:'/addr', query:{'from': 1}});
             },
             subOrder(){
                 if(this.subStatus){

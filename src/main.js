@@ -16,6 +16,12 @@ import RoomTemplate from './components/RoomTemplate'
 import RoomNew from './components/RoomNews'
 import RoomTest from './components/RoomTeset'
 import IndexNew from './components/IndexNew'
+import Videos from './components/LiveVideo'
+import LiveUser from './components/LiveUser'
+import LiveOrder from './components/LiveOrder'
+import LiveOrderDetail from './components/LiveOrderDetail'
+import LiveAddress from './components/LiveAddress'
+import LiveStart from './components/LiveStart'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
@@ -91,6 +97,11 @@ Vue.prototype.axiosGet = function (url) {
 
 const routes = [
   {
+    path: '/roomStart',
+    component: LiveStart,
+    meta: { title: '我的关注' },
+  },
+  {
     path: '/detail',
     component: RoomNew,
     meta: { title: '直播间-新版' },
@@ -100,6 +111,27 @@ const routes = [
     component: IndexNew,
     meta: { title: '溯源直播' },
   },
+  {
+    path: '/video',
+    component: Videos,
+    meta: { title: '溯源直播' },
+  },
+  {
+    path: '/user',
+    component: LiveUser,
+    meta: { title: '个人中心' },
+  },
+  {
+    path: '/orders',
+    component: LiveOrder,
+    meta: { title: '我的订单' },
+  },
+  {
+    path: '/orderDetail',
+    component: LiveOrderDetail,
+    meta: { title: '订单详情' },
+  },
+
     {
         path: '/room',
         component: RoomTemplate,
@@ -111,18 +143,13 @@ const routes = [
         meta: { title: '订单' },
     },
     {
-        path: '/order/mylist',
-        component: MyOrderList,
-        meta: { title: '我的订单' },
-    },
-    {
         path: '/order/success',
         component: OrderSuccess,
         meta: { title: '下单成功' },
     },
     {
         path: '/addr',
-        component: Address,
+        component: LiveAddress,
         meta: { title: '地址管理' },
     },
     {

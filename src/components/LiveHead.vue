@@ -1,35 +1,48 @@
 <template>
-  <div class="live-my-head">
-    <div class="live-my-img"></div>
-    <div class="live-my-info">
-      <p class="user-name">李伟坚</p>
-      <p>
-        <span>云窗会员</span>
-        <span class="live-level">LV1</span>
-      </p>
+    <div class="live-head-container">
+      <div class="search-bar">
+        <div class="user-head"></div>
+        <div class="live-search-box">
+          <div class="search-box">
+            <i class="live-search-icon"></i>
+            <input class="search-input" placeholder="刘老头米店" v-model.trim="searchStr"/>
+            <i class="live-search-next" @click="searchRoom"></i>
+          </div>
+        </div>
+        <div class="yclive-home" @click="goHome"></div>
+      </div>
     </div>
-    <div class="live-setting"></div>
-    <div class="live-my-head-bg"></div>
-  </div>
 </template>
 
 <script>
     export default {
-      name: "LiveHead",
+        name: "LiveHead",
       data(){
         return {
-          userInfo: {},
-        };
+          searchStr: '',
+        }
       },
+      props:['room_name'],
       created(){
-        this.getData();
+        if(this.room_name){
+          this.searchStr = this.room_name;
+        }
       },
       methods:{
-        getData(){
-
-        }
+        searchRoom(){
+          if(this.searchStr){
+            this.$router.push({path: '/indexNew', query:{room_name: this.searchStr}})
+          } else {
+            this.$vux.alert.show({
+              title: '温馨提示',
+              content: '请填写直播间名称'
+            });
+          }
+        },
+        goHome(){
+          this.$router.push({path: '/indexNew'});
+        },
       }
-
     }
 </script>
 

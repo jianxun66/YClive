@@ -160,7 +160,7 @@
 
 <script>
     import importJs from '../../../static/js/importJs'
-    import RoomVideo from "../RoomVideo"
+    import RoomVideo from "../LiveRoomVideo"
     import Product from "../Product"
     import Comments from "../Comment"
     export default {

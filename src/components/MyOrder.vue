@@ -5,7 +5,7 @@
             <!--<a href="tel:15013627372">联系客服</a>-->
         </div>
         <div class="myOrder ">
-            <div class="orderBox" v-for="item in orderList">
+            <div class="orderBox" v-for="item in orderList" @click="orderDetail(item)">
                 <h4 class="tit" v-bind:style="{backgroundImage:'url(' + item.logo_img +')'}">{{item.room_name}}<span>订单号码：{{item.order_id}}</span></h4>
                 <dl v-for="details in item.list">
                     <dt>{{details.title}} X {{details.num}}</dt>
@@ -29,15 +29,19 @@
             this.getOrderList()
         },
         methods: {
-            getOrderList () {
-                var that = this
-                var formdata = new FormData();
-                that.axiosPost('/client/orders', formdata).then((res) => {
-                    that.orderList = res.data
-                }, (err) => {
-                    console.log(err)
-                })
-            }
+          getOrderList () {
+              var that = this
+              var formdata = new FormData();
+              that.axiosPost('/client/orders', formdata).then((res) => {
+                  that.orderList = res.data
+              }, (err) => {
+                  console.log(err)
+              })
+          },
+          orderDetail(item){
+
+          }
+
         }
     }
 </script>
