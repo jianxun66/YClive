@@ -42,7 +42,7 @@
       },
       methods:{
         changeIndex(item){
-          this.$router.push({path: item.path});
+          this.$router.replace({path: item.path});
         }
       },
     }

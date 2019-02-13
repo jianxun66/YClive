@@ -13,7 +13,7 @@
         <div class="swiper-slide slidescroll">
           <div class="live-video-list live-main-container"  id="live-video-container">
             <div class="live-video-items">
-              <div class="live-video-item" v-for="(item, key) in roomList">
+              <div class="live-video-item" v-for="(item, key) in roomList" @click="goRoom(item)">
                 <div class="live-video-cover">
                   <img :src="item.online_cover"/>
                 </div>
@@ -74,6 +74,13 @@
           }, (err) => {
             that.$vux.loading.hide();
           });
+        },
+        goRoom(item) {
+          if(this.DEBUG == 1){
+            this.$router.replace({path: '/room', query:{room_id:item.room_id, from:"groupmessage", isappinstalled:0}})
+          } else {
+            window.location.replace(location.protocol + '//' + document.domain+'/front/#/room?room_id='+item.room_id)
+          }
         },
       }
     }

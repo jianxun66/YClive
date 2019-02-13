@@ -7,6 +7,19 @@
               <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../static/images/logo.png"></div>
+            <div class="live-music" v-if="currentVideo.live_music">
+              <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
+            </div>
+            <div class="live-view-icon"></div>
+            <div class="live-view-num">{{roomBasic.click_num}}</div>
+          </div>
+          <div class="live-music-detail" v-if="isAndroid">
+            <video :src="currentVideo.lens_music" loop="loop"   id="lens-music" style="display: none"></video>
+            <video :src="currentVideo.live_music" loop="loop"   id="live-music" style="display: none"></video>
+          </div>
+          <div class="live-music-detail" v-else>
+            <audio :src="currentVideo.lens_music" loop="loop"   id="lens-music" style="display: none"></audio>
+            <audio :src="currentVideo.live_music" loop="loop"   id="live-music" style="display: none"></audio>
           </div>
         </div>
 
@@ -228,6 +241,20 @@
                         }
                     ]
                 },
+                music_config:{
+                  "id": "",
+                  "source": "",
+                  "width": "100%",
+                  "height": "500px",
+                  "autoplay": false,
+                  "isLive": false,
+                  "rePlay": true,
+                  "playsinline": false,
+                  "preload": true,
+                  useH5Prism: true,
+                  showBuffer: false,
+                  mediaType: 'audio',
+                },
                 roomBasic: {
                     room_name: '',
                     start_num: '',
@@ -245,7 +272,11 @@
                     online_url: '',
                     online_cover: '',
                     mobile: '',
-                }
+                },
+                musicFlag: false,
+                lensMusicObj: '',
+                liveMusicObj: '',
+              isAndroid: false,
             }
         },
         provide() {
@@ -254,6 +285,8 @@
             }
         },
         created() {
+          var u = navigator.userAgent;
+          this.isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
             this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
             this.getData();
             this.getLens();
@@ -271,10 +304,9 @@
             $('.prism-player').height(height / 16 * 9)
 
             $('#J_prismPlayer').click(function () {
-                // $(window).scrollTop(0)
-                // $(this).fadeOut(800)
                 that.playinit = false;
                 that.checkVideoPlayer(that.currentVideo);
+                that.playBgMusic(); // 播放背景音乐
             })
 
             $('.company .remarks p').click(function () {
@@ -286,21 +318,12 @@
             })
 
 
-              if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-                that.playinit = true;
-              }
+            if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+              that.playinit = true;
+            }
 
-            //this.player = new Aliplayer(this.aliplayer_config);
-        },
-        watch: {
-            "$route"(){
-                /*if (/iPhone|mac|iPod|iPad/i.test(navigator.userAgent)) {
-                    location.href = window.location.href + this.$route.path
-                }*/
-                /*if (window.location.href.indexOf('room') == -1) {
-                    location.assign('/room?room_id='+this.$route.query.room_id);
-                }*/
-            },
+            // 播放音乐
+
         },
         methods: {
             showMoreInfo (obj) {
@@ -379,13 +402,17 @@
                     that.aliplayer_config.autoplay = false;
                     that.aliplayer_config.cover = item.reback_img; // 替换镜头回放封面地址
                     that.aliplayer_config.source = item.vurl_reback; // 替换镜头回放地址
-                    //item.vurl = item.vurl_reback;
-                    //item.pic = item.reback_img;
                 }
 
-                that.currentVideo = item;
+
+                that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
-                // this.checkVideoPlayer(item);
+
+                that.currentVideo = item;
+                that.initMusic();
+                if(that.play_status == 2){ // 自动播放背景音乐
+                  that.playBgMusic();
+                }
             },
             switchContent (index) {
                 switch (index) {
@@ -432,6 +459,8 @@
 
                     that.$route.meta.title = res.data.room_name;
                     that.deliver = res.data.deliver;
+
+
                     if(that.roomBasic.cover_img ){
                         that.showCover = true;
                     }
@@ -457,7 +486,7 @@
                         if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
-                          that.aliplayer_config.rePlay = false;
+                            that.aliplayer_config.rePlay = false;
                             that.play_status = 1;
                         } else {
                             that.aliplayer_config.isLive = false;
@@ -469,10 +498,15 @@
                         that.VideoCoverImg = that.lens[0].cover_img;
                         that.aliplayer_config.source = that.lens[0].vurl;
                         that.aliplayer_config.cover = that.lens[0].pic;
+                        that.aliplayer_config.id = 'J_prismPlayer';
                         that.player = new Aliplayer(that.aliplayer_config);
-
                         // that.checkVideoPlayer(that.lens[0]);
                         that.currentVideo = that.lens[0]
+                        that.initMusic();
+                        if(that.play_status == 2){ // 自动播放背景音乐
+                          that.playBgMusic();
+                        }
+
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -587,7 +621,32 @@
                  
                 });
 
-            }
+            },
+          initMusic(){
+            this.musicFlag = false;
+            this.lensMusicObj = document.getElementById('lens-music');
+            this.liveMusicObj = document.getElementById('live-music');
+
+            this.lensMusicObj.currentTime = 0;
+            this.liveMusicObj.currentTime = 0;
+          },
+          playBgMusic(){
+            var that = this;
+            setTimeout(function () {
+              that.lensMusicObj.play();
+            }, 1000)
+          },
+          playMusic(){
+              if(this.musicFlag){ //暂停
+                this.musicFlag = false;
+                this.liveMusicObj.pause();
+                this.lensMusicObj.play();
+              } else { // 播放
+                this.lensMusicObj.pause();
+                this.liveMusicObj.play();
+                this.musicFlag = true;
+              }
+          }
         }
 
     }
@@ -595,10 +654,8 @@
 
 </script>
 
-<style>
-  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
-</style>
 <style scoped>
+  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
   .live-room-main{
     position: absolute;
     top: calc(100vw/(16/9));
@@ -621,4 +678,44 @@
     left: 0;}
     .online_video{display: block !important; z-index: 10}
     .outline_video{display: none;}
+  .live-music{
+    position: absolute;
+    top: 4.5rem;
+    right: 0.5rem;
+    z-index: 10;
+  }
+
+  .live-music .live-music-icon{
+    width: 2.2rem;
+    height: 1.375rem;
+    background-size: 100%;
+    background-image: url("../../static/images/music.png");
+    background-repeat: no-repeat;
+  }
+
+  .live-music .active{
+    background-image: url("../../static/images/live_music.gif");
+  }
+
+  .live-view-icon{
+    position: absolute;
+    top: 7rem;
+    right: 0.9rem;
+    background: url("../../static/images/roomView.png") no-repeat;
+    background-size: 100%;
+    z-index: 10;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .live-view-num{
+    position: absolute;
+    top: 8.5rem;
+    right: 0rem;
+    text-align: center;
+    font-size: 0.5rem;
+    width: 3rem;
+    z-index: 10;
+    color: #EDECEA
+  }
 </style>

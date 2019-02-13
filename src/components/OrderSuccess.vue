@@ -55,14 +55,14 @@
         },
         methods: {
             myOrderListPath () {
-                this.$router.push({path: '/order/mylist'})
+                this.$router.replace({path: '/order/mylist'})
             },
             homePath () {
                 var tmp_room_id = localStorage.getItem('roomid')
                 //this.$router.push({path: '/room', query:{room_id:tmp_room_id}})
 
                 if(this.DEBUG == 1){
-                    this.$router.push({path: '/room', query:{room_id:tmp_room_id, from:"groupmessage", isappinstalled:0}})
+                    this.$router.replace({path: '/room', query:{room_id:tmp_room_id, from:"groupmessage", isappinstalled:0}})
                 } else {
                     window.location.href= location.protocol + '//' + document.domain+'/front/#/room?room_id='+tmp_room_id;
                 }

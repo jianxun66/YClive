@@ -43,8 +43,7 @@
                     playsinline:true,
                     showBuffer:true,
                     isLive:true,
-                    x5_type: 'h5',
-                    useH5Prism: 'h5',
+                    x5_type:true,
                     //支持播放地址播放,此播放优先级最高
                     source : 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
                     cover: "",

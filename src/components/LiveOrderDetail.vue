@@ -49,11 +49,13 @@
       name: "LiveOrderDetail",
       components: {LiveUserHead, LiveFooter},
       created(){
+        this.order_id = this.$route.query.order_id;
         this.getOrderDetail()
       },
       data(){
           return {
             findex: 'user',
+            order_id: '',
             orders: {},
           }
       },
@@ -70,7 +72,6 @@
           var formdata = new FormData();
           formdata.append('order_id', that.order_id);
           that.axiosPost('/client/orders', formdata).then((res) => {
-            console.log(res.status);
             if(res.status == 200) {
               that.orders = res.data[0]
             } else {

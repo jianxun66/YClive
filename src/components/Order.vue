@@ -123,10 +123,10 @@
                 }
             },
             addAddr(){
-                this.$router.push({path:'/addr/edit', query:{'from': 1}});
+                this.$router.replace({path:'/addr/edit', query:{'from': 1}});
             },
             addresList(){
-                this.$router.push({path:'/addr', query:{'from': 1}});
+                this.$router.replace({path:'/addr', query:{'from': 1}});
             },
             subOrder(){
                 if(this.subStatus){
@@ -137,7 +137,7 @@
                 var buy_product = [];
                 for(var i = 0 ; i < this.product.length; i++){
                     if(this.product[i].buy_num > 0){
-                        buy_product.push({"product_id": this.product[i].id, "num" : this.product[i].buy_num});
+                        buy_product.replace({"product_id": this.product[i].id, "num" : this.product[i].buy_num});
                     }
                 }
 
@@ -219,7 +219,7 @@
                         //window.localStorageclear()
                         //that.$vux.toast.show('支付成功!')
                         //window.location.href = "/order/success"
-                        that.$router.push({path:'/order/success', query:{'order_id': order_no}});
+                        that.$router.replace({path:'/order/success', query:{'order_id': order_no}});
                     },
                     cancel: function (re) {
                         //that.$router.push({path:'/order/mylist'});

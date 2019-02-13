@@ -680,9 +680,9 @@
   .room-banner .swiper-pagination-bullet{background: white; opacity: 1; }
   .room-banner .live-banner-active{opacity: 1; background: #58C220 !important;}
   .room-banner{width: 100%; height: calc(100vw/(16/9)); position: relative}
-  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
 </style>
 <style scoped>
+  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
   .videoList dl dd{overflow: hidden; height: 22px}
   .room-video-list{margin-bottom: 3rem;}
   .room-detail-info{margin-bottom: 0.5rem;}

@@ -49,7 +49,7 @@
           })
         },
         orderDetails(item){
-          this.$router.push({path: '/orderDetail', query:{order_id:item.order_id}})
+          this.$router.replace({path: '/orderDetail', query:{order_id:item.order_id}})
         },
       },
 

@@ -22,13 +22,13 @@
                 }
                 url += "?refer="+refer;
 
-                var auth_code = cookie.get('auth');
+                var auth_code = cookie.get('uid');
                 if(auth_code){
-                    console.log('has auth');
-                    console.log(auth_code);
-                    localStorage.setItem('openid', auth_code);
+                    localStorage.setItem('uid', auth_code);
+                    localStorage.setItem('uname', cookie.get('uname'));
+                    localStorage.setItem('uimg', cookie.get('uimg'));
                     refer_url = cookie.get('refer') ? cookie.get('refer') : "front/";
-                    that.$router.push({path:refer_url});
+                    that.$router.replace({path:refer_url});
                 }else{
                     location.href = url;
                 }

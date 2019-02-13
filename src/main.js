@@ -45,7 +45,7 @@ Vue.use(VueScroller)
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
-Vue.prototype.DEBUG = 1;
+Vue.prototype.DEBUG = process.env.DEBUG;
 Vue.debug_openid = "omIqUv9pP6EaM3tqd4UoAs4J4Ncw";
 Vue.prototype.$axios = axios;
 if (Vue.prototype.DEBUG != 1) {
@@ -70,7 +70,7 @@ Vue.prototype.axiosPost = function (url, data = {}) {
         data = new FormData();
     }
 
-    data.append('openid', cookie.get('auth'));
+    data.append('openid', cookie.get('uid'));
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(
             response => {
@@ -106,11 +106,11 @@ const routes = [
     component: RoomNew,
     meta: { title: '直播间-新版' },
   },
-  {
+  /*{
     path: '/indexNew',
     component: IndexNew,
     meta: { title: '溯源直播' },
-  },
+  },*/
   {
     path: '/video',
     component: Videos,
@@ -164,8 +164,8 @@ const routes = [
     },
     {
         path: '/',
-        component: Index,
-        meta: { title: '直播间列表' },
+        component: IndexNew,
+        meta: { title: '溯源直播' },
     },
 ]
 
@@ -182,14 +182,18 @@ router.beforeEach((to, from, next) => {
         document.title = to.meta.title
     }
 
-    var auth_code = cookie.get('auth');
+    var auth_code = cookie.get('uid');
     if(Vue.prototype.DEBUG){
-        cookie.set('auth', Vue.debug_openid);
+        cookie.set('uid', Vue.debug_openid);
+        cookie.set('uname', "云窗直播");
+        cookie.set('uimg', './static/images/defaultUser.png');
     }
 
     if(auth_code){
-        if(!localStorage.getItem('openid')){
-            localStorage.setItem('openid', auth_code);
+        if(!localStorage.getItem('uid')){
+            localStorage.setItem('uid', auth_code);
+            localStorage.setItem('uname', cookie.get('uname'));
+            localStorage.setItem('uimg', cookie.get('uimg'));
         }
         next();
     } else {

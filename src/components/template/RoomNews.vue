@@ -160,7 +160,7 @@
 
 <script>
     import importJs from '../../../static/js/importJs'
-    import RoomVideo from "../LiveRoomVideo"
+    import RoomVideo from "../RoomVideoNew"
     import Product from "../Product"
     import Comments from "../Comment"
     export default {
@@ -595,9 +595,7 @@
 
 </script>
 
-<style>
-  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
-</style>
+
 <style scoped>
   .live-room-main{
     position: absolute;
@@ -621,4 +619,5 @@
     left: 0;}
     .online_video{display: block !important; z-index: 10}
     .outline_video{display: none;}
+  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
 </style>

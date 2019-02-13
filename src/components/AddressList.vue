@@ -50,11 +50,11 @@
             },
             addAddr(){
                 localStorage.setItem('address_edit', '');
-                this.$router.push({path:'/addr/edit'});
+                this.$router.replace({path:'/addr/edit'});
             },
             editAddr(item){
                 localStorage.setItem('address_edit', JSON.stringify(item));
-                this.$router.push({path:'/addr/edit'});
+                this.$router.replace({path:'/addr/edit'});
             },
             selectAddr(item){
                 var that = this;
@@ -65,7 +65,7 @@
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.addresList = res.data;
-                        that.$router.push({path:'/order'});
+                        that.$router.replace({path:'/order'});
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',

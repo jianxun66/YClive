@@ -297,12 +297,14 @@
                     freeMode: true,
                     watchSlidesVisibility: true,
                     watchSlidesProgress: true,
+
                 })
 
                 that.galleryTop = new Swiper('.gallery-top', {
                     autoHeight: true, //enable auto height
                     spaceBetween: 10,
                     observer: true,
+                    observeParents:true,//修改swiper的父元素时，自动初始化swiper
                     navigation: {
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',

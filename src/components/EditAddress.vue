@@ -125,7 +125,7 @@
                     that.subStatus = false;
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                        that.$router.push({path: that.goBack});
+                        that.$router.replace({path: that.goBack});
                     } else {
                         that.$vux.alert.show({
                             title: '温馨提示',

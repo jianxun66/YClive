@@ -1,12 +1,12 @@
 <template>
     <div class="live-index-container live-h100">
       <div class="header" id="top">
-        <live-head :room_name="roomName"></live-head>
+        <live-head :room_name="roomName" @searchRoom="searchRoom"></live-head>
         <div class="live-menu-bar">
           <div class="swiper-container" id="nav">
             <div class="swiper-wrapper">
               <div class="swiper-slide" v-for="(item, key) in menuList" :key="key">
-                <span :class="key == 0 ? 'active' : 0 " @click="changeMenu(item)" :category="item.id">{{item.title}}</span>
+                <span :class="key == 0 ? 'active' : 0 " :category="item.id">{{item.title}}</span>
               </div>
 
             </div>
@@ -74,7 +74,7 @@
                   </li>
 
                 </ul>
-                <div v-if="loadding"><load-more :show-loading="loadding"></load-more></div>
+
               </div>
               <!--直播列表-->
               </div>
@@ -134,6 +134,14 @@
         categoryId: 1,
         roomName: '',
         containerId: "live-main-container1",
+      }
+    },
+    watch:{
+      $route(){
+        /*this.roomType = 1;
+        this.roomName = this.$route.query.room_name;
+        this.getRoomList();
+        this.pageSwiper.slideTo(1, 300);*/
       }
     },
     created(){
@@ -265,10 +273,7 @@
               that.categoryId = that.navSwiper.slides.eq(activeIndex).find('span').attr('category');
               that.changeRoomList(activeIndex);
             },
-            // 下拉刷新
-            momentumBounce: function () {
-              console.log('aaa');
-            }
+
           }
 
         });
@@ -359,10 +364,6 @@
         }
         this.getRoomList();
       },
-      // 切换菜单
-      changeMenu(item){
-
-      },
       // 获取最新活动
       getActivity(){
         var that = this;
@@ -413,12 +414,13 @@
       },
 
       goUrl(url) {
-        window.location.replace(url);
+        //window.location.replace(url);
+        window.location.href = url;
       },
 
       goRoom(item) {
         if(this.DEBUG == 1){
-          this.$router.push({path: '/room', query:{room_id:item.room_id, from:"groupmessage", isappinstalled:0}})
+          this.$router.replace({path: '/room', query:{room_id:item.room_id, from:"groupmessage", isappinstalled:0}})
         } else {
           window.location.replace(location.protocol + '//' + document.domain+'/front/#/room?room_id='+item.room_id)
         }
@@ -438,11 +440,18 @@
         }
 
       },
+      searchRoom(){
+        if(this.$route.query.room_name){ // 带搜索内容
+          this.roomType = 1;
+          this.roomName = this.$route.query.room_name;
+          this.pageSwiper.slideTo(1, 300);
+          this.getRoomList();
+        }
+      },
     }
   }
 </script>
 <style>
-  body{width: 100%; max-width: 100% !important;}
 </style>
 <style scoped>
 

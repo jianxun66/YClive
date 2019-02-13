@@ -86,7 +86,7 @@
                 for(var i = 0 ; i < this.productList.length; i++){
                     if(this.productList[i].buy_num > 0){
                         total += this.productList[i].buy_num * this.productList[i].price;
-                        buy_product.push(this.productList[i]);
+                        buy_product.replace(this.productList[i]);
                     }
                 }
                 total = total.toFixed(2);
@@ -101,7 +101,7 @@
                     localStorage.setItem("buy_room", JSON.stringify(room_info));
                     localStorage.setItem('buy_total', total);
                     localStorage.setItem('buy_product', JSON.stringify(buy_product));
-                    this.$router.push({path:'/order', query:{room_id:room_id}});
+                    this.$router.replace({path:'/order', query:{room_id:room_id}});
                 } else {
                     this.$vux.alert.show({
                         title: '温馨提示',

@@ -32,7 +32,7 @@
             roomPath (id) {
 				this.reloadPage();
                 if(this.DEBUG == 1){
-                    this.$router.push({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
+                    this.$router.replace({path: '/room', query:{room_id:id, from:"groupmessage", isappinstalled:0}})
                 } else {
                     window.location.replace(location.protocol + '//' + document.domain+'/front/#/room?room_id='+id)
                 }
