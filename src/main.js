@@ -25,6 +25,7 @@ import LiveStart from './components/LiveStart'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
+import md5 from 'js-md5';
 
 
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
@@ -70,7 +71,23 @@ Vue.prototype.axiosPost = function (url, data = {}) {
         data = new FormData();
     }
 
-    data.append('openid', cookie.get('uid'));
+    data.append('timestamp', (new Date()).getTime().toString().substr(0, 10));
+    if(cookie.get('uid')){
+      data.append('openid', cookie.get('uid'));
+    }
+
+    var newkey = [];
+    var params = "";
+    for(var formItem of data) {
+      newkey.push(formItem[0]);
+    }
+
+    for(var i = 0; i < newkey.length; i++){
+      params += data.get(newkey[i]).toString();
+    }
+
+    var signatrue = md5(Vue.prototype.API_KEY+params);
+    data.append('signature', signatrue); // 追加签名
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(
             response => {
@@ -196,6 +213,7 @@ router.beforeEach((to, from, next) => {
             localStorage.setItem('uimg', cookie.get('uimg'));
         }
         next();
+        
     } else {
         if(to.path.indexOf('/auth') == -1){
             cookie.set('refer', to.fullPath, {

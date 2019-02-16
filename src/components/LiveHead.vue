@@ -37,7 +37,7 @@
       methods:{
         searchRoom(){
           if(this.searchStr){
-            this.$router.replace({path: '/indexNew', query:{room_name: this.searchStr}})
+            this.$router.replace({path: '/', query:{room_name: this.searchStr}})
             this.$emit('searchRoom');
           } else {
             this.$vux.alert.show({
@@ -47,7 +47,7 @@
           }
         },
         goHome(){
-          this.$router.replace({path: '/indexNew'});
+          this.$router.replace({path: '/'});
         },
       }
     }

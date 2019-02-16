@@ -165,7 +165,7 @@
 
       },
       goHome(){
-        this.$router.replace({path: '/indexNew'});
+        this.$router.replace({path: '/'});
       },
       playervideo(id, source, item){
         item.status = 0;

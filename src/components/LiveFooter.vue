@@ -23,7 +23,7 @@
               fname: 'live',
               fclass: 'live-foot-live',
               ftext: '视频现场',
-              path: '/indexNew',
+              path: '/',
             },
             {
               fname: 'video',
