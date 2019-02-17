@@ -14,7 +14,17 @@
             </dl>
             <dl>
                 <dt>手机号：</dt>
-                <dd><input type="text" v-model="addrInfo.mobile" placeholder="请填写收货人手机号" name=""></dd>
+                <dd class="add-mobile">
+                  <input type="text" oninput="if(value.length>11) value=value.slice(0,11)" v-model="addrInfo.mobile" placeholder="请填写收货人手机号" name="">
+                  <span class="send-code" @click="sendSms" v-if="!smsStatus">{{smsModel}}</span>
+                  <span class="send-code" v-else>重新发送({{smsModel}})</span>
+                </dd>
+            </dl>
+            <dl>
+              <dt>验证码：</dt>
+              <dd>
+                <input type="number" oninput="if(value.length>4) value=value.slice(0,4)" v-model="addrInfo.code" placeholder="请填写验证码" name="">
+              </dd>
             </dl>
             <dl>
                 <dt>收货地址：</dt>
@@ -45,8 +55,11 @@
                     mobile: "",
                     addr: "",
                     detail: "",
+                  code: '',
                 },
               goBack: '',
+              smsModel: '发送验证码',
+              smsStatus: 0,
             };
         },
         created(){
@@ -114,7 +127,8 @@
                 formdata.append('mobile', addrInfo.mobile);
                 formdata.append('addr', addrInfo.addr);
                 formdata.append('detail', addrInfo.detail);
-                formdata.append('openid', that.openid);
+                formdata.append('code', addrInfo.code);
+                //formdata.append('openid', that.openid);
 
                 that.$vux.loading.show({
                     text: '加载中~'
@@ -136,10 +150,60 @@
                     that.$vux.loading.hide();
                 });
             },
+
+          sendSms(){
+              var that = this;
+              if(this.smsStatus){
+                return false;
+              }
+
+              if(!(/^1[34578]\d{9}$/.test(this.addrInfo.mobile))){
+                this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '请输入正确的手机号码'});
+                return false;
+              }
+              //发送短信
+              var formdata = new FormData();
+              formdata.append('mobile', this.addrInfo.mobile);
+              that.axiosPost("/client/sms", formdata).then((res) => {
+                that.$vux.loading.hide();
+                if(res.status == 200){
+                  that.smsModel = 60;
+                  that.smsStatus = true;
+                  that.countDown();
+                } else {
+                  that.smsStatus = 0;
+                  that.$vux.alert.show({
+                    title: '温馨提示',
+                    content: res.message});
+                }
+              }, (err) => {
+                that.smsStatus = 0;
+                that.$vux.loading.hide();
+              });
+
+
+          },
+          countDown(){
+              if(this.smsModel == 0) {
+                this.smsModel = "发送验证码";
+                this.smsStatus = 0;
+              } else {
+                this.smsModel --;
+                var that = this;
+                setTimeout(function() {
+                  that.countDown();
+                },1000)
+              }
+          }
+
+
         }
     }
 </script>
 
 <style scoped>
-
+  .add-mobile{position: relative}
+  .send-code{position:absolute; right: 0.2rem; top:1rem; border: 1px solid #cccccc; display: inline-block; padding: 0.2rem 0.5rem}
 </style>

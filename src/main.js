@@ -81,12 +81,12 @@ Vue.prototype.axiosPost = function (url, data = {}) {
     for(var formItem of data) {
       newkey.push(formItem[0]);
     }
-
+    newkey.sort();
     for(var i = 0; i < newkey.length; i++){
       params += data.get(newkey[i]).toString();
     }
 
-    var signatrue = md5(Vue.prototype.API_KEY+params);
+    var signatrue = md5(process.env.API_KEY+params);
     data.append('signature', signatrue); // 追加签名
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(
@@ -213,8 +213,8 @@ router.beforeEach((to, from, next) => {
             localStorage.setItem('uimg', cookie.get('uimg'));
         }
         next();
-        
-    } else {
+
+    } else if(to.path.indexOf('/order') > -1 || to.path.indexOf('/addr') > -1 || to.path.indexOf('/user') > -1){
         if(to.path.indexOf('/auth') == -1){
             cookie.set('refer', to.fullPath, {
                 path: '/',
@@ -228,6 +228,8 @@ router.beforeEach((to, from, next) => {
             next('/auth');
             // next();
         }
+    } else {
+      next();
     }
 });
 

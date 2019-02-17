@@ -7,6 +7,19 @@
               <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../../static/images/logo.png"></div>
+            <div class="live-music" v-if="currentVideo.live_music">
+              <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
+            </div>
+            <div class="live-view-icon"></div>
+            <div class="live-view-num">{{roomBasic.click_num}}</div>
+          </div>
+          <div class="live-music-detail" v-if="isAndroid">
+            <video :src="currentVideo.lens_music" loop="loop"   id="lens-music" style="display: none"></video>
+            <video :src="currentVideo.live_music" loop="loop"   id="live-music" style="display: none"></video>
+          </div>
+          <div class="live-music-detail" v-else>
+            <audio :src="currentVideo.lens_music" loop="loop"   id="lens-music" style="display: none"></audio>
+            <audio :src="currentVideo.live_music" loop="loop"   id="live-music" style="display: none"></audio>
           </div>
         </div>
 
@@ -245,7 +258,11 @@
                     online_url: '',
                     online_cover: '',
                     mobile: '',
-                }
+                },
+              musicFlag: false,
+              lensMusicObj: '',
+              liveMusicObj: '',
+              isAndroid: false,
             }
         },
         provide() {
@@ -384,8 +401,15 @@
                 }
 
                 that.currentVideo = item;
+                that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
                 // this.checkVideoPlayer(item);
+
+                that.currentVideo = item;
+                that.initMusic();
+                if(that.play_status == 2){ // 自动播放背景音乐
+                  that.playBgMusic();
+                }
             },
             switchContent (index) {
                 switch (index) {
@@ -469,10 +493,15 @@
                         that.VideoCoverImg = that.lens[0].cover_img;
                         that.aliplayer_config.source = that.lens[0].vurl;
                         that.aliplayer_config.cover = that.lens[0].pic;
+                        that.aliplayer_config.id = 'J_prismPlayer';
                         that.player = new Aliplayer(that.aliplayer_config);
 
                         // that.checkVideoPlayer(that.lens[0]);
                         that.currentVideo = that.lens[0]
+                        that.initMusic();
+                        if(that.play_status == 2){ // 自动播放背景音乐
+                          that.playBgMusic();
+                        }
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -587,7 +616,32 @@
                     that.$vux.loading.hide();
                 });
 
+            },
+          initMusic(){
+            this.musicFlag = false;
+            this.lensMusicObj = document.getElementById('lens-music');
+            this.liveMusicObj = document.getElementById('live-music');
+
+            this.lensMusicObj.currentTime = 0;
+            this.liveMusicObj.currentTime = 0;
+          },
+          playBgMusic(){
+            var that = this;
+            setTimeout(function () {
+              that.lensMusicObj.play();
+            }, 1000)
+          },
+          playMusic(){
+            if(this.musicFlag){ //暂停
+              this.musicFlag = false;
+              this.liveMusicObj.pause();
+              this.lensMusicObj.play();
+            } else { // 播放
+              this.lensMusicObj.pause();
+              this.liveMusicObj.play();
+              this.musicFlag = true;
             }
+          }
         }
 
     }
@@ -597,6 +651,7 @@
 
 
 <style scoped>
+  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
   .live-room-main{
     position: absolute;
     top: calc(100vw/(16/9));
@@ -617,7 +672,7 @@
     right: 0;
     /* bottom: 0px; */
     left: 0;}
-    .online_video{display: block !important; z-index: 10}
-    .outline_video{display: none;}
-  .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
+  .online_video{display: block !important; z-index: 10}
+  .outline_video{display: none;}
+
 </style>

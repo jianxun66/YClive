@@ -75,7 +75,7 @@
                 that.subStatus = true;
 
                 var formdata = new FormData();
-                formdata.append('openid', that.openid);
+                //formdata.append('openid', that.openid);
                 formdata.append('id', item.id);
                 formdata.append('stype', 2);
 

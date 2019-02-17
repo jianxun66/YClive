@@ -86,7 +86,7 @@
                 for(var i = 0 ; i < this.productList.length; i++){
                     if(this.productList[i].buy_num > 0){
                         total += this.productList[i].buy_num * this.productList[i].price;
-                        buy_product.replace(this.productList[i]);
+                        buy_product.push(this.productList[i]);
                     }
                 }
                 total = total.toFixed(2);

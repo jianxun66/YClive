@@ -554,7 +554,7 @@
         }
 
         var formdata = new FormData();
-        formdata.append('openid', that.openid);
+        //formdata.append('openid', that.openid);
         formdata.append('cid', item.id);
         formdata.append('ctype', 'video');
 
@@ -585,7 +585,7 @@
         that.subStatus = true;
 
         var formdata = new FormData();
-        formdata.append('openid', that.openid);
+        //formdata.append('openid', that.openid);
         formdata.append('id', item.id);
         formdata.append('stype', 1);
 
