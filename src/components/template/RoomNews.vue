@@ -271,7 +271,9 @@
             }
         },
         created() {
-            this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
+          var u = navigator.userAgent;
+          this.isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+          this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
             this.getData();
             this.getLens();
             localStorage.setItem('roomid', this.room_id); // 直播间ID
@@ -303,9 +305,9 @@
             })
 
 
-              if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-                that.playinit = true;
-              }
+          if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+            that.playinit = true;
+          }
 
             //this.player = new Aliplayer(this.aliplayer_config);
         },

@@ -25,14 +25,17 @@ import LiveStart from './components/LiveStart'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
+import "babel-polyfill";
+import Es6Promise from 'es6-promise'
 import md5 from 'js-md5';
-
+require('es6-promise').polyfill()
+Es6Promise.polyfill()
 
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
-/*import VConsole from 'vconsole'
-const vConsole = new VConsole();*/
+import VConsole from 'vconsole'
+const vConsole = new VConsole();
 
 
 Vue.use(VueRouter);
@@ -78,9 +81,10 @@ Vue.prototype.axiosPost = function (url, data = {}) {
 
     var newkey = [];
     var params = "";
-    for(var formItem of data) {
-      newkey.push(formItem[0]);
-    }
+    data.forEach(function (item, key) {
+      newkey.push(key)
+    })
+
     newkey.sort();
     for(var i = 0; i < newkey.length; i++){
       params += data.get(newkey[i]).toString();
