@@ -30,7 +30,7 @@
           that.$vux.loading.show({
             text: '加载中~'
           })
-          var formdata = new FormData();
+          var formdata = new URLSearchParams();
           formdata.append('id', this.room_template);
           that.axiosPost("/room/template", formdata).then((res) => {
             that.$vux.loading.hide();

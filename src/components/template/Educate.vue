@@ -15,50 +15,20 @@
       <!-- Swiper -->
       <div class="swiper-container gallery-thumbs">
         <div class="swiper-wrapper tabMenu">
-          <div class="swiper-slide cur" @click="switchContent(0)">班级</div>
-          <div class="swiper-slide" @click="switchContent(1)">直播</div>
-          <div class="swiper-slide" @click="switchContent(2)">家庭</div>
+          <div class="swiper-slide cur" @click="switchContent(0)">班级直播</div>
+          <div class="swiper-slide" @click="switchContent(1)">班级视频</div>
+          <div class="swiper-slide" @click="switchContent(2)">家庭视频</div>
         </div>
       </div>
       <div class="live-room-content">
         <div class="swiper-container gallery-top">
           <div class="swiper-wrapper tabCon">
-            <!--班级风采-->
-            <div class="swiper-slide con">
-              <div class="swiper-slide slidescroll room-video-list">
-                <h2 class="tit videoIcon">班级风采</h2>
-                <div class="filmList">
-                  <div class="video_info" v-for=" item in videoList" ref="videoStyle" v-if="item.sort_num <= 100">
-                    <dl>
-                      <dt class="video_title">
-                        <div class="video_item">
-                          <div class="prism-player-video"  :id="item.vno" @click="clickNum(item)" :style="{display: item.status == 1 ? 'none' : 'block', }"></div>
-                        </div>
-                        <img :src="item.pic" v-if="item.status == 1" @click="playervideo(item.vno, item.vurl, item)" >
-                        <div v-if="item.status == 1" class="play-btn" @click="playervideo(item.vno, item.vurl, item)"></div>
-                      </dt>
-                      <dd>
-                        <h3>{{item.name}}</h3>
-                        <p>
-                          <span>片长：{{item.vlength}}&nbsp;热度：{{item.click}}</span>
-                          <span>
-                          <a href="javascript:void(0);"  @click="videoStart(item)" :class="[item.start ? 'zanIcon2' : 'zanIcon']">赞</a>
-                            <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
-                      </span>
-                        </p>
-                      </dd>
-                    </dl>
-                  </div>
-                </div>
-
-              </div>
-            </div>
 
             <!--课堂直播-->
             <div class="swiper-slide con">
               <div class="swiper-slide slidescroll room-detail-info">
                 <!--滑动内容-->
-                <h2 class="tit videoIcon">{{roomBasic.room_name}}</h2>
+                <h2 class="tit videoIcon">直播</h2>
                 <!--第一个镜头-->
                 <div class="lens-list">
                   <div class="videoList">
@@ -84,11 +54,42 @@
               </div>
             </div>
             <!--课堂直播-->
+            <!--班级风采-->
+            <div class="swiper-slide con">
+              <div class="swiper-slide slidescroll room-video-list">
+                <h2 class="tit videoIcon">短视频</h2>
+                <div class="filmList">
+                  <div class="video_info" v-for=" item in videoList" ref="videoStyle" v-if="item.sort_num <= 100">
+                    <dl>
+                      <dt class="video_title">
+                        <div class="video_item">
+                          <div class="prism-player-video"  :id="item.vno" @click="clickNum(item)" :style="{display: item.status == 1 ? 'none' : 'block', }"></div>
+                        </div>
+                        <img :src="item.pic" v-if="item.status == 1" @click="playervideo(item.vno, item.vurl, item)" >
+                        <div v-if="item.status == 1" class="play-btn" @click="playervideo(item.vno, item.vurl, item)"></div>
+                      </dt>
+                      <dd>
+                        <h3>{{item.name}}</h3>
+                        <p>
+                          <span>片长：{{item.vlength}}&nbsp;热度：{{item.click}}</span>
+                          <span>
+                          <a href="javascript:void(0);"   :class="[item.start ? 'zanIcon2' : 'zanIcon']">精选</a>
+                            <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
+                      </span>
+                        </p>
+                      </dd>
+                    </dl>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!--班级风采-->
 
             <!--家庭时光-->
             <div class="swiper-slide con">
               <div class="swiper-slide slidescroll room-video-list">
-                <h2 class="tit videoIcon">家庭时光</h2>
+                <h2 class="tit videoIcon">短视频</h2>
                 <div class="filmList">
                   <div class="video_info" v-for=" item in videoList" ref="videoStyle" v-if="item.sort_num > 100">
                     <dl>
@@ -104,7 +105,7 @@
                         <p>
                           <span>片长：{{item.vlength}}&nbsp;热度：{{item.click}}</span>
                           <span>
-                          <a href="javascript:void(0);"  @click="videoStart(item)" :class="[item.start ? 'zanIcon2' : 'zanIcon']">赞</a>
+                          <a href="javascript:void(0);"   :class="[item.start ? 'zanIcon2' : 'zanIcon']">精选</a>
                             <!--<a href="javascript:void(0);" class="replyIcon">回复</a>-->
                       </span>
                         </p>
@@ -155,6 +156,7 @@
         room_info: {},
         lens:{},
         player: {},
+        player2: {},
         aliplayer_config: {
           id: 'J_prismPlayer',
           width: '100%',
@@ -250,6 +252,14 @@
         that.playinit = true;
       }
 
+      if(this.player2.length > 0){
+        this.player2.on('pause', function () {
+          this.player2.dispose() //销毁
+        });
+
+      }
+
+
     },
     watch: {
       "$route"(){
@@ -259,7 +269,7 @@
       // 轮播图
       getBanner(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         formdata.append('id', this.room_id);
         that.axiosPost("/room/banner", formdata).then((res) => {
           that.bannerList = res.data.banner;
@@ -388,7 +398,7 @@
       },
       getData(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
           that.roomBasic.room_name = res.data.room_name;
           that.roomBasic.logo_img = res.data.logo_img;
@@ -425,7 +435,7 @@
       },
       getLens(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         that.axiosPost("/room/lens?id="+this.room_id, formdata).then((res) => {
           that.$vux.loading.hide();
           if(res.status == 200){
@@ -499,7 +509,7 @@
           text: '加载中~'
         })
 
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         that.axiosPost("/room/videos?id="+this.room_id, formdata).then((res) => {
           that.$vux.loading.hide();
           if(res.status == 200){
@@ -534,13 +544,15 @@
         this.aliplayer_config.height = this.video_height;
 
         item.status = 0;
-        if(this.player.length > 0){
-          this.player.dispose() //销毁
+        if(this.player2.length > 0){
+          this.player2.dispose() //销毁
         }
         var that = this;
         that.aliplayer_config.source = source;
         that.aliplayer_config.id = id;
-        this.player =  new Aliplayer(that.aliplayer_config);
+        that.aliplayer_config.isLive = false;
+        that.aliplayer_config.useH5Prism = true;
+        this.player2 =  new Aliplayer(that.aliplayer_config);
         this.clickNum(item);
 
       },
@@ -553,7 +565,7 @@
           return false;
         }
 
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         //formdata.append('openid', that.openid);
         formdata.append('cid', item.id);
         formdata.append('ctype', 'video');
@@ -584,7 +596,7 @@
         item.start = item.start == 1 ? 0 : 1;
         that.subStatus = true;
 
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         //formdata.append('openid', that.openid);
         formdata.append('id', item.id);
         formdata.append('stype', 1);
@@ -612,7 +624,7 @@
       WxShare(){
         var url = window.location.href;
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         formdata.append('open_id', this.openid);
         formdata.append('url', url);
         formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage,hideMenuItems");
@@ -724,4 +736,6 @@
     background: url(../../../static/images/videoBtn.png) no-repeat center center;
     background-size: 64px;}
   .videoList dl {padding: 5px 2.5px; box-sizing: border-box; width: 33.333333333333333%;}
+  .room-header{z-index: 99999999999999999 !important; }
+  video{object-fit: contain  !important; z-index: 1 !important;}
 </style>

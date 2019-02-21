@@ -10,8 +10,14 @@
             <div class="live-music" v-if="currentVideo.live_music">
               <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
             </div>
-            <div class="live-view-icon"></div>
-            <div class="live-view-num">{{roomBasic.click_num}}</div>
+            <div class="live-home-icon" @click="goHome"></div>
+            <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
+            <div class="live-title-roll">
+              <marquee scrollamount="3" vspace="10">
+                <span v-if="play_status == 1">欢迎来到 {{roomBasic.room_name}} 直播间 ·正在直播 {{date}}</span>
+                <span v-if="play_status == 2">欢迎来到 {{roomBasic.room_name}} 直播间 ·精彩回放</span>
+              </marquee>
+            </div>
           </div>
           <div class="live-music-detail" v-if="isAndroid">
             <video :src="currentVideo.lens_music" loop="loop"   id="lens-music" style="display: none"></video>
@@ -84,7 +90,7 @@
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <div class="my-order">
-                          <router-link :to="{path:'order/mylist'}"><span>我的订单></span></router-link>
+                          <router-link :to="{path:'orders'}"><span>我的订单></span></router-link>
                         </div>
                         <h2 class="tit shopCarIcon">生态商城</h2>
                         <div class="company">
@@ -173,6 +179,7 @@
 
 <script>
     import importJs from '../../../static/js/importJs'
+    import {formatDate} from '../../../static/js/date'
     import RoomVideo from "../RoomVideoNew"
     import Product from "../Product"
     import Comments from "../Comment"
@@ -259,10 +266,11 @@
                     online_cover: '',
                     mobile: '',
                 },
-              musicFlag: false,
+              musicFlag: true,
               lensMusicObj: '',
               liveMusicObj: '',
               isAndroid: false,
+              date: new Date(),
             }
         },
         provide() {
@@ -309,16 +317,12 @@
             that.playinit = true;
           }
 
-            //this.player = new Aliplayer(this.aliplayer_config);
+          this.timer = setInterval(function() {
+            that.getCurrentTime();//修改数据date
+          }, 1000);
         },
         watch: {
             "$route"(){
-                /*if (/iPhone|mac|iPod|iPad/i.test(navigator.userAgent)) {
-                    location.href = window.location.href + this.$route.path
-                }*/
-                /*if (window.location.href.indexOf('room') == -1) {
-                    location.assign('/room?room_id='+this.$route.query.room_id);
-                }*/
             },
         },
         methods: {
@@ -436,7 +440,7 @@
             },
             getData(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
                     that.roomBasic.room_name = res.data.room_name;
                     that.roomBasic.logo_img = res.data.logo_img;
@@ -474,12 +478,11 @@
             },
             getLens(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 that.axiosPost("/room/lens?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.lens = res.data;
-
                         if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
@@ -569,7 +572,7 @@
             WxShare(){
                 var url = window.location.href;
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 formdata.append('url', url);
                 formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");
@@ -579,6 +582,10 @@
                     if(res.status == 200){
                         that.$wechat.config(JSON.parse(res.data));
                       that.$wechat.ready(function () {
+                        // ios 自动播放音乐
+                        that.liveMusicObj.play();
+                        // ios 自动播放音乐
+
                         var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
                         that.$wechat.onMenuShareAppMessage({
                           title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
@@ -620,7 +627,7 @@
 
             },
           initMusic(){
-            this.musicFlag = false;
+            this.musicFlag = true;
             this.lensMusicObj = document.getElementById('lens-music');
             this.liveMusicObj = document.getElementById('live-music');
 
@@ -630,20 +637,27 @@
           playBgMusic(){
             var that = this;
             setTimeout(function () {
-              that.lensMusicObj.play();
+              that.liveMusicObj.play();
             }, 1000)
           },
           playMusic(){
             if(this.musicFlag){ //暂停
               this.musicFlag = false;
-              this.liveMusicObj.pause();
-              this.lensMusicObj.play();
-            } else { // 播放
-              this.lensMusicObj.pause();
               this.liveMusicObj.play();
+              this.lensMusicObj.pause();
+            } else { // 播放
+              this.lensMusicObj.play();
+              this.liveMusicObj.pause();
               this.musicFlag = true;
             }
-          }
+          },
+          getCurrentTime(){
+            var date = new Date();
+            this.date = formatDate(date, 'yyyy-MM-dd hh:mm:ss');
+          },
+          goHome(){
+            this.$router.replace({path: '/'});
+          },
         }
 
     }
@@ -676,5 +690,5 @@
     left: 0;}
   .online_video{display: block !important; z-index: 10}
   .outline_video{display: none;}
-
+  video{object-fit: fill !important;}
 </style>

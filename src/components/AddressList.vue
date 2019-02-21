@@ -33,7 +33,7 @@
         methods:{
             getData(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 that.axiosPost("/client/addr-list", formdata).then((res) => {
                     that.$vux.loading.hide();
@@ -58,7 +58,7 @@
             },
             selectAddr(item){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 formdata.append('aid', item.aid);
                 that.axiosPost("/client/addr-default", formdata).then((res) => {

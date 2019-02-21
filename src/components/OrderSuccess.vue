@@ -77,7 +77,7 @@
                 }
 
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('order_id', that.order_id);
 
                 that.axiosPost('/client/orders', formdata).then((res) => {

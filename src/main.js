@@ -25,7 +25,6 @@ import LiveStart from './components/LiveStart'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
-import "babel-polyfill";
 import Es6Promise from 'es6-promise'
 import md5 from 'js-md5';
 require('es6-promise').polyfill()
@@ -34,8 +33,8 @@ Es6Promise.polyfill()
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
-import VConsole from 'vconsole'
-const vConsole = new VConsole();
+/*import VConsole from 'vconsole'
+const vConsole = new VConsole();*/
 
 
 Vue.use(VueRouter);
@@ -71,7 +70,7 @@ if (Vue.prototype.DEBUG != 1) {
 
 Vue.prototype.axiosPost = function (url, data = {}) {
     if(data.length == 0){
-        data = new FormData();
+        data = new URLSearchParams();
     }
 
     data.append('timestamp', (new Date()).getTime().toString().substr(0, 10));
@@ -218,7 +217,9 @@ router.beforeEach((to, from, next) => {
         }
         next();
 
-    } else if(to.path.indexOf('/order') > -1 || to.path.indexOf('/addr') > -1 || to.path.indexOf('/user') > -1){
+    } else if(to.path.indexOf('/order') > -1 ||
+      to.path.indexOf('/addr') > -1 || to.path.indexOf('/user') > -1
+      || to.path.indexOf('/addr') > -1 || to.path.indexOf('/addr') > -1){
         if(to.path.indexOf('/auth') == -1){
             cookie.set('refer', to.fullPath, {
                 path: '/',

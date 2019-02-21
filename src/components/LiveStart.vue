@@ -61,7 +61,7 @@
           }
 
           that.loadding = true;
-          var formdata = new FormData();
+          var formdata = new URLSearchParams();
           that.axiosPost("/client/room-start", formdata).then((res) => {
             that.loadding = false;
             if(res.status == 200){

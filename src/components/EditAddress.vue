@@ -36,12 +36,15 @@
             </dl>
             <button @click="updateAddr">保存地址</button>
         </div>
+      <live-footer :findex="findex" class="live-foot"></live-footer>
     </div>
 </template>
 
 <script>
+  import LiveFooter from './LiveFooter'
     export default {
         name: "edit-address",
+      components: {LiveFooter},
         data(){
             return {
                 room_id : 0,
@@ -60,6 +63,7 @@
               goBack: '',
               smsModel: '发送验证码',
               smsStatus: 0,
+              findex: 'user',
             };
         },
         created(){
@@ -116,7 +120,7 @@
                     return false;
                 }
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 if(addrInfo.aid){
                     formdata.append('aid', addrInfo.aid);
                 }
@@ -164,7 +168,7 @@
                 return false;
               }
               //发送短信
-              var formdata = new FormData();
+              var formdata = new URLSearchParams();
               formdata.append('mobile', this.addrInfo.mobile);
               that.axiosPost("/client/sms", formdata).then((res) => {
                 that.$vux.loading.hide();
@@ -206,4 +210,5 @@
 <style scoped>
   .add-mobile{position: relative}
   .send-code{position:absolute; right: 0.2rem; top:1rem; border: 1px solid #cccccc; display: inline-block; padding: 0.2rem 0.5rem}
+  .live-foot{position: fixed; bottom: 0}
 </style>

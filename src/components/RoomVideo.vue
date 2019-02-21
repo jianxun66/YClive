@@ -102,7 +102,7 @@
                     text: '加载中~'
                 })
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 //formdata.append('openid', that.openid);
                 that.axiosPost("/room/videos?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
@@ -150,7 +150,7 @@
                     return false;
                 }
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 //formdata.append('openid', that.openid);
                 formdata.append('cid', item.id);
                 formdata.append('ctype', 'video');
@@ -181,7 +181,7 @@
                 item.start = item.start == 1 ? 0 : 1;
                 that.subStatus = true;
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 //formdata.append('openid', that.openid);
                 formdata.append('id', item.id);
                 formdata.append('stype', 1);

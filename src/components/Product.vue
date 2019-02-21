@@ -42,7 +42,7 @@
                     text: '加载中~'
                 })
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 that.axiosPost("/product/room?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){

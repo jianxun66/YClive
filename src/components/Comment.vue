@@ -45,7 +45,7 @@
         methods:{
             getData(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('id', that.room_id);
                 that.axiosPost("/room/comments", formdata).then((res) => {
                     that.$vux.loading.hide();
@@ -74,7 +74,7 @@
                 item.start = item.start == 1 ? 0 : 1;
                 that.subStatus = true;
 
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 //formdata.append('openid', that.openid);
                 formdata.append('id', item.id);
                 formdata.append('stype', 2);
@@ -102,7 +102,7 @@
                 }
 
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('content', content);
                 formdata.append('id', that.room_id);
 

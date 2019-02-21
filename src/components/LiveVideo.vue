@@ -124,7 +124,7 @@
         })
 
         that.loadding = true;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         formdata.append('page', that.pageSize);
         that.axiosPost("/live/video", formdata).then((res) => {
           that.loadding = false;
@@ -186,7 +186,7 @@
         if(that.subStatus){
           return false;
         }
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         formdata.append('cid', item.id);
         formdata.append('ctype', 'video');
 

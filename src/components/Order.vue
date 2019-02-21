@@ -84,7 +84,7 @@
         methods:{
             getAddr(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 that.axiosPost("/client/addr", formdata).then((res) => {
                     that.$vux.loading.hide();
@@ -161,7 +161,7 @@
                 });
 
                 this.subStatus = true;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', that.openid);
                 formdata.append('room_id', that.roomid);
                 formdata.append('products', JSON.stringify(buy_product));
@@ -189,7 +189,7 @@
                 //this.$vux.loading.show("加载中");
                 var url = window.location.href.split('#')[0];
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 formdata.append('url', url);
                 formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");

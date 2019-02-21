@@ -16,7 +16,7 @@
       </div>
       <div class="live-main swiper-container" id="page">
           <div class="swiper-wrapper">
-            <div class="swiper-slide slidepage">
+            <div class="swiper-slide slidepage swiper-no-swiping">
               <div class="live-main-container" id="live-main-container1">
               <!--轮播图-->
               <div class="swiper-container banner">
@@ -80,7 +80,7 @@
               </div>
             </div>
             <!--第二页面-->
-            <div class="swiper-slide slidepage"
+            <div class="swiper-slide slidepage swiper-no-swiping"
                  v-for="(item, key) in menuList" :key="key"  v-if="key > 0">
               <div class="live-lists-content live-main-container" :id="'live-main-container'+item.id">
                 <ul class="live-items live-items-all">
@@ -134,6 +134,7 @@
         categoryId: 1,
         roomName: '',
         containerId: "live-main-container1",
+        currentSwiperId: 0,
       }
     },
     watch:{
@@ -214,12 +215,14 @@
           that.categoryId = clickSlide.find('span').attr('category');
           // 初始化页面列表数据
           that.changeRoomList(clickIndex);
+          that.currentSwiperId = this.clickedIndex;
         });
 
         // 内容左右滑动
         that.pageSwiper = new Swiper('#page', {
           watchSlidesProgress: true,
           resistanceRatio: 0,
+          noSwiping : true,
           observer:true, //修改swiper自己或子元素时，自动初始化swiper
           observeParents:true,//修改swiper的父元素时，自动初始化swiper
           on: {
@@ -298,7 +301,7 @@
       },
       getHeader(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
 
         that.axiosPost("/live/category", formdata).then((res) => {
           if(res.status == 200){
@@ -325,7 +328,7 @@
         })
 
         that.loadding = true;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
         formdata.append('room_type', that.roomType);
         formdata.append('room_name', that.roomName);
         formdata.append('page', that.pageSize);
@@ -367,7 +370,7 @@
       // 获取最新活动
       getActivity(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
 
         that.axiosPost("/live/activity", formdata).then((res) => {
           if(res.status == 200){
@@ -384,7 +387,7 @@
       // 获取轮播图
       getBanner(){
         var that = this;
-        var formdata = new FormData();
+        var formdata = new URLSearchParams();
 
         that.axiosPost("/live/banner", formdata).then((res) => {
           if(res.status == 200){
@@ -442,6 +445,8 @@
       },
       searchRoom(){
         if(this.$route.query.room_name){ // 带搜索内容
+          this.roomList = [];
+          this.pageSize = 1;
           this.roomType = 1;
           this.roomName = this.$route.query.room_name;
           this.pageSwiper.slideTo(1, 300);

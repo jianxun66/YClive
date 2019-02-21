@@ -380,7 +380,7 @@
             },
             getData(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
                     that.roomBasic.room_name = res.data.room_name;
                     that.roomBasic.logo_img = res.data.logo_img;
@@ -418,7 +418,7 @@
             },
             getLens(){
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 that.axiosPost("/room/lens?id="+this.room_id, formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
@@ -508,7 +508,7 @@
             WxShare(){
                 var url = window.location.href;
                 var that = this;
-                var formdata = new FormData();
+                var formdata = new URLSearchParams();
                 formdata.append('open_id', this.openid);
                 formdata.append('url', url);
                 formdata.append('apis', "chooseWXPay,onMenuShareTimeline,onMenuShareAppMessage");

@@ -49,6 +49,9 @@
         goHome(){
           this.$router.replace({path: '/'});
         },
+        checkContent(){
+          console.log(this.searchStr);
+        }
       }
     }
 </script>

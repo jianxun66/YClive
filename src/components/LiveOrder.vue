@@ -41,7 +41,7 @@
       methods:{
         getOrderList () {
           var that = this
-          var formdata = new FormData();
+          var formdata = new URLSearchParams();
           that.axiosPost('/client/orders', formdata).then((res) => {
             that.orderList = res.data
           }, (err) => {

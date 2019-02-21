@@ -9,7 +9,7 @@
         <span class="live-level">LV1</span>
       </p>
     </div>
-    <div class="live-setting"></div>
+    <!--<div class="live-setting"></div>-->
     <div class="live-my-head-bg"></div>
   </div>
 </template>
