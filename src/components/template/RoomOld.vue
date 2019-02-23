@@ -178,7 +178,7 @@
                     playsinline: true,
                     showBuffer: true,
                     isLive: true,
-                    x5_type: true,
+                    x5_type: 'h5',
                     //支持播放地址播放,此播放优先级最高
                     source: '',
                     cover: '',

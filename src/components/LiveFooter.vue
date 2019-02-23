@@ -22,13 +22,13 @@
             {
               fname: 'live',
               fclass: 'live-foot-live',
-              ftext: '视频现场',
+              ftext: '现场直播',
               path: '/',
             },
             {
               fname: 'video',
               fclass: 'live-foot-video',
-              ftext: '视频现场',
+              ftext: '精彩短片',
               path: '/video',
             },
             {
