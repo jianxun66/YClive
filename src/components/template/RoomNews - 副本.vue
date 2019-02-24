@@ -19,7 +19,19 @@
               </marquee>
             </div>
           </div>
-          <div class="live-music-detail">
+          <div class="live-music-detail" v-if="isAndroid">
+            <video :src="currentVideo.lens_music"
+                   loop="loop"
+                   x-webkit-airplay="true"
+                   webkit-playsinline="true"
+                   id="lens-music" style="width:1px; height:1px; display: none; z-index: -999;"></video>
+            <video :src="currentVideo.live_music"
+                   loop="loop"
+                   x-webkit-airplay="true"
+                   webkit-playsinline="true"
+                   id="live-music" style="width:1px; height:1px; display: none; z-index: -999;"></video>
+          </div>
+          <div class="live-music-detail" v-else>
             <audio :src="currentVideo.lens_music" loop="loop"  id="lens-music" style="display: none"></audio>
             <audio :src="currentVideo.live_music" loop="loop"  id="live-music" style="display: none"></audio>
           </div>
@@ -82,7 +94,7 @@
                 </div>
                 <!--商品信息-->
                 <div class="swiper-slide con">
-                  <div class="swiper-container ">
+                  <div class="swiper-container scroll">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <div class="my-order">
@@ -268,7 +280,6 @@
               musicFlag: false,
               lensMusicObj: '',
               liveMusicObj: '',
-              showMusic: true,
               isAndroid: false,
               date: new Date(),
             }
@@ -301,10 +312,9 @@
                 //that.musicFlag = true;
                 that.playinit = false;
                 that.checkVideoPlayer(that.currentVideo);
-              that.musicFlag = true;
-              that.playBgMusic();
                 if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-
+                  that.musicFlag = true;
+                  that.playBgMusic();
                 }
 
             })
@@ -327,26 +337,6 @@
           }, 1000);
 
 
-          window.addEventListener("blur", function () {
-            that.musicFlag = false;
-            that.liveMusicObj.pause();
-            that.lensMusicObj.pause();
-
-          });
-
-          window.addEventListener("focus", function () {
-            that.musicFlag = true;
-            that.liveMusicObj.play();
-          });
-
-
-          document.addEventListener('visibilitychange', function(){
-            if (document.visibilityState === 'hidden') {
-              that.musicFlag = false;
-              that.liveMusicObj.pause();
-              that.lensMusicObj.pause();
-            }
-          });
         },
         watch: {
             "$route"(){
@@ -613,14 +603,10 @@
                 that.axiosPost("/wechat/jssdk", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                      that.$wechat.config(JSON.parse(res.data));
+                        that.$wechat.config(JSON.parse(res.data));
                       that.$wechat.ready(function () {
-
                         // ios 自动播放音乐
-                        if(that.play_status == 2){ // 自动播放背景音乐
-                          that.musicFlag = true;
-                          that.playBgMusic();
-                        }
+                        //that.liveMusicObj.play();
                         // ios 自动播放音乐
 
                         var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
@@ -674,10 +660,9 @@
           },
           playBgMusic(){
             var that = this;
-            that.musicFlag = true;
             setTimeout(function () {
               that.liveMusicObj.play();
-            }, 500)
+            }, 1000)
           },
           playMusic(){
             if(this.musicFlag){ //暂停
@@ -711,9 +696,8 @@
               this.musicFlag = true;
               this.playBgMusic();
             }*/
-            this.musicFlag = true;
+            this.musicFlag = false;
             this.liveMusicObj.play();
-            this.player.tag.style.height = window.height;
             // 2、 调整高度
             /*$(this.player.el()).addClass('enter-x5-player');
             var screenHeight = document.body.clientHeight*(window.devicePixelRatio||1)+ "px";
@@ -726,18 +710,17 @@
 
           // 退出同层全屏事件
           cancelFullScreenHandel(){
-            //this.showMusic = false;
-            //this.showMusic = true;
-            //this.musicFlag = false;
-            //this.firstMusic = true;
 
-            /*this.liveMusicObj.reload();
-            this.lensMusicObj.reload();*/
+            this.musicFlag = false;
+            this.firstMusic = true;
 
-            /*this.liveMusicObj.pause();
+            this.liveMusicObj.reload();
+            this.lensMusicObj.reload();
+
+            this.liveMusicObj.pause();
             this.lensMusicObj.pause();
             this.liveMusicObj.style.display = "none";
-            this.lensMusicObj.style.display = "none";*/
+            this.lensMusicObj.style.display = "none";
 
             //退出全屏
             console.log('stopMUisc');
@@ -776,5 +759,5 @@
     left: 0;}
   .online_video{display: block !important; z-index: 10}
   .outline_video{display: none;}
-  .prism-player video{object-fit: fill !important;}
+  /*.prism-player video{object-fit: contain !important;}*/
 </style>

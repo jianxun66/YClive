@@ -19,7 +19,17 @@
               </marquee>
             </div>
           </div>
-          <div class="live-music-detail">
+          <div class="live-music-detail" v-if="isAndroid">
+            <video :src="currentVideo.lens_music"
+                   v-if="showMusic"
+                   loop="loop"
+                   id="lens-music" style="width:1px; height:1px; display: none; z-index: -999;"></video>
+            <video :src="currentVideo.live_music"
+                   v-if="showMusic"
+                   loop="loop"
+                   id="live-music" style="width:1px; height:1px; display: none; z-index: -999;"></video>
+          </div>
+          <div class="live-music-detail" v-else>
             <audio :src="currentVideo.lens_music" loop="loop"  id="lens-music" style="display: none"></audio>
             <audio :src="currentVideo.live_music" loop="loop"  id="live-music" style="display: none"></audio>
           </div>
@@ -327,26 +337,6 @@
           }, 1000);
 
 
-          window.addEventListener("blur", function () {
-            that.musicFlag = false;
-            that.liveMusicObj.pause();
-            that.lensMusicObj.pause();
-
-          });
-
-          window.addEventListener("focus", function () {
-            that.musicFlag = true;
-            that.liveMusicObj.play();
-          });
-
-
-          document.addEventListener('visibilitychange', function(){
-            if (document.visibilityState === 'hidden') {
-              that.musicFlag = false;
-              that.liveMusicObj.pause();
-              that.lensMusicObj.pause();
-            }
-          });
         },
         watch: {
             "$route"(){
@@ -443,7 +433,7 @@
 
                 that.currentVideo = item;
                 that.initMusic();
-                if(that.play_status == 2){ // 自动播放背景音乐
+                if(that.play_status == 2 && !that.isAndroid){ // 自动播放背景音乐
                   that.playBgMusic();
                 }
             },
@@ -537,7 +527,7 @@
                         // that.checkVideoPlayer(that.lens[0]);
                         that.currentVideo = that.lens[0]
                         that.initMusic();
-                        if(that.play_status == 2){ // 自动播放背景音乐
+                        if(that.play_status == 2 && !that.isAndroid){ // 自动播放背景音乐
                           that.playBgMusic();
                         }
                     } else {
@@ -613,14 +603,10 @@
                 that.axiosPost("/wechat/jssdk", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                      that.$wechat.config(JSON.parse(res.data));
+                        that.$wechat.config(JSON.parse(res.data));
                       that.$wechat.ready(function () {
-
                         // ios 自动播放音乐
-                        if(that.play_status == 2){ // 自动播放背景音乐
-                          that.musicFlag = true;
-                          that.playBgMusic();
-                        }
+                        //that.liveMusicObj.play();
                         // ios 自动播放音乐
 
                         var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
@@ -674,10 +660,9 @@
           },
           playBgMusic(){
             var that = this;
-            that.musicFlag = true;
             setTimeout(function () {
               that.liveMusicObj.play();
-            }, 500)
+            }, 1000)
           },
           playMusic(){
             if(this.musicFlag){ //暂停

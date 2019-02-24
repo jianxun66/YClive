@@ -2,26 +2,20 @@
     <div class="room-info" v-wechat-title="$route.meta.title">
         <div class="room-deader">
           <div class="video" @click="imgCover">
-            <div class="prism-player" id="J_prismPlayer"></div>
+            <div class="prism-player " id="J_prismPlayer"></div>
             <div v-bind:class=" (play_status == 1 && playing === false ) || playinit === true ? 'videoCover online_video' : 'videoCover outline_video'" >
               <img :src="VideoCoverImg">
             </div>
-            <div class="logo"><img src="../../../static/images/logo.png"></div>
+            <div class="logo"><img src="../../static/images/logo.png"></div>
             <div class="live-music" v-if="currentVideo.live_music">
               <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
             </div>
-            <div class="live-home-icon" @click="goHome"></div>
-            <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
-            <div class="live-title-roll">
-              <marquee scrollamount="2" vspace="10">
-                <span v-if="play_status == 1">欢迎来到 {{roomBasic.room_name}} 直播间 ·正在直播 {{date}}</span>
-                <span v-if="play_status == 2">欢迎来到 {{roomBasic.room_name}} 直播间 ·精彩回放</span>
-              </marquee>
-            </div>
+            <div class="live-view-icon"></div>
+            <div class="live-view-num">{{roomBasic.click_num}}</div>
           </div>
           <div class="live-music-detail">
-            <audio :src="currentVideo.lens_music" loop="loop"  id="lens-music" style="display: none"></audio>
-            <audio :src="currentVideo.live_music" loop="loop"  id="live-music" style="display: none"></audio>
+            <div class="lens-music" id="lens-music" style="display: none"></div>
+            <div class="live-music" id="live-music"  style="display: none"></div>
           </div>
         </div>
 
@@ -82,11 +76,11 @@
                 </div>
                 <!--商品信息-->
                 <div class="swiper-slide con">
-                  <div class="swiper-container ">
+                  <div class="swiper-container scroll">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <div class="my-order">
-                          <router-link :to="{path:'orders'}"><span>我的订单></span></router-link>
+                          <router-link :to="{path:'order/mylist'}"><span>我的订单></span></router-link>
                         </div>
                         <h2 class="tit shopCarIcon">生态商城</h2>
                         <div class="company">
@@ -135,7 +129,7 @@
                           <room-video :room_id="room_id"></room-video>
                         </div>
                         <div class="footerLogo">
-                          <img src="../../../static/images/footerLogo.png">
+                          <img src="../../static/images/footerLogo.png">
                         </div>
                       </div>
                     </div>
@@ -174,10 +168,10 @@
 
 
 <script>
-    import importJs from '../../../static/js/importJs'
-    import RoomVideo from "../RoomVideoNew"
-    import Product from "../Product"
-    import Comments from "../Comment"
+    import importJs from '../../static/js/importJs'
+    import RoomVideo from "./RoomVideo"
+    import Product from "./Product"
+    import Comments from "./Comment"
     export default {
         name: 'room',
         components:{
@@ -206,18 +200,15 @@
                 deliver: 0, //起送金额
                 aliplayer_config: {
                     id: 'J_prismPlayer',
-                    /*width: '100%',
-                    height: '240px',*/
+                    width: '100%',
+                    height: '240px',
                     autoplay: false,
                     playsinline: true,
                     showBuffer: true,
                     isLive: true,
-                    useH5Prism: !0,
-                    useFlashPrism: !1,
-                    x5_video_position: "normal",
-                    x5_type: "h5",
-                    //useH5Prism: 'h5',
-                    //x5_video_position: top,
+                    x5_type: 'h5',
+                    useH5Prism: 'h5',
+                    x5_video_position: top,
                     //支持播放地址播放,此播放优先级最高
                     source: '',
                     cover: '',
@@ -240,11 +231,25 @@
                                 {name: 'fullScreenButton', align: 'tr', x: 10, y: 12},
                                 //{name:"subtitle", align:"tr",x:15, y:12},
                                 //{name:"setting", align:"tr",x:15, y:12},
-                                //{name: 'volume', align: 'tr', x: 5, y: 10}
+                                {name: 'volume', align: 'tr', x: 5, y: 10}
 
                             ]
                         }
                     ]
+                },
+                music_config:{
+                  "id": "",
+                  "source": "",
+                  "width": "100%",
+                  "height": "500px",
+                  "autoplay": false,
+                  "isLive": false,
+                  "rePlay": true,
+                  "playsinline": false,
+                  "preload": true,
+                  useH5Prism: true,
+                  showBuffer: false,
+                  mediaType: 'audio',
                 },
                 roomBasic: {
                     room_name: '',
@@ -264,13 +269,9 @@
                     online_cover: '',
                     mobile: '',
                 },
-              firstMusic: false,
-              musicFlag: false,
-              lensMusicObj: '',
-              liveMusicObj: '',
-              showMusic: true,
-              isAndroid: false,
-              date: new Date(),
+                musicFlag: false,
+                lensMusicObj: '',
+                liveMusicObj: '',
             }
         },
         provide() {
@@ -279,9 +280,7 @@
             }
         },
         created() {
-          var u = navigator.userAgent;
-          this.isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
-          this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
+            this.room_id = this.$route.query.room_id > 0 ? this.$route.query.room_id : 9;
             this.getData();
             this.getLens();
             localStorage.setItem('roomid', this.room_id); // 直播间ID
@@ -298,15 +297,9 @@
             $('.prism-player').height(height / 16 * 9)
 
             $('#J_prismPlayer').click(function () {
-                //that.musicFlag = true;
                 that.playinit = false;
                 that.checkVideoPlayer(that.currentVideo);
-              that.musicFlag = true;
-              that.playBgMusic();
-                if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-
-                }
-
+                that.playBgMusic(); // 播放背景音乐
             })
 
             $('.company .remarks p').click(function () {
@@ -318,39 +311,23 @@
             })
 
 
-          if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
-            that.playinit = true;
+            if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+              that.playinit = true;
+            }
+
+            // 播放音乐
+          var video = document.getElementsByTagName("video");
+          for ( var i in video) {
+            var e = video[i];
+            e.addEventListener('onplay', function () {
+              for ( var j in video) {
+                if (j != i) {
+                  document.getElementById(j).pause();
+                }
+              }
+            });
           }
 
-          this.timer = setInterval(function() {
-            that.getCurrentTime();//修改数据date
-          }, 1000);
-
-
-          window.addEventListener("blur", function () {
-            that.musicFlag = false;
-            that.liveMusicObj.pause();
-            that.lensMusicObj.pause();
-
-          });
-
-          window.addEventListener("focus", function () {
-            that.musicFlag = true;
-            that.liveMusicObj.play();
-          });
-
-
-          document.addEventListener('visibilitychange', function(){
-            if (document.visibilityState === 'hidden') {
-              that.musicFlag = false;
-              that.liveMusicObj.pause();
-              that.lensMusicObj.pause();
-            }
-          });
-        },
-        watch: {
-            "$route"(){
-            },
         },
         methods: {
             showMoreInfo (obj) {
@@ -429,17 +406,11 @@
                     that.aliplayer_config.autoplay = false;
                     that.aliplayer_config.cover = item.reback_img; // 替换镜头回放封面地址
                     that.aliplayer_config.source = item.vurl_reback; // 替换镜头回放地址
-                    //item.vurl = item.vurl_reback;
-                    //item.pic = item.reback_img;
                 }
 
-                that.currentVideo = item;
+
                 that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
-                that.player.on('x5requestFullScreen', this.fullScreenHandle);
-                that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
-                //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                // this.checkVideoPlayer(item);
 
                 that.currentVideo = item;
                 that.initMusic();
@@ -492,6 +463,8 @@
 
                     that.$route.meta.title = res.data.room_name;
                     that.deliver = res.data.deliver;
+
+
                     if(that.roomBasic.cover_img ){
                         that.showCover = true;
                     }
@@ -513,12 +486,12 @@
                     that.$vux.loading.hide();
                     if(res.status == 200){
                         that.lens = res.data;
+
                         if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
                             that.aliplayer_config.isLive = true;
                             that.aliplayer_config.autoplay = false;
                             that.aliplayer_config.rePlay = false;
                             that.play_status = 1;
-                            that.firstMusic = true;
                         } else {
                             that.aliplayer_config.isLive = false;
                             that.aliplayer_config.autoplay = true;
@@ -531,15 +504,13 @@
                         that.aliplayer_config.cover = that.lens[0].pic;
                         that.aliplayer_config.id = 'J_prismPlayer';
                         that.player = new Aliplayer(that.aliplayer_config);
-                        that.player.on('x5requestFullScreen', this.fullScreenHandle);
-                        that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
-                        //that.player.on('requestFullScreen', this.requestFullScreenHandel);
                         // that.checkVideoPlayer(that.lens[0]);
                         that.currentVideo = that.lens[0]
                         that.initMusic();
                         if(that.play_status == 2){ // 自动播放背景音乐
                           that.playBgMusic();
                         }
+
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -613,46 +584,7 @@
                 that.axiosPost("/wechat/jssdk", formdata).then((res) => {
                     that.$vux.loading.hide();
                     if(res.status == 200){
-                      that.$wechat.config(JSON.parse(res.data));
-                      that.$wechat.ready(function () {
-
-                        // ios 自动播放音乐
-                        if(that.play_status == 2){ // 自动播放背景音乐
-                          that.musicFlag = true;
-                          that.playBgMusic();
-                        }
-                        // ios 自动播放音乐
-
-                        var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
-                        that.$wechat.onMenuShareAppMessage({
-                          title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                          desc: that.roomBasic.introduce,   // 分享描述
-                          link: share_url,       // 分享链接 默认以当前链接
-                          imgUrl: that.roomBasic.logo_img,// 分享图标
-                          // 用户确认分享后执行的回调函数
-                          success: function () {
-
-                          },
-                          cancel: function () {
-                            //console.log('分享到朋友取消');
-                          }
-                        });
-
-                        that.$wechat.onMenuShareTimeline({
-                          title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
-                          link: share_url,       // 分享链接 默认以当前链接
-                          imgUrl: that.roomBasic.logo_img,// 分享图标
-                          success: function () {
-                            // 用户确认分享后执行的回调函数
-                            //alert('分享成功');
-                          },
-
-                          cancel: function () {
-                            // 用户取消分享后执行的回调函数
-                          }
-                        });
-
-                      });
+                        that.$wechat.config(JSON.parse(res.data));
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -661,96 +593,83 @@
                 }, (err) => {
                     that.$vux.loading.hide();
                 });
+                that.$wechat.ready(function () {
+                    var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
+                    that.$wechat.onMenuShareAppMessage({
+                        title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                        desc: that.roomBasic.introduce,   // 分享描述
+                        link: share_url,       // 分享链接 默认以当前链接
+                        imgUrl: that.roomBasic.logo_img,// 分享图标
+                        // 用户确认分享后执行的回调函数
+                        success: function () {
+
+                        },
+                        cancel: function () {
+                            //console.log('分享到朋友取消');
+                        }
+                    });
+
+                    that.$wechat.onMenuShareTimeline({
+                        title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                        link: share_url,       // 分享链接 默认以当前链接
+                        imgUrl: that.roomBasic.logo_img,// 分享图标
+                        success: function () {
+                            // 用户确认分享后执行的回调函数
+                            //alert('分享成功');
+                        },
+
+                        cancel: function () {
+                            // 用户取消分享后执行的回调函数
+                        }
+                    });
+                 
+                });
 
             },
           initMusic(){
-            this.musicFlag = this.firstMusic ? false: true;
-            this.firstMusic = false;
-            this.lensMusicObj = document.getElementById('lens-music');
-            this.liveMusicObj = document.getElementById('live-music');
+            var that = this;
+            this.musicFlag = false;
+            if(that.lensMusicObj){
+              that.lensMusicObj.dispose(); //销毁
+            }
 
-            this.lensMusicObj.currentTime = 0;
-            this.liveMusicObj.currentTime = 0;
+            if(that.liveMusicObj){
+              that.liveMusicObj.dispose(); //销毁
+            }
+
+            that.aliplayer_config.isLive = false;
+            that.aliplayer_config.autoplay = false;
+            that.aliplayer_config.rePlay = false;
+
+            that.aliplayer_config.source = that.currentVideo.lens_music;
+            that.aliplayer_config.id = 'lens-music';
+            that.lensMusicObj = new Aliplayer(that.aliplayer_config);
+
+
+            that.aliplayer_config.source = that.currentVideo.live_music;
+            that.aliplayer_config.id = 'live-music';
+            that.liveMusicObj = new Aliplayer(that.aliplayer_config);
           },
           playBgMusic(){
-            var that = this;
-            that.musicFlag = true;
-            setTimeout(function () {
-              that.liveMusicObj.play();
-            }, 500)
+            this.lensMusicObj.play();
           },
           playMusic(){
-            if(this.musicFlag){ //暂停
-              this.musicFlag = false;
-              this.liveMusicObj.pause();
-              this.lensMusicObj.play();
-            } else { // 播放
-              this.lensMusicObj.pause();
-              this.liveMusicObj.play();
-              this.musicFlag = true;
-            }
-          },
-          getCurrentTime(){
-            var date = new Date();
-            var year=date.getFullYear();
-            var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
-            var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
-            var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
-            var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
-            var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
-            this.date = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
-          },
-          goHome(){
-            this.$router.replace({path: '/'});
-          },
-
-          // 进入同层全屏事件
-          fullScreenHandle(){
-            // 1、 播放音乐
-            /*if(this.firstMusic){
-              this.musicFlag = true;
-              this.playBgMusic();
-            }*/
-            this.musicFlag = true;
-            this.liveMusicObj.play();
-            this.player.tag.style.height = window.height;
-            // 2、 调整高度
-            /*$(this.player.el()).addClass('enter-x5-player');
-            var screenHeight = document.body.clientHeight*(window.devicePixelRatio||1)+ "px";
-            this.player.tag.style.height = screenHeight;
-            let video=$(this.player.tag);
-            setTimeout(()=>{
-                video.removeClass('x5-top-left');
-            });*/
-          },
-
-          // 退出同层全屏事件
-          cancelFullScreenHandel(){
-            //this.showMusic = false;
-            //this.showMusic = true;
-            //this.musicFlag = false;
-            //this.firstMusic = true;
-
-            /*this.liveMusicObj.reload();
-            this.lensMusicObj.reload();*/
-
-            /*this.liveMusicObj.pause();
-            this.lensMusicObj.pause();
-            this.liveMusicObj.style.display = "none";
-            this.lensMusicObj.style.display = "none";*/
-
-            //退出全屏
-            console.log('stopMUisc');
-          },
-
-
+              if(this.musicFlag){ //暂停
+                this.musicFlag = false;
+                this.liveMusicObj.pause();
+                this.lensMusicObj.play();
+              } else { // 播放
+                this.liveMusicObj.play();
+                this.lensMusicObj.pause();
+                this.musicFlag = true;
+              }
+          }
         }
 
     }
 
 
 </script>
-
 
 <style scoped>
   .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100% !important;}
@@ -774,7 +693,46 @@
     right: 0;
     /* bottom: 0px; */
     left: 0;}
-  .online_video{display: block !important; z-index: 10}
-  .outline_video{display: none;}
-  .prism-player video{object-fit: fill !important;}
+    .online_video{display: block !important; z-index: 10}
+    .outline_video{display: none;}
+  .live-music{
+    position: absolute;
+    top: 4.5rem;
+    right: 0.5rem;
+    z-index: 10;
+  }
+
+  .live-music .live-music-icon{
+    width: 2.2rem;
+    height: 1.375rem;
+    background-size: 100%;
+    background-image: url("../../static/images/music.png");
+    background-repeat: no-repeat;
+  }
+
+  .live-music .active{
+    background-image: url("../../static/images/live_music.gif");
+  }
+
+  .live-view-icon{
+    position: absolute;
+    top: 7rem;
+    right: 0.9rem;
+    background: url("../../static/images/roomView.png") no-repeat;
+    background-size: 100%;
+    z-index: 10;
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .live-view-num{
+    position: absolute;
+    top: 8.5rem;
+    right: 0rem;
+    text-align: center;
+    font-size: 0.5rem;
+    width: 3rem;
+    z-index: 10;
+    color: #EDECEA
+  }
 </style>

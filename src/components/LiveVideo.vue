@@ -110,7 +110,7 @@
       window.removeEventListener('scroll',this.handleVideoScroll, true)
     },
     created(){
-      var width = document.body.clientWidth - 30;
+      var width = document.body.clientWidth - 15;
       var height = (width * 9 ) / 16;
       this.video_height = height+ "px";
       this.aliplayer_config.height = this.video_height;

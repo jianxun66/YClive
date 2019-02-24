@@ -33,8 +33,8 @@ Es6Promise.polyfill()
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
-import VConsole from 'vconsole'
-const vConsole = new VConsole();
+/*import VConsole from 'vconsole'
+const vConsole = new VConsole();*/
 
 
 Vue.use(VueRouter);
