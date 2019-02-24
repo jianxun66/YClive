@@ -318,7 +318,7 @@
             })
 
 
-          if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+          if (!that.isAndroid) {
             that.playinit = true;
           }
 
@@ -530,6 +530,7 @@
                         that.aliplayer_config.source = that.lens[0].vurl;
                         that.aliplayer_config.cover = that.lens[0].pic;
                         that.aliplayer_config.id = 'J_prismPlayer';
+                        console.log(that.play_status);
                         that.player = new Aliplayer(that.aliplayer_config);
                         that.player.on('x5requestFullScreen', this.fullScreenHandle);
                         that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
