@@ -27,6 +27,7 @@ import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
 import Es6Promise from 'es6-promise'
 import md5 from 'js-md5';
+import 'url-search-params-polyfill';
 require('es6-promise').polyfill()
 Es6Promise.polyfill()
 
@@ -113,28 +114,6 @@ Vue.prototype.axiosGet = function (url) {
     })
 };
 
-Vue.filter('dataFormat', function (value, fmt) {
-  let getDate = new Date(value);
-  let o = {
-    'M+': getDate.getMonth() + 1,
-    'd+': getDate.getDate(),
-    'h+': getDate.getHours(),
-    'm+': getDate.getMinutes(),
-    's+': getDate.getSeconds(),
-    'q+': Math.floor((getDate.getMonth() + 3) / 3),
-    'S': getDate.getMilliseconds()
-  };
-  if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (getDate.getFullYear() + '').substr(4 - RegExp.$1.length))
-  }
-  for (let k in o) {
-    if (new RegExp('(' + k + ')').test(fmt)) {
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
-    }
-  }
-  return fmt;
-});
-
 
 
 const routes = [
@@ -146,7 +125,7 @@ const routes = [
   {
     path: '/detail',
     component: RoomNew,
-    meta: { title: '直播间-新版' },
+    meta: { title: '实时视频新版' },
   },
   /*{
     path: '/indexNew',
@@ -177,7 +156,7 @@ const routes = [
     {
         path: '/room',
         component: RoomTemplate,
-        meta: { title: '直播间' },
+        meta: { title: '实时视频' },
     },
     {
         path: '/order',
@@ -207,7 +186,7 @@ const routes = [
     {
         path: '/',
         component: IndexNew,
-        meta: { title: '溯源直播' },
+        meta: { title: '云窗-农业可视溯源平台' },
     },
 ]
 

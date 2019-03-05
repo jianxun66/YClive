@@ -172,6 +172,14 @@
             },
 
             videoStart(item){
+              if(!localStorage.getItem('uid')){
+                this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '请先登录'});
+                this.$router.replace({path: '/auth'});
+                return false;
+              }
+
                 var that = this;
 
                 if(that.subStatus){

@@ -3,7 +3,7 @@
       <div class="header" id="top">
         <live-head></live-head>
         <div class="live-menu-bar" id="nav">
-          <span @click="goHome">直播</span>
+          <!--<span @click="goHome">直播</span>-->
           <span class="active">精彩短片</span>
         </div>
         <div class="live-header-bg"></div>
@@ -138,7 +138,7 @@
             if(res.data.length > 0) {
               res.data.forEach((v, k) => {
                 v.status = 1;
-                v.vno = "J_prismPlayer"+v.room_id;
+                v.vno = "J_prismPlayer"+v.id;
                 that.videoList.push(v);
               })
               that.pageSize++;

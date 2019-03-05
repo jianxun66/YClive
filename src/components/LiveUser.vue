@@ -19,7 +19,7 @@
             </li>
             <li :class="uitem == 4 ? 'active' : ''" @click="goDetail(4)" >
               <i class="live-my-icon live-icon-apply"></i>
-              开通直播
+              开通可视溯源
             </li>
           </ul>
         </div>

@@ -137,7 +137,7 @@
                 var buy_product = [];
                 for(var i = 0 ; i < this.product.length; i++){
                     if(this.product[i].buy_num > 0){
-                        buy_product.replace({"product_id": this.product[i].id, "num" : this.product[i].buy_num});
+                        buy_product.push({"product_id": this.product[i].id, "num" : this.product[i].buy_num});
                     }
                 }
 

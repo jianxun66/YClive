@@ -93,6 +93,15 @@
                 });
             },
             setComment(content){
+              // 检测是否登录
+              if(!localStorage.getItem('uid')){
+                this.$vux.alert.show({
+                  title: '温馨提示',
+                  content: '请先登录'});
+
+                this.$router.replace({path: '/auth'});
+                return false;
+              }
                 content = content.replace(/\s+/g,"");
                 if(!content){
                     this.$vux.alert.show({

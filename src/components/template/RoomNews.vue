@@ -12,12 +12,12 @@
             </div>
             <div class="live-home-icon" @click="goHome"></div>
             <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
-            <div class="live-title-roll">
+            <!--<div class="live-title-roll">
               <marquee scrollamount="2" vspace="10">
-                <span v-if="play_status == 1">欢迎来到 {{roomBasic.room_name}} 直播间 ·正在直播 {{date}}</span>
-                <span v-if="play_status == 2">欢迎来到 {{roomBasic.room_name}} 直播间 ·精彩回放</span>
+                <span v-if="play_status == 1">欢迎来到 {{roomBasic.room_name}} 设备实时视频中... {{date}}</span>
+                <span v-if="play_status == 2">欢迎来到 {{roomBasic.room_name}} 设备已离线，正在播放精彩回放...</span>
               </marquee>
-            </div>
+            </div>-->
           </div>
           <div class="live-music-detail">
             <audio :src="currentVideo.lens_music" loop="loop"  id="lens-music" style="display: none"></audio>
@@ -29,7 +29,7 @@
           <!-- Swiper -->
           <div class="swiper-container gallery-thumbs">
             <div class="swiper-wrapper tabMenu">
-              <div class="swiper-slide cur" @click="switchContent(0)">生态直播</div>
+              <div class="swiper-slide cur" @click="switchContent(0)">实时视频</div>
               <div class="swiper-slide" @click="switchContent(1)">生态商城</div>
               <div class="swiper-slide" @click="switchContent(2)">互动评论</div>
               <div class="swiper-slide" @click="switchContent(3)">精彩短片</div>
@@ -44,7 +44,7 @@
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <!--滑动内容-->
-                        <h2 class="tit videoIcon">实时直播</h2>
+                        <h2 class="tit videoIcon">溯源镜头</h2>
                         <div class="videoList swiper-no-swiping">
                           <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
                             <dt><img :src="len.cover_img"></dt>
@@ -82,7 +82,7 @@
                 </div>
                 <!--商品信息-->
                 <div class="swiper-slide con">
-                  <div class="swiper-container ">
+                  <div class="swiper-container scroll ">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <div class="my-order">

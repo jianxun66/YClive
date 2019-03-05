@@ -22,7 +22,7 @@
             {
               fname: 'live',
               fclass: 'live-foot-live',
-              ftext: '现场直播',
+              ftext: '实时视频',
               path: '/',
             },
             {

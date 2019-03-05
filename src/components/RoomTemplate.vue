@@ -3,6 +3,7 @@
       <educate v-if="room_template == 3"></educate>
       <roomNew v-else-if="room_template == 2"></roomNew>
       <room-old v-else-if="room_template == 1"></room-old>
+      <room-common v-else-if="room_template == 4"></room-common>
     </div>
 </template>
 
@@ -11,9 +12,10 @@
   import educate from './template/Educate';
   import roomOld from './template/RoomOld';
   import roomNew from './template/RoomNews';
+  import roomCommon from './template/RoomCommon';
     export default {
       name: "room_template",
-      components:{tea, educate, roomOld, roomNew},
+      components:{tea, educate, roomOld, roomNew, roomCommon},
       data(){
           return {
             'room_template': 0,
