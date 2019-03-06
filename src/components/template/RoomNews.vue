@@ -362,42 +362,7 @@
             },
             initSwiper(){
                 var that = this;
-                var galleryThumbs = new Swiper('.gallery-thumbs', {
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesVisibility: true,
-                    watchSlidesProgress: true,
-                })
 
-                that.galleryTop = new Swiper('.gallery-top', {
-                    autoHeight: true, //enable auto height
-                    spaceBetween: 10,
-                    observer: true,
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    thumbs: {
-                        swiper: galleryThumbs
-                    },
-                    on: {
-                        slideChangeTransitionStart: function(){
-                            that.switchContent(this.activeIndex);
-                        },
-                    },
-                })
-
-              //内容滚动
-              var scrollSwiper = new Swiper('.scroll', {
-                direction: 'vertical',
-                slidesPerView: 'auto',
-                scrollbarHide: true,
-                freeMode: true,
-                observer: true,
-                observeParents: true,
-                autoHeight:true,
-              });
             },
             switchVideo (item, isreplay) {
                 this.playinit = false;
@@ -448,25 +413,32 @@
                 }
             },
             switchContent (index) {
-                switch (index) {
-                    case 0:
-                        $('.shoppingCarBox').hide()
-                        $('.sendMessMenu').hide()
-                        break
-                    case 1:
-                        $('.shoppingCarBox').fadeIn()
-                        $('.sendMessMenu').hide()
-                        break
-                    case 2:
-                        $('.sendMessMenu').fadeIn()
-                        $('.shoppingCarBox').hide()
-                        break
-                    case 3:
-                        $('.shoppingCarBox').hide()
-                        $('.sendMessMenu').hide()
-                        break
-                    default:
+              $('.swiper-slide').each(function (item) {
+                if(item == index) {
+                  $(this).addClass('cur');
+                } else {
+                  $(this).removeClass('cur');
                 }
+              });
+
+              $(".con").each(function (item) {
+                if(item == index) {
+                  $(this).show();
+                } else {
+                  $(this).hide();
+                }
+
+                if(index == 1) {
+                  $('.shoppingCarBox').fadeIn()
+                  $('.sendMessMenu').hide()
+                } else if (index == 2) {
+                  $('.sendMessMenu').fadeIn()
+                  $('.shoppingCarBox').hide()
+                } else {
+                  $('.shoppingCarBox').hide()
+                  $('.sendMessMenu').hide()
+                }
+              })
             },
             getData(){
                 var that = this;

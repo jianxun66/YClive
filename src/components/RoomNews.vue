@@ -786,7 +786,6 @@
 
 <style scoped>
   .room-info .gallery-top, .tabCon, .con{width: 100%; height: 100%; }
-  .slidescroll{overflow-y: scroll; overflow-x: hidden}
   .live-room-main{
     position: absolute;
     top: calc(100vw/(16/9));
