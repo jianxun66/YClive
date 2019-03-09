@@ -10,7 +10,7 @@
             <div class="live-music" v-if="currentVideo.live_music">
               <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
             </div>
-            <div class="live-home-icon" @click="goHome"></div>
+            <!--<div class="live-home-icon" @click="goHome"></div>-->
             <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
             <!--<div class="live-title-roll">
               <marquee scrollamount="2" vspace="10">

@@ -421,16 +421,24 @@
                     that.play_status = 2;
                 }
 
-                that.VideoCoverImg = item.cover_img;
-                that.aliplayer_config.cover = item.pic;
-                that.aliplayer_config.source = item.vurl;
+
                 if(isreplay == 2){ // 切流播放
-                    that.play_status = 2;
-                    that.aliplayer_config.autoplay = false;
+                  that.play_status = 2;
+                  that.aliplayer_config.autoplay = false;
+
+                  if (that.aliplayer_config.source != item.vurl_reback) {
                     that.aliplayer_config.cover = item.reback_img; // 替换镜头回放封面地址
                     that.aliplayer_config.source = item.vurl_reback; // 替换镜头回放地址
-                    //item.vurl = item.vurl_reback;
-                    //item.pic = item.reback_img;
+                    that.VideoCoverImg = item.reback_img;
+                  } else { // 备用播放地址
+                    that.aliplayer_config.cover = item.spare_cover_url; // 替换镜头回放封面地址
+                    that.aliplayer_config.source = item.spare_url; // 替换镜头回放地址
+                    that.VideoCoverImg = item.spare_cover_url;
+                  }
+                } else {
+                  that.VideoCoverImg = item.cover_img;
+                  that.aliplayer_config.cover = item.pic;
+                  that.aliplayer_config.source = item.vurl;
                 }
 
                 that.currentVideo = item;
@@ -448,13 +456,34 @@
                 }
             },
             switchContent (index) {
-                switch (index) {
+              $('.swiper-slide').each(function (item) {
+                if(item == index) {
+                  $(this).addClass('cur');
+                } else {
+                  $(this).removeClass('cur');
+                }
+              });
+
+              $(".con").each(function (item) {
+                if(item == index) {
+                  $(this).show();
+                } else {
+                  $(this).hide();
+                }
+
+                if (index == 1) {
+                  $('.sendMessMenu').show()
+                } else {
+                  $('.sendMessMenu').hide()
+                }
+              })
+                /*switch (index) {
                     case 0:
-                        $('.shoppingCarBox').hide()
+                        $('.shoppingCarBox').show()
                         $('.sendMessMenu').hide()
                         break
                     case 1:
-                        $('.sendMessMenu').fadeIn()
+                        $('.sendMessMenu').show()
                         $('.shoppingCarBox').hide()
                         break
                     case 2:
@@ -462,7 +491,7 @@
                         $('.sendMessMenu').hide()
                         break
                     default:
-                }
+                }*/
             },
             getData(){
                 var that = this;
@@ -582,7 +611,7 @@
                 var that = this;
                 that.contabObj = setTimeout(function () {
                     var play_time = that.player.getCurrentTime();
-                    if(that.aliplayer_config.isLive && play_time <= 0){ // 直播
+                    if(play_time <= 0){ // 直播
                         //item.vurl = item.vurl_reback; // 替换镜头回放地址
                         //item.pic = item.reback_img; // 替换镜头回放封面地址
                         that.switchVideo(item, 2); //切换视频

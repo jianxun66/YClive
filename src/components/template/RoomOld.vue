@@ -456,11 +456,11 @@
             tobuy(){
                 var that = this;
                 // 检测金额 起送金额
-                if(that.deliver > 0 && that.total_price < that.deliver){
-                    this.$vux.alert.show({
-                        title: '温馨提示',
-                        content: "满"+that.deliver+"元起送，基地包邮到家"});
-                    return false;
+                if(that.deliver > 0 && parseInt(that.total_price) < parseInt(that.deliver)){
+                  this.$vux.alert.show({
+                    title: '温馨提示',
+                    content: "满"+that.deliver+"元起送，基地包邮到家"});
+                  return false;
                 }
 
                 this.$refs.product.buy_product(that.roomBasic.id,

@@ -25,6 +25,7 @@
 </template>
 
 <script>
+  import { cookie } from 'vux'
     export default {
         name: "comment",
         inject: ['reload'],
@@ -94,7 +95,7 @@
             },
             setComment(content){
               // 检测是否登录
-              if(!localStorage.getItem('uid')){
+              if(!cookie.get('uid')){
                 this.$vux.alert.show({
                   title: '温馨提示',
                   content: '请先登录'});
