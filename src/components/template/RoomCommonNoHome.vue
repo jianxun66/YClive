@@ -6,11 +6,11 @@
             <div v-bind:class=" (play_status == 1 && playing === false ) || playinit === true ? 'videoCover online_video' : 'videoCover outline_video'" >
               <img :src="VideoCoverImg">
             </div>
-            <div class="logo"><img src="../../../static/images/logo.png"></div>
+            <!--<div class="logo"><img src="../../../static/images/logo.png"></div>-->
             <div class="live-music" v-if="currentVideo.live_music">
               <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
             </div>
-            <div class="live-home-icon" @click="goHome"></div>
+            <div class="live-home-icon" @click="goHome" v-if="roomBasic.addr_url"></div>
             <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
             <!--<div class="live-title-roll">
               <marquee scrollamount="2" vspace="10">
@@ -30,9 +30,8 @@
           <div class="swiper-container gallery-thumbs">
             <div class="swiper-wrapper tabMenu">
               <div class="swiper-slide cur" @click="switchContent(0)">实时视频</div>
-              <div class="swiper-slide" @click="switchContent(1)">生态商城</div>
-              <div class="swiper-slide" @click="switchContent(2)">互动评论</div>
-              <div class="swiper-slide" @click="switchContent(3)">精彩短片</div>
+              <div class="swiper-slide" @click="switchContent(1)">互动评论</div>
+              <div class="swiper-slide" @click="switchContent(2)">精彩短片</div>
             </div>
           </div>
           <div class="live-room-content">
@@ -44,14 +43,14 @@
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <!--滑动内容-->
-                        <h2 class="tit videoIcon">溯源镜头</h2>
+                        <h2 class="tit videoIcon">实时镜头</h2>
                         <div class="videoList swiper-no-swiping">
                           <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
                             <dt><img :src="len.cover_img"></dt>
                             <dd>{{len.name}}</dd>
                           </dl>
                         </div>
-                        <h2 class="tit shopCarIcon">生态介绍</h2>
+                        <h2 class="tit shopCarIcon">详情介绍</h2>
                         <div class="company">
                           <dl>
                             <dt>
@@ -81,7 +80,7 @@
                   </div>
                 </div>
                 <!--商品信息-->
-                <div class="swiper-slide con">
+                <!--<div class="swiper-slide con">
                   <div class="swiper-container scroll ">
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
@@ -113,7 +112,7 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>-->
                 <!--评论-->
                 <div class="swiper-slide con">
                   <div class="swiper-container scroll">
@@ -149,10 +148,11 @@
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
-                <input type="text" value="" placeholder="输入评论内容..."  v-on:input ="checkLogin"  v-model="comment">
+                <input type="text" value="" placeholder="输入评论内容..." v-on:input="checkLogin" v-model="comment">
                 <button @click="subComment"></button>
             </div>
         </div>
+
         <div class="shoppingCarBox" style="display: none">
             <dl>
                 <dt>
@@ -173,13 +173,13 @@
 
 
 <script>
+  import { cookie } from 'vux'
     import importJs from '../../../static/js/importJs'
-    import { cookie } from 'vux'
     import RoomVideo from "../RoomVideoNew"
     import Product from "../Product"
     import Comments from "../Comment"
     export default {
-        name: 'room',
+        name: 'room-common',
         components:{
             "room-video": RoomVideo,
             "Product": Product,
@@ -405,16 +405,22 @@
                   that.play_status = 2;
                 }
 
+
+              if (that.aliplayer_config.autoplay) {
+                  this.checkVideoPlayer(item);
+                }
+
                 that.currentVideo = item;
                 that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
                 that.player.on('x5requestFullScreen', this.fullScreenHandle);
                 that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                 //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                // this.checkVideoPlayer(item);
                 if (that.aliplayer_config.autoplay) {
                   this.checkVideoPlayer(item);
                 }
+
+
                 that.currentVideo = item;
                 that.initMusic();
                 if(that.play_status == 2){ // 自动播放背景音乐
@@ -438,13 +444,8 @@
                 }
 
                 if(index == 1) {
-                  $('.shoppingCarBox').show()
-                  $('.sendMessMenu').hide()
-                } else if (index == 2) {
                   $('.sendMessMenu').show()
-                  $('.shoppingCarBox').hide()
                 } else {
-                  $('.shoppingCarBox').hide()
                   $('.sendMessMenu').hide()
                 }
               })
@@ -516,10 +517,10 @@
                         that.player.on('x5requestFullScreen', this.fullScreenHandle);
                         that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                         //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                        // that.checkVideoPlayer(that.lens[0]);
                         if ( that.aliplayer_config.autoplay) {
                           that.checkVideoPlayer(that.lens[0]);
                         }
+
                         that.currentVideo = that.lens[0]
                         that.initMusic();
                         if(that.play_status == 2){ // 自动播放背景音乐
@@ -686,7 +687,7 @@
             this.date = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
           },
           goHome(){
-            this.$router.replace({path: '/'});
+            window.location.href = this.roomBasic.addr_url;
           },
 
           // 进入同层全屏事件
@@ -743,6 +744,7 @@
               return false;
             }
           }
+
         }
 
     }

@@ -30,7 +30,6 @@
           <div class="swiper-container gallery-thumbs">
             <div class="swiper-wrapper tabMenu">
               <div class="swiper-slide cur" @click="switchContent(0)">实时视频</div>
-              <!--<div class="swiper-slide" @click="switchContent(1)">生态商城</div>-->
               <div class="swiper-slide" @click="switchContent(1)">互动评论</div>
               <div class="swiper-slide" @click="switchContent(2)">精彩短片</div>
             </div>
@@ -44,14 +43,14 @@
                     <div class="swiper-wrapper">
                       <div class="swiper-slide slidescroll">
                         <!--滑动内容-->
-                        <h2 class="tit videoIcon">溯源镜头</h2>
+                        <h2 class="tit videoIcon">实时镜头</h2>
                         <div class="videoList swiper-no-swiping">
                           <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
                             <dt><img :src="len.cover_img"></dt>
                             <dd>{{len.name}}</dd>
                           </dl>
                         </div>
-                        <h2 class="tit shopCarIcon">生态介绍</h2>
+                        <h2 class="tit shopCarIcon">详情介绍</h2>
                         <div class="company">
                           <dl>
                             <dt>
@@ -149,7 +148,7 @@
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
-                <input type="text" value="" placeholder="输入评论内容..." v-model="comment">
+                <input type="text" value="" placeholder="输入评论内容..." v-on:input="checkLogin" v-model="comment">
                 <button @click="subComment"></button>
             </div>
         </div>
@@ -174,6 +173,7 @@
 
 
 <script>
+  import { cookie } from 'vux'
     import importJs from '../../../static/js/importJs'
     import RoomVideo from "../RoomVideoNew"
     import Product from "../Product"
@@ -301,8 +301,8 @@
                 //that.musicFlag = true;
                 that.playinit = false;
                 that.checkVideoPlayer(that.currentVideo);
-              that.musicFlag = true;
-              that.playBgMusic();
+                that.musicFlag = true;
+                that.playBgMusic();
                 if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
 
                 }
@@ -362,42 +362,7 @@
             },
             initSwiper(){
                 var that = this;
-                var galleryThumbs = new Swiper('.gallery-thumbs', {
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    freeMode: true,
-                    watchSlidesVisibility: true,
-                    watchSlidesProgress: true,
-                })
 
-                that.galleryTop = new Swiper('.gallery-top', {
-                    autoHeight: true, //enable auto height
-                    spaceBetween: 10,
-                    observer: true,
-                    navigation: {
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
-                    },
-                    thumbs: {
-                        swiper: galleryThumbs
-                    },
-                    on: {
-                        slideChangeTransitionStart: function(){
-                            that.switchContent(this.activeIndex);
-                        },
-                    },
-                })
-
-              //内容滚动
-              var scrollSwiper = new Swiper('.scroll', {
-                direction: 'vertical',
-                slidesPerView: 'auto',
-                scrollbarHide: true,
-                freeMode: true,
-                observer: true,
-                observeParents: true,
-                autoHeight:true,
-              });
             },
             switchVideo (item, isreplay) {
                 this.playinit = false;
@@ -408,19 +373,6 @@
                 $('#J_prismPlayer').empty() //id为html里指定的播放器的容器id
                 this.play_status = 1;
                 var that = this;
-
-                if(item.vurl.indexOf('.m3u8') != -1){ // 直播源
-                    that.aliplayer_config.isLive = true;
-                    that.aliplayer_config.autoplay = false;
-                    that.aliplayer_config.rePlay = false;
-                    that.play_status = 1;
-                } else {
-                    that.aliplayer_config.isLive = false;
-                    that.aliplayer_config.autoplay = true;
-                    that.aliplayer_config.rePlay = true;
-                    that.play_status = 2;
-                }
-
 
                 if(isreplay == 2){ // 切流播放
                   that.play_status = 2;
@@ -441,13 +393,33 @@
                   that.aliplayer_config.source = item.vurl;
                 }
 
+                if(that.aliplayer_config.source.indexOf('.m3u8') != -1){ // 直播源
+                  that.aliplayer_config.isLive = true;
+                  that.aliplayer_config.autoplay = false;
+                  that.aliplayer_config.rePlay = false;
+                  that.play_status = 1;
+                } else {
+                  that.aliplayer_config.isLive = false;
+                  that.aliplayer_config.autoplay = false;
+                  that.aliplayer_config.rePlay = true;
+                  that.play_status = 2;
+                }
+
+
+              if (that.aliplayer_config.autoplay) {
+                  this.checkVideoPlayer(item);
+                }
+
                 that.currentVideo = item;
                 that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
                 that.player.on('x5requestFullScreen', this.fullScreenHandle);
                 that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                 //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                // this.checkVideoPlayer(item);
+                if (that.aliplayer_config.autoplay) {
+                  this.checkVideoPlayer(item);
+                }
+
 
                 that.currentVideo = item;
                 that.initMusic();
@@ -471,27 +443,12 @@
                   $(this).hide();
                 }
 
-                if (index == 1) {
+                if(index == 1) {
                   $('.sendMessMenu').show()
                 } else {
                   $('.sendMessMenu').hide()
                 }
               })
-                /*switch (index) {
-                    case 0:
-                        $('.shoppingCarBox').show()
-                        $('.sendMessMenu').hide()
-                        break
-                    case 1:
-                        $('.sendMessMenu').show()
-                        $('.shoppingCarBox').hide()
-                        break
-                    case 2:
-                        $('.shoppingCarBox').hide()
-                        $('.sendMessMenu').hide()
-                        break
-                    default:
-                }*/
             },
             getData(){
                 var that = this;
@@ -546,7 +503,7 @@
                             that.firstMusic = true;
                         } else {
                             that.aliplayer_config.isLive = false;
-                            that.aliplayer_config.autoplay = true;
+                            that.aliplayer_config.autoplay = false;
                             that.aliplayer_config.rePlay = true;
                             that.play_status = 2;
                         }
@@ -560,7 +517,10 @@
                         that.player.on('x5requestFullScreen', this.fullScreenHandle);
                         that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                         //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                        // that.checkVideoPlayer(that.lens[0]);
+                        if ( that.aliplayer_config.autoplay) {
+                          that.checkVideoPlayer(that.lens[0]);
+                        }
+
                         that.currentVideo = that.lens[0]
                         that.initMusic();
                         if(that.play_status == 2){ // 自动播放背景音乐
@@ -581,7 +541,7 @@
             tobuy(){
                 var that = this;
                 // 检测金额 起送金额
-                if(that.deliver > 0 && that.total_price < that.deliver){
+                if(that.deliver > 0 && parseInt(that.total_price) < parseInt(that.deliver)){
                     this.$vux.alert.show({
                         title: '温馨提示',
                         content: "满"+that.deliver+"元起送，基地包邮到家"});
@@ -769,6 +729,21 @@
             console.log('stopMUisc');
           },
 
+          checkLogin(){
+            if(!cookie.get('uid')){
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '请先登录'});
+
+              cookie.set('refer', '/room?room_id='+this.room_id, {
+                path: '/',
+                expires: 7200
+              });
+              this.$router.replace({path: '/auth'});
+              console.log('请先登录');
+              return false;
+            }
+          }
 
         }
 

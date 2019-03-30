@@ -26,6 +26,7 @@ import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
 import Es6Promise from 'es6-promise'
+import commonJs from '../static/js/common'
 import md5 from 'js-md5';
 import 'url-search-params-polyfill';
 require('es6-promise').polyfill()
@@ -34,8 +35,10 @@ Es6Promise.polyfill()
 import  { AlertPlugin ,LoadingPlugin ,ToastPlugin, cookie } from 'vux'
 
 import { WechatPlugin } from 'vux'
+
 /*import VConsole from 'vconsole'
 const vConsole = new VConsole();*/
+
 
 
 Vue.use(VueRouter);
@@ -45,6 +48,7 @@ Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
 Vue.use(VueWechatTitle)
 Vue.use(VueScroller)
+
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
@@ -240,7 +244,7 @@ router.beforeEach((to, from, next) => {
 });
 
 FastClick.attach(document.body)
-
+//Vue.use(commonJs)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

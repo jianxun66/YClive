@@ -100,6 +100,10 @@
                   title: '温馨提示',
                   content: '请先登录'});
 
+                cookie.set('refer', '/room?room_id='+this.room_id, {
+                  path: '/',
+                  expires: 7200
+                });
                 this.$router.replace({path: '/auth'});
                 return false;
               }

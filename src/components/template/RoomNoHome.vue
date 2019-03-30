@@ -10,7 +10,7 @@
             <div class="live-music" v-if="currentVideo.live_music">
               <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
             </div>
-            <!--<div class="live-home-icon" @click="goHome"></div>-->
+            <div class="live-home-icon" @click="goHome" v-if="roomBasic.addr_url"></div>
             <div class="live-view-icon">热度 {{roomBasic.click_num}} 人</div>
             <!--<div class="live-title-roll">
               <marquee scrollamount="2" vspace="10">
@@ -149,7 +149,7 @@
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
-                <input type="text" value="" placeholder="输入评论内容..." v-model="comment">
+                <input type="text" value="" placeholder="输入评论内容..." v-on:input="checkLogin" v-model="comment">
                 <button @click="subComment"></button>
             </div>
         </div>
@@ -174,6 +174,7 @@
 
 
 <script>
+  import { cookie } from 'vux'
     import importJs from '../../../static/js/importJs'
     import RoomVideo from "../RoomVideoNew"
     import Product from "../Product"
@@ -374,18 +375,6 @@
                 this.play_status = 1;
                 var that = this;
 
-                if(item.vurl.indexOf('.m3u8') != -1){ // 直播源
-                    that.aliplayer_config.isLive = true;
-                    that.aliplayer_config.autoplay = false;
-                    that.aliplayer_config.rePlay = false;
-                    that.play_status = 1;
-                } else {
-                    that.aliplayer_config.isLive = false;
-                    that.aliplayer_config.autoplay = true;
-                    that.aliplayer_config.rePlay = true;
-                    that.play_status = 2;
-                }
-
                 if(isreplay == 2){ // 切流播放
                   that.play_status = 2;
                   that.aliplayer_config.autoplay = false;
@@ -405,13 +394,28 @@
                   that.aliplayer_config.source = item.vurl;
                 }
 
+                if(that.aliplayer_config.source.indexOf('.m3u8') != -1){ // 直播源
+                  that.aliplayer_config.isLive = true;
+                  that.aliplayer_config.autoplay = false;
+                  that.aliplayer_config.rePlay = false;
+                  that.play_status = 1;
+                } else {
+                  that.aliplayer_config.isLive = false;
+                  that.aliplayer_config.autoplay = false;
+                  that.aliplayer_config.rePlay = true;
+                  that.play_status = 2;
+                }
+
                 that.currentVideo = item;
                 that.aliplayer_config.id = 'J_prismPlayer';
                 that.player = new Aliplayer(that.aliplayer_config)
                 that.player.on('x5requestFullScreen', this.fullScreenHandle);
                 that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                 //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                // this.checkVideoPlayer(item);
+                if (that.aliplayer_config.autoplay) {
+                  this.checkVideoPlayer(item);
+                }
+
 
                 that.currentVideo = item;
                 that.initMusic();
@@ -500,7 +504,7 @@
                             that.firstMusic = true;
                         } else {
                             that.aliplayer_config.isLive = false;
-                            that.aliplayer_config.autoplay = true;
+                            that.aliplayer_config.autoplay = false;
                             that.aliplayer_config.rePlay = true;
                             that.play_status = 2;
                         }
@@ -514,7 +518,10 @@
                         that.player.on('x5requestFullScreen', this.fullScreenHandle);
                         that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
                         //that.player.on('requestFullScreen', this.requestFullScreenHandel);
-                        // that.checkVideoPlayer(that.lens[0]);
+                        if ( that.aliplayer_config.autoplay) {
+                          that.checkVideoPlayer(that.lens[0]);
+                        }
+
                         that.currentVideo = that.lens[0]
                         that.initMusic();
                         if(that.play_status == 2){ // 自动播放背景音乐
@@ -681,7 +688,7 @@
             this.date = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
           },
           goHome(){
-            this.$router.replace({path: '/'});
+            window.location.href = this.roomBasic.addr_url;
           },
 
           // 进入同层全屏事件
@@ -723,6 +730,21 @@
             console.log('stopMUisc');
           },
 
+          checkLogin(){
+            if(!cookie.get('uid')){
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '请先登录'});
+
+              cookie.set('refer', '/room?room_id='+this.room_id, {
+                path: '/',
+                expires: 7200
+              });
+              this.$router.replace({path: '/auth'});
+              console.log('请先登录');
+              return false;
+            }
+          }
 
         }
 

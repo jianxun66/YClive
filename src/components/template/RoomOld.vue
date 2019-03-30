@@ -115,7 +115,7 @@
 
         <div class="sendMessMenu" style="display: none">
             <div class="sendMessBox">
-                <input type="text" value="" placeholder="输入评论内容..." v-model="comment">
+                <input type="text" value="" placeholder="输入评论内容..." v-on:input="checkLogin" v-model="comment">
                 <button @click="subComment"></button>
             </div>
         </div>
@@ -140,6 +140,7 @@
 
 
 <script>
+  import { cookie } from 'vux'
     import importJs from '../../../static/js/importJs'
     import RoomVideo from "../RoomVideo"
     import Product from "../Product"
@@ -503,6 +504,21 @@
                     this.showCover = false;
                 }
             },
+          checkLogin(){
+            if(!cookie.get('uid')){
+              this.$vux.alert.show({
+                title: '温馨提示',
+                content: '请先登录'});
+
+              cookie.set('refer', '/room?room_id='+this.room_id, {
+                path: '/',
+                expires: 7200
+              });
+              this.$router.replace({path: '/auth'});
+              console.log('请先登录');
+              return false;
+            }
+          },
             WxShare(){
                 var url = window.location.href;
                 var that = this;
