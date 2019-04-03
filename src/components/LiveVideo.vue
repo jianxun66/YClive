@@ -72,7 +72,7 @@
           autoplay: true,
           playsinline:true,
           showBuffer:true,
-          isLive:true,
+          isLive:false,
           x5_type: true,
           //支持播放地址播放,此播放优先级最高
           source : '',

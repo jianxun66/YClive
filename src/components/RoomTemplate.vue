@@ -33,17 +33,20 @@
         var that = this;
         this.room_template = this.$route.query.room_id;
         this.room_id = this.$route.query.room_id;
-        var educate = [27,26,21];
 		
-        if (this.room_id != 27 && this.room_id != 26 && this.room_id != 21) { // 排除教育定制版
-          if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
-            document.addEventListener('WeixinJSBridgeReady', this.ready, false)
-          } else {
-            this.ready()
-          }
-        } else { // 获取配置模板信息
-          this.getRoomTemplate();
-        }
+		if (!window.WeixinJSBridge || !WeixinJSBridge.invoke) {
+			//document.addEventListener('WeixinJSBridgeReady', this.ready, false)
+			this.getRoomTemplate();
+		  } else {
+			
+			if (this.room_id != 27 && this.room_id != 26 && this.room_id != 21) { // 排除教育定制版
+				this.ready()
+			} else { // 获取配置模板信息
+			  this.getRoomTemplate();
+			}
+		  }
+		  
+        
 
       },
       methods:{

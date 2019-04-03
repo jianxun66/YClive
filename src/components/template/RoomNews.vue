@@ -727,7 +727,13 @@
             //退出全屏
             console.log('stopMUisc');
           },
-
+          stopMUisc(){
+            this.musicFlag = false;
+            this.liveMusicObj.pause();
+            this.lensMusicObj.pause();
+            // 暂停视频
+            this.player.pause();
+          },
           checkLogin(){
             if(!cookie.get('uid')){
               this.$vux.alert.show({

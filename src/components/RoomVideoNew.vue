@@ -42,7 +42,7 @@
                     autoplay: true,
                     playsinline:true,
                     showBuffer:true,
-                    isLive:true,
+                    isLive:false,
                     x5_type:true,
                     //支持播放地址播放,此播放优先级最高
                     source : 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
@@ -130,6 +130,9 @@
                 });
             },
             playervideo(id, source, item){
+                // 暂停背景音乐
+                this.$parent.stopMUisc();
+
                 item.status = 0;
                 if(this.player.length > 0){
                     this.player.dispose() //销毁
