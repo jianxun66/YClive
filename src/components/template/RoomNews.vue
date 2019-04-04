@@ -327,19 +327,6 @@
           }, 1000);
 
 
-          window.addEventListener("blur", function () {
-            that.musicFlag = false;
-            that.liveMusicObj.pause();
-            that.lensMusicObj.pause();
-
-          });
-
-          window.addEventListener("focus", function () {
-            that.musicFlag = true;
-            that.liveMusicObj.play();
-          });
-
-
           document.addEventListener('visibilitychange', function(){
             if (document.visibilityState === 'hidden') {
               that.musicFlag = false;
@@ -417,9 +404,9 @@
                 }
                 that.currentVideo = item;
                 that.initMusic();
-                if(that.play_status == 2){ // 自动播放背景音乐
+                /*if(that.play_status == 2){ // 自动播放背景音乐
                   that.playBgMusic();
-                }
+                }*/
             },
             switchContent (index) {
               $('.swiper-slide').each(function (item) {
@@ -522,9 +509,9 @@
                         }
                         that.currentVideo = that.lens[0]
                         that.initMusic();
-                        if(that.play_status == 2){ // 自动播放背景音乐
+                        /*if(that.play_status == 2){ // 自动播放背景音乐
                           that.playBgMusic();
-                        }
+                        }*/
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -602,10 +589,10 @@
                       that.$wechat.ready(function () {
 
                         // ios 自动播放音乐
-                        if(that.play_status == 2){ // 自动播放背景音乐
+                        /*if(that.play_status == 2){ // 自动播放背景音乐
                           that.musicFlag = true;
                           that.playBgMusic();
-                        }
+                        }*/
                         // ios 自动播放音乐
 
                         var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
@@ -696,9 +683,9 @@
               this.musicFlag = true;
               this.playBgMusic();
             }*/
-            this.musicFlag = true;
+            /*this.musicFlag = true;
             this.liveMusicObj.play();
-            this.player.tag.style.height = window.height;
+            this.player.tag.style.height = window.height;*/
             // 2、 调整高度
             /*$(this.player.el()).addClass('enter-x5-player');
             var screenHeight = document.body.clientHeight*(window.devicePixelRatio||1)+ "px";

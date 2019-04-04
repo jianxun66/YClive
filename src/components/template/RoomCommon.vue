@@ -423,9 +423,9 @@
 
                 that.currentVideo = item;
                 that.initMusic();
-                if(that.play_status == 2){ // 自动播放背景音乐
+                /*if(that.play_status == 2){ // 自动播放背景音乐
                   that.playBgMusic();
-                }
+                }*/
             },
             switchContent (index) {
               $('.swiper-slide').each(function (item) {
@@ -523,9 +523,9 @@
 
                         that.currentVideo = that.lens[0]
                         that.initMusic();
-                        if(that.play_status == 2){ // 自动播放背景音乐
+                        /*if(that.play_status == 2){ // 自动播放背景音乐
                           that.playBgMusic();
-                        }
+                        }*/
                     } else {
                         this.$vux.alert.show({
                             title: '温馨提示',
@@ -697,9 +697,9 @@
               this.musicFlag = true;
               this.playBgMusic();
             }*/
-            this.musicFlag = true;
+            /*this.musicFlag = true;
             this.liveMusicObj.play();
-            this.player.tag.style.height = window.height;
+            this.player.tag.style.height = window.height;*/
             // 2、 调整高度
             /*$(this.player.el()).addClass('enter-x5-player');
             var screenHeight = document.body.clientHeight*(window.devicePixelRatio||1)+ "px";
