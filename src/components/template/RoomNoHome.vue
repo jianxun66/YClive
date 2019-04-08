@@ -327,20 +327,7 @@
             that.getCurrentTime();//修改数据date
           }, 1000);
 
-
-          window.addEventListener("blur", function () {
-            that.musicFlag = false;
-            that.liveMusicObj.pause();
-            that.lensMusicObj.pause();
-
-          });
-
-          window.addEventListener("focus", function () {
-            that.musicFlag = true;
-            that.liveMusicObj.play();
-          });
-
-
+          
           document.addEventListener('visibilitychange', function(){
             if (document.visibilityState === 'hidden') {
               that.musicFlag = false;
