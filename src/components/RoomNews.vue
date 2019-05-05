@@ -137,7 +137,7 @@
                       <room-video :room_id="room_id"></room-video>
                     </div>
                     <div class="footerLogo">
-                      <img src="../../static/images/footerLogo.png">
+                     <!-- <img src="../../../static/images/footerLogo.png">-->
                     </div>
                   </div>
                 </div>

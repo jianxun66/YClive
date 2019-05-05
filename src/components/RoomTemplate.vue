@@ -4,7 +4,7 @@
     <div class="secret-input" v-if="check_secret">
       <div class="secret-input-box">
         <div>
-          <input type="text" class="secret-key" v-model="secret_key" placeholder="请输入密钥"/>
+          <input type="text" class="secret-key" id="secret-input" v-model="secret_key" placeholder="请输入密码或手机号"/>
         </div>
         <div class="secret-input-btn">
           <x-button type="primary" @click.native="checkSecretKey">提交</x-button>
@@ -14,12 +14,13 @@
     <div v-else>
       <!--秘钥授权界面-->
       <educate v-if="room_template == 8"></educate>
-      <roomNew v-else-if="room_template == 2"></roomNew>
       <room-old v-else-if="room_template == 1"></room-old>
       <room-common v-else-if="room_template == 4"></room-common>
       <room-no-home v-else-if="room_template == 5"></room-no-home>
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
+      <snapshot v-else-if="room_template == 9"></snapshot>
       <room-mini v-else-if="room_template == 9999"></room-mini>
+      <roomNew v-else></roomNew>
     </div>
 
   </div>
@@ -34,13 +35,14 @@
   import roomNoHome from './template/RoomNoHome';
   import roomCommonNoHome from './template/RoomCommonNoHome';
   import roomMini from "./template/RoomMini"
+  import snapshot from "./template/Snapshot"
   import wx from 'weixin-js-sdk'
   import { XButton } from 'vux'
 
   export default {
     name: "room_template",
     components: {roomMini, tea, educate, roomOld, roomNew, roomCommon,
-      roomNoHome, roomCommonNoHome, XButton},
+      roomNoHome, roomCommonNoHome, XButton, snapshot},
     data() {
       return {
         'room_template': 0,
@@ -49,31 +51,20 @@
         'secret_key': '',
       }
     },
+    mounted () {
+      if (document.getElementById('secret-input')){
+        document.getElementById('secret-input').addEventListener('blur',function(){
+            window.scrollTo(0,0)   //页面滚动到顶部
+          },
+          false
+        )
+      }
+    },
     created() {
       var that = this;
       //this.room_template = this.$route.query.room_id;
       this.room_id = this.$route.query.room_id;
-
-      var ua = window.navigator.userAgent.toLowerCase();
-      if (ua.match(/MicroMessenger/i) == 'micromessenger') {    //判断是否是微信环境
-        wx.miniProgram.getEnv(function (res) {
-          if (res.miniprogram) {
-            // 小程序环境下逻辑
-            if (that.room_id != 27 && that.room_id != 26 && that.room_id != 21) { // 排除教育定制版
-              that.room_template = 9999;
-            } else {
-              that.getRoomTemplate();
-            }
-          } else {
-            //非小程序环境下逻辑
-            that.getRoomTemplate();
-          }
-        })
-      } else {
-        this.getRoomTemplate();
-      }
-
-
+      this.getRoomTemplate();
     },
     methods: {
 
@@ -88,6 +79,19 @@
           that.$vux.loading.hide();
           that.room_template = res.data.template;
           that.check_secret = res.data.secret;
+          var ua = window.navigator.userAgent.toLowerCase();
+          if (ua.match(/MicroMessenger/i) == 'micromessenger') {    //判断是否是微信环境
+            wx.miniProgram.getEnv(function (resMini) {
+              if (resMini.miniprogram) {
+                // 小程序环境下逻辑
+                if (that.room_id != 27 && that.room_id != 26 && that.room_id != 21) { // 排除教育定制版
+                  that.room_template = 9999;
+                }
+              }
+            })
+          }
+
+
         });
       },
       checkSecretKey() {
@@ -111,6 +115,7 @@
             //that.commentList.push(res.data);
             if (res.data.check) {
               that.check_secret = false;
+              window.scrollTo(0,0)   //页面滚动到顶部
             } else {
               that.$vux.alert.show({
                 title: '温馨提示',
@@ -131,7 +136,7 @@
 
 <style scoped>
   .secret-input{width: 100%; height: 100%; background: white; position: absolute}
-  .secret-input-box{position: absolute; top:6rem; width: 80%; text-align: center; left: 10%;}
+  .secret-input-box{position: absolute; top:42%; width: 80%; text-align: center; left: 10%;}
   .secret-input-box .secret-key{width: 100%; padding: 0.8rem; box-sizing: border-box; font-size: 1rem; border: 1px solid #DAD9DD}
   .secret-input-box .secret-input-btn{margin-top: 1rem; text-align: center}
 </style>

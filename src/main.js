@@ -29,6 +29,8 @@ import Es6Promise from 'es6-promise'
 import commonJs from '../static/js/common'
 import md5 from 'js-md5';
 import 'url-search-params-polyfill';
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
 require('es6-promise').polyfill()
 Es6Promise.polyfill()
 
@@ -48,6 +50,7 @@ Vue.use(ToastPlugin, {position: 'middle'});
 Vue.use(WechatPlugin);
 Vue.use(VueWechatTitle)
 Vue.use(VueScroller)
+Vue.use(preview)
 
 
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';

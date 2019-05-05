@@ -350,7 +350,6 @@
             },
             initSwiper(){
                 var that = this;
-
             },
             switchVideo (item, isreplay) {
                 this.playinit = false;
