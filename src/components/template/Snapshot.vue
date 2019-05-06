@@ -24,7 +24,7 @@
         <div class="swiper-container banner">
           <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="(bitem , bkey) in bannerList" :key="bkey">
-              <img  @click="goBanner(bitem)" @click.stop :src="bitem.cover">
+              <a :href="bitem.links != '' ? bitem.links : 'javascript:void(0);' "><img  @click="goBanner(bitem)" @click.stop :src="bitem.cover"></a>
             </div>
           </div>
           <div class="swiper-pagination"></div>
@@ -37,7 +37,7 @@
       <div class="gallery-thumbs" id="tabMenu">
         <div class="tabMenu">
           <div class="swiper-slide cur" @click="switchContent(0)">溯源直播</div>
-          <div class="swiper-slide" @click="switchContent(1)">产品介绍</div>
+          <div class="swiper-slide" @click="switchContent(1)">基地介绍</div>
           <div class="swiper-slide" @click="switchContent(2)">溯源回放</div>
           <div class="swiper-slide" @click="switchContent(3)">溯源查询</div>
         </div>
@@ -95,7 +95,7 @@
                       <div class="videoList">
                         <dl v-for="(len, lindex) in lens" @click="changeVideo(len)"
                             :class='["live-1", len.aid == videoLensId ? "active" : ""]'
-                            v-if="len.vtype == 'lens'">
+                            v-if="len.source_type == 'lens'">
                           <dd>{{len.name}}</dd>
                         </dl>
                       </div>
@@ -130,21 +130,9 @@
                       <div class="mark">长按图片，可下载保存</div>
                     </div>
                     <div class="image-list">
-                      <div class="image-item">
+                      <div class="image-item" v-for="(sitem, sindex) in snapshotList">
                         <div class="image-content">
-                          <img preview
-                               preview-text="描述"
-                               large="https://yc.adaxiang.com/uploads/images/20190504/7fbbcec46d5188739c16b8527e1288ce.jpeg"
-                               src="https://yc.adaxiang.com/uploads/images/20190504/7fbbcec46d5188739c16b8527e1288ce.jpeg"/>
-                        </div>
-                        <div class="image-intro">
-                          <div class="image-title"></div>
-                          <div class="image-time"></div>
-                        </div>
-                      </div>
-                      <div class="image-item" v-for="sitem in snapshotList" @click="showDialog(sitem.cover, 1)">
-                        <div class="image-content">
-                          <img preview :src="sitem.cover"/>
+                          <img :preview="sindex" :preview-text="sitem.title" :src="sitem.cover"/>
                         </div>
                         <div class="image-intro">
                           <div class="image-title">{{sitem.title}}</div>
@@ -173,28 +161,6 @@
 
     </div>
     <!--视频弹窗-->
-    <!--图片弹窗-->
-    <div v-transfer-dom>
-      <x-dialog v-model="dialogInfo.showDialog"
-                hide-on-blur
-                @on-hide="hideDialog"
-                :dialog-style="{'max-width': '100%', width: '100%', 'background-color': 'transparent'}">
-        <div class="image-box" v-if="dialogInfo.type == 1">
-          <img :src="dialogInfo.link"/>
-        </div>
-        <div class="video-box" v-if="dialogInfo.type == 2">
-          <!--播放器-->
-          <div class="video" @click="imgCover">
-            <div class="videoCover outline_video" >
-              <img :src="VideoCoverImg">
-            </div>
-          </div>
-        </div>
-        <div @click="dialogInfo.showDialog=false">
-          <span class="vux-close"></span>
-        </div>
-      </x-dialog>
-    </div>
     <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
     <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
   </div>
@@ -248,7 +214,7 @@
           useH5Prism: !0,
           useFlashPrism: !1,
           x5_video_position: "normal",
-          //x5_type: "h5",
+          x5_type: "video",
           source: '',
           cover: '',
           rePlay: false,
@@ -391,6 +357,9 @@
         });
 
         that.switchContent(0); // 自适应高度
+        setTimeout(function(){
+          that.$previewRefresh(); // 图片预览
+        }, 1000);
       });
       document.querySelector('body').setAttribute('style', 'background-color:#F3F4F6')
     },
@@ -566,7 +535,7 @@
             }
 
             for(var sindex in that.lens) {
-              if (that.lens[sindex].vtype == 'lens') {
+              if (that.lens[sindex].source_type == 'lens') {
                 that.videoLensId = that.lens[sindex].aid;
                 that.getVideoList();
                 break;
@@ -823,15 +792,18 @@
         var video_config = {
           "id": "player2",
           "source": item,
+          "cover": "https://yc.adaxiang.com/front/static/images/video_load.gif",
+          //"cover": "https://ycycc-hb.oss-cn-beijing.aliyuncs.com/yc-ycc-images/live-hb/ycbdh003.jpg",
           "width": "100%",
           "height": "100%",
           "autoplay": false,
           "isLive": false,
           "rePlay": false,
           "playsinline": true,
-          "preload": true,
+          "preload": false,
           "controlBarVisibility": "hover",
           "useH5Prism": true,
+          "x5_type": "video",
           "skinLayout": [
             {
               "name": "controlBar",
