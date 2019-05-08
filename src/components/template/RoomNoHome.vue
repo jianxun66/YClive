@@ -3,7 +3,7 @@
         <div class="room-deader">
           <div class="video" @click="imgCover">
             <div class="prism-player" id="J_prismPlayer"></div>
-            <div v-bind:class=" (play_status == 1 && playing === false ) || playinit === true ? 'videoCover online_video' : 'videoCover outline_video'" >
+            <div v-bind:class=" (play_status == 1 && playing != 1 ) || playinit == 1 ? 'videoCover online_video' : 'videoCover outline_video'" >
               <img :src="VideoCoverImg">
             </div>
             <div class="logo"><img src="../../../static/images/logo.png"></div>
@@ -191,8 +191,8 @@
                 contabObj: {},
                 contentSwiper: {},
                 currentVideo : {},
-                playing: false,
-                playinit: false,
+                playing: 2,
+                playinit: 2,
                 VideoCoverImg: "",
                 showCover: false,
                 galleryTop: {},
@@ -300,7 +300,7 @@
 
             $('#J_prismPlayer').click(function () {
                 //that.musicFlag = true;
-                that.playinit = false;
+                that.playinit = 2;
                 that.checkVideoPlayer(that.currentVideo);
                 that.musicFlag = true;
                 that.playBgMusic();
@@ -320,7 +320,7 @@
 
 
           if (!that.isAndroid) {
-            that.playinit = true;
+            that.playinit = 1;
           }
 
           this.timer = setInterval(function() {
@@ -352,7 +352,7 @@
                 var that = this;
             },
             switchVideo (item, isreplay) {
-                this.playinit = false;
+                this.playinit = 2;
                 clearTimeout(this.contabObj);// 清除定时器
                 $('.videoCover').fadeOut()
                 this.player.dispose(); //销毁
@@ -567,7 +567,7 @@
                 }, 3000)
             },
             imgCover() {
-                this.playing = true;
+                this.playing = 1;
                 $(".videoCover").css("z-index", "-1 !important");
             },
             hideCoverImg(){
