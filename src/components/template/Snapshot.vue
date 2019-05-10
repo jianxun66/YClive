@@ -55,7 +55,7 @@
                       <div class="videoList">
                         <div class="video" @click="imgCover">
                           <div class="prism-player " id="J_prismPlayer"></div>
-                          <div v-bind:class=" (play_status == 1 && playing != 1) || playinit == 1  ? 'videoCover online_video' : 'videoCover outline_video'" >
+                          <div v-bind:class=" (play_status == 1 && playing != 1 ) || playinit == 1 ? 'videoCover online_video' : 'videoCover outline_video'" >
                             <img :src="VideoCoverImg">
                           </div>
                         </div>
@@ -300,6 +300,9 @@
       setTimeout(that.initSwiper, 1000)
       var height = $('.prism-player').width() ;
       $('.prism-player').height(height / 16 * 9)
+      if (!that.isAndroid) {
+        that.playinit = 1;
+      }
 
       $('#J_prismPlayer').click(function () {
         that.playinit = 2;
@@ -317,11 +320,6 @@
           $(this).addClass('hide')
         }
       })
-
-
-      if (!that.isAndroid) {
-        that.playinit = 1;
-      }
 
       this.timer = setInterval(function() {
         that.getCurrentTime();//修改数据date
@@ -653,7 +651,9 @@
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
-          that.liveMusicObj.play();
+          if(that.liveMusicObj && that.liveMusicObj.hasOwnProperty("play")){
+            that.liveMusicObj.play();
+          }
         }, 500)
       },
       playMusic(){
@@ -888,8 +888,6 @@
     top: 42px;
     right: 0;
     left: 0;}
-  /*.online_video{display: block !important; z-index: 10}
-  .outline_video{display: none;}*/
   .prism-player video{object-fit: fill !important;}
   .snapshot .videoList dl{ width: 33.333%; box-sizing: border-box;}
   .snapshot-header{}
@@ -910,5 +908,6 @@
   .snapshot .video-container .videoList dl{ background-color: #C8C8C8; margin: 0 10px;}
   .snapshot .video-container .videoList dl dd{color: white;}
   .snapshot .video-container .videoList .active{background-color: #68B735;}
-
+  .online_video{display: block !important; z-index: 10}
+  .outline_video{display: none !important;}
 </style>

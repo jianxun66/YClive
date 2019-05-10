@@ -19,7 +19,7 @@
       <room-no-home v-else-if="room_template == 5"></room-no-home>
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
       <snapshot v-else-if="room_template == 9"></snapshot>
-      <room-mini v-else-if="room_template == 9999"></room-mini>
+      <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
       <roomNew v-else></roomNew>
     </div>
 
@@ -49,11 +49,12 @@
         'room_id': 0,
         'check_secret': 0,
         'secret_key': '',
+        'showPage': false,
       }
     },
     mounted () {
       if (document.getElementById('secret-input')){
-        document.getElementById('secret-input').addEventListener('blur',function(){
+          document.getElementById('secret-input').addEventListener('blur',function(){
             window.scrollTo(0,0)   //页面滚动到顶部
           },
           false
@@ -73,6 +74,7 @@
         that.$vux.loading.show({
           text: '加载中~'
         })
+        that.showPage = true;
         var formdata = new URLSearchParams();
         formdata.append('id', this.room_id);
         that.axiosPost("/room/template", formdata).then((res) => {

@@ -648,7 +648,9 @@
             var that = this;
             that.musicFlag = true;
             setTimeout(function () {
-              that.liveMusicObj.play();
+              if(that.liveMusicObj && that.liveMusicObj.hasOwnProperty("play")){
+                that.liveMusicObj.play();
+              }
             }, 500)
           },
           playMusic(){

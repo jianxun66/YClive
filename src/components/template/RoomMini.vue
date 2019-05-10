@@ -306,7 +306,6 @@
                 that.checkVideoPlayer(that.currentVideo);
                 that.musicFlag = true;
                 that.playBgMusic();
-                
               $(".videoCover").attr("class")
                 if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
 
@@ -665,7 +664,10 @@
             var that = this;
             that.musicFlag = true;
             setTimeout(function () {
-              that.liveMusicObj.play();
+              if(that.liveMusicObj && that.liveMusicObj.hasOwnProperty("play")){
+                that.liveMusicObj.play();
+              }
+
             }, 500)
           },
           playMusic(){
@@ -785,6 +787,6 @@
     /* bottom: 0px; */
     left: 0;}
   .online_video{display: block !important; z-index: 10}
-  .outline_video{display: none;}
+  .outline_video{display: none !important;}
   .prism-player video{object-fit: fill !important;}
 </style>
