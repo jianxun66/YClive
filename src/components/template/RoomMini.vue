@@ -167,7 +167,7 @@
         </div>
 
         <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
-        <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
+        <remote-script src="https://g.alicdn.com/de/prismplayer/2.8.1/aliplayer-min.js"></remote-script>
     </div>
 </template>
 
@@ -332,10 +332,17 @@
           document.addEventListener('visibilitychange', function(){
             if (document.visibilityState === 'hidden') {
               that.musicFlag = false;
-              that.liveMusicObj.pause();
-              that.lensMusicObj.pause();
+              if (that.lensMusicObj && that.lensMusicObj.hasOwnProperty("pause")) {
+				that.lensMusicObj.currentTime = 0;
+			  }
+			  if (that.liveMusicObj && that.liveMusicObj.hasOwnProperty("pause")) {
+				that.liveMusicObj.currentTime = 0;
+			  }
               // 暂停视频
-              that.player.pause();
+			  if (that.player && that.player.hasOwnProperty("pause")){
+				that.player.pause();
+			  }
+              
             }
           });
         },
@@ -657,8 +664,12 @@
             this.lensMusicObj = document.getElementById('lens-music');
             this.liveMusicObj = document.getElementById('live-music');
 
-            this.lensMusicObj.currentTime = 0;
-            this.liveMusicObj.currentTime = 0;
+            if (this.lensMusicObj && this.lensMusicObj.hasOwnProperty("currentTime")) {
+			  this.lensMusicObj.currentTime = 0;
+			}
+			if (this.liveMusicObj && this.liveMusicObj.hasOwnProperty("currentTime")) {
+			  this.liveMusicObj.currentTime = 0;
+			}
           },
           playBgMusic(){
             var that = this;

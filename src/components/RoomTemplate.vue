@@ -15,12 +15,14 @@
       <!--秘钥授权界面-->
       <educate v-if="room_template == 8"></educate>
       <room-old v-else-if="room_template == 1"></room-old>
+      <roomNew v-else-if="room_template == 2"></roomNew>
       <room-common v-else-if="room_template == 4"></room-common>
       <room-no-home v-else-if="room_template == 5"></room-no-home>
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
       <snapshot v-else-if="room_template == 9"></snapshot>
+      <educate-news v-else-if="room_template == 10"></educate-news>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
-      <roomNew v-else></roomNew>
+
     </div>
 
   </div>
@@ -36,13 +38,14 @@
   import roomCommonNoHome from './template/RoomCommonNoHome';
   import roomMini from "./template/RoomMini"
   import snapshot from "./template/Snapshot"
+  import educateNews from "./template/EducateNews"
   import wx from 'weixin-js-sdk'
   import { XButton } from 'vux'
 
   export default {
     name: "room_template",
     components: {roomMini, tea, educate, roomOld, roomNew, roomCommon,
-      roomNoHome, roomCommonNoHome, XButton, snapshot},
+      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews},
     data() {
       return {
         'room_template': 0,

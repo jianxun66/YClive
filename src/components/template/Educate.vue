@@ -123,7 +123,7 @@
 
 
     <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
-    <remote-script src="https://g.alicdn.com/de/prismplayer/2.7.1/aliplayer-min.js"></remote-script>
+    <remote-script src="https://g.alicdn.com/de/prismplayer/2.8.1/aliplayer-min.js"></remote-script>
   </div>
 </template>
 
@@ -720,7 +720,7 @@
     /* bottom: 0px; */
     left: 0;}
   .online_video{display: block !important; z-index: 10}
-  .outline_video{display: none;}
+  .outline_video{display: none !important;}
   .video_info{position: relative}
   .play-btn{
     border: 7px solid rgba(255,255,255,.51);

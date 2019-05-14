@@ -1,23 +1,19 @@
 <template>
-  <div class="room-info snapshot" v-wechat-title="$route.meta.title" id="snapshot">
-    <div class="room-header snapshot-header">
+  <div class="room-info edu" v-wechat-title="$route.meta.title" id="edu">
+    <div class="room-header edu-header">
       <div class="company-info">
         <div class="company">
+          <div class="company-logo">
+            <img :src="roomBasic.logo_img">
+            <!--<img src="../../../static/images/edu.png"/>-->
+          </div>
           <dl>
-            <dt>
-              <img :src="roomBasic.logo_img">
-            </dt>
             <dd>
-              <h3><strong>{{roomBasic.title}}</strong></h3>
               <p>
                 <span>{{roomBasic.intro}}</span>
               </p>
             </dd>
           </dl>
-          <div class="source-info">
-            <p>溯源编码: YC304190201</p>
-            <p>查询次数: 1</p>
-          </div>
         </div>
       </div>
       <div class="room-banner-container">
@@ -36,16 +32,31 @@
       <!-- Swiper -->
       <div class="gallery-thumbs" id="tabMenu">
         <div class="tabMenu">
-          <div class="swiper-slide cur" @click="switchContent(0)">溯源直播</div>
-          <div class="swiper-slide" @click="switchContent(1)">基地介绍</div>
-          <div class="swiper-slide" @click="switchContent(2)">溯源回放</div>
-          <div class="swiper-slide" @click="switchContent(3)">溯源查询</div>
+          <div class="swiper-slide cur" @click="switchContent(0)">中心介绍</div>
+          <div class="swiper-slide" @click="switchContent(1)">
+            <span class="live-icon">现场直播</span>
+          </div>
+          <div class="swiper-slide" @click="switchContent(2)">精彩视频</div>
+          <div class="swiper-slide" @click="switchContent(3)">精彩照片</div>
         </div>
       </div>
       <div class="live-room-content" id="live-room-content">
-        <div class="swiper-container gallery-top">
+        <div class="swiper-container gallery-top" v-show="!showArticle">
           <div class="swiper-wrapper tabCon">
             <!--直播间信息-->
+            <div class="swiper-slide con">
+              <div class="swiper-container scroll ">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide slidescroll">
+                    <div class="room_content" v-html="roomBasic.content">
+                      {{roomBasic.content}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--视频-->
             <div class="swiper-slide con">
               <div class="swiper-container">
                 <div class="swiper-wrapper">
@@ -70,67 +81,29 @@
                 </div>
               </div>
             </div>
-            <!--直播间信息-->
-            <div class="swiper-slide con">
-              <div class="swiper-container scroll ">
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide slidescroll">
-                    <div class="room_content" v-html="roomBasic.content">
-                      {{roomBasic.content}}
-                    </div>
-                </div>
-              </div>
-              </div>
-            </div>
-            <!--溯源视频-->
-            <div class="swiper-slide con snapshot-video-slider" id="snapshot-video-slider">
+            <!--短片-->
+            <div class="swiper-slide con edu-video-slider" id="edu-video-slider">
               <div class="swiper-container scroll">
                 <div class="swiper-wrapper">
-                  <div class="swiper-slide slidescroll video-container">
-                    <div class="snapshot-intro-header">
-                      <div class="title">优质产品，24小时监督</div>
-                      <div class="mark"></div>
-                    </div>
-                    <div class="lens">
-                      <div class="videoList">
-                        <dl v-for="(len, lindex) in lens" @click="changeVideo(len)"
-                            :class='["live-1", len.aid == videoLensId ? "active" : ""]'
-                            v-if="len.source_type == 'lens'">
-                          <dd>{{len.name}}</dd>
-                        </dl>
-                      </div>
-                    </div>
-                    <div class="video-list">
-                      <div class="video-header">
-                        <div class="num">编号</div>
-                        <div class="create-time">时间</div>
-                        <div class="video-len">片长</div>
-                        <div class="video-edit">操作</div>
-                      </div>
-                      <div class="video-main">
-                        <div class="video-item" v-for="(vitem, vindex) in videoList" @click="showVideoDialog(vitem.uri)">
-                          <div class="num">{{vindex + 1}}</div>
-                          <div class="create-time">{{vitem.start_time}}</div>
-                          <div class="video-len">{{vitem.duration}}秒</div>
-                          <div class="video-edit">点击播放</div>
-                        </div>
-                      </div>
+                  <div class="swiper-slide slidescroll">
+                    <div class="filmList">
+                      <room-video :room_id="room_id"></room-video>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <!--截图列表-->
-            <div class="swiper-slide con snapshot-image-slider" id="snapshot-image-slider">
+            <div class="swiper-slide con edu-image-slider" id="edu-image-slider">
               <div class="swiper-container scroll">
                 <div class="swiper-wrapper">
                   <div class="swiper-slide slidescroll image-container">
-                    <div class="snapshot-intro-header">
-                      <div class="title">优质产品，全过程追溯</div>
+                    <div class="edu-intro-header">
+                      <div class="title">图片留存瞬间的美好</div>
                       <div class="mark">长按图片，可下载保存</div>
                     </div>
                     <div class="image-list">
-                      <div class="image-item" v-for="(sitem, sindex) in snapshotList">
+                      <div class="image-item" v-for="(sitem, sindex) in eduList">
                         <div class="image-content">
                           <img :preview="sindex" :preview-text="sitem.title" :src="sitem.cover"/>
                         </div>
@@ -147,20 +120,28 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!--视频弹窗-->
-    <div class="video-dialog">
-      <div class="video-dialog-mask" @click="hideVideoDialog"></div>
-      <div class="video-dialog-container">
-        <div class="prism-player-video" id="player2">
+        <div class="article-list"  v-show="showArticle">
+          <div class="article-item" v-for="(item, index) in articleList" @click="goArticle(item)">
+            <div class="title">
+              <p>{{item.title}}</p>
+            </div>
+            <div class="cover">
+              <img :src="item.pic_path"/>
+            </div>
+          </div>
         </div>
-        <div class="play-btn" @click="playervideo()"></div>
       </div>
-
     </div>
-    <!--视频弹窗-->
+    <div class="footer">
+      <div class="item" v-for="(item, key) in footer" :key="key">
+        <div :class="item.fclass">
+          <div :class="findex == item.fname ? 'active' : ''" @click="changeIndex(item.fname)">
+            <div class="item-icon"></div>
+            <div class="item-text">{{item.ftext}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
     <remote-script src="https://g.alicdn.com/de/prismplayer/2.8.1/aliplayer-min.js"></remote-script>
   </div>
@@ -175,7 +156,7 @@
   import Product from "../Product"
   import Comments from "../Comment"
   export default {
-    name: 'snapshot',
+    name: 'educate-news',
     components:{
       "room-video": RoomVideo,
       "Product": Product,
@@ -262,17 +243,33 @@
         isAndroid: false,
         date: new Date(),
         imageDialog: true,
-        dialogInfo: {
-          link: '',
-          type: 1, // 1 图片  2视频
-          showDialog: false,
-        },
-        snapshotList: [],
-        videoList:[],
+        eduList: [],
         videoLensId: 0,
-        videoPage:1,
-        player2:{},
+        page:1,
         roomEnd: false,
+        showArticle: false,
+        articleList:[],
+        findex: 'live',
+        footer: [
+          {
+            fname: 'live',
+            fclass: 'live-foot-live',
+            ftext: '现场直播',
+            path: '/',
+          },
+          {
+            fname: 'article',
+            fclass: 'live-foot-video',
+            ftext: '活动中心',
+            path: '',
+          },
+          {
+            fname: 'my',
+            fclass: 'live-foot-user',
+            ftext: '联系我们',
+            path: ''
+          },
+        ],
       }
     },
     provide() {
@@ -287,7 +284,8 @@
       this.getBanner();
       this.getData();
       this.getLens();
-      this.getSnapshot();
+      this.getSnaphot();
+      this.getArticleList();
       localStorage.setItem('roomid', this.room_id); // 直播间ID
     },
     mounted () {
@@ -309,7 +307,6 @@
         that.checkVideoPlayer(that.currentVideo);
         that.musicFlag = true;
         that.playBgMusic();
-		    console.log(that.player);
         if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         }
       })
@@ -331,11 +328,11 @@
         if (document.visibilityState === 'hidden') {
           that.musicFlag = false;
           if (that.lensMusicObj && that.lensMusicObj.hasOwnProperty("pause")) {
-			that.lensMusicObj.currentTime = 0;
-		  }
-		  if (that.liveMusicObj && that.liveMusicObj.hasOwnProperty("pause")) {
-			that.liveMusicObj.currentTime = 0;
-		  }
+			      that.lensMusicObj.currentTime = 0;
+          }
+          if (that.liveMusicObj && that.liveMusicObj.hasOwnProperty("pause")) {
+            that.liveMusicObj.currentTime = 0;
+          }
         }
       });
 
@@ -355,7 +352,7 @@
           var scrollHeight = $(document).height();   //当前页面的总高度
           var clientHeight = $(this).height();    //当前可视的页面高度
           if(scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomEnd){
-            that.getVideoList();
+            that.getArticleList();
           }
         });
 
@@ -458,6 +455,8 @@
         that.initMusic();
       },
       switchContent (index) {
+        this.showArticle = false;
+        this.findex = 'live';
         $('.tabMenu .swiper-slide').each(function (item) {
           if(item == index) {
             $(this).addClass('cur');
@@ -537,13 +536,6 @@
               that.checkVideoPlayer(that.lens[0]);
             }
 
-            for(var sindex in that.lens) {
-              if (that.lens[sindex].source_type == 'lens') {
-                that.videoLensId = that.lens[sindex].aid;
-                that.getVideoList();
-                break;
-              }
-            }
             that.currentVideo = that.lens[0];
             that.initMusic();
           } else {
@@ -720,49 +712,12 @@
           return false;
         }
       },
-      // 获取视频列表
-      getVideoList(){
-        var that = this;
-        that.loadding = true;
-        var formdata = new URLSearchParams();
-        formdata.append('page', that.videoPage);
-        formdata.append('id', that.room_id);
-        formdata.append('sid', that.videoLensId);
-        that.axiosPost("/room/source-video", formdata).then((res) => {
-          that.loadding = false;
-          that.$vux.loading.hide();
-          if(res.status == 200){
-            if(res.data.length > 0) {
-              res.data.forEach((v, k) => {
-                that.videoList.push(v);
-              })
-              that.videoPage++;
-            } else {
-              that.roomEnd = true;
-            }
-          } else {
-            that.$vux.alert.show({
-              title: '温馨提示',
-              content: res.message});
-          }
-        }, (err) => {
-          that.$vux.loading.hide();
-        });
-      },
-      changeVideo(item){
-        // 切换样式
-
-        this.videoLensId = item.aid;
-        this.videoList = []; // 置空
-        this.videoPage = 1;
-        this.getVideoList();
-      },
       // 获取截图列表
-      getSnapshot(){
+      getSnaphot(){
         var that = this;
         that.loadding = true;
         var formdata = new URLSearchParams();
-        formdata.append('page', that.snapshotPage);
+        formdata.append('page', that.eduPage);
         formdata.append('id', that.room_id);
         that.axiosPost("/room/snapshot", formdata).then((res) => {
           that.loadding = false;
@@ -770,9 +725,9 @@
           if(res.status == 200){
             if(res.data.length > 0) {
               res.data.forEach((v, k) => {
-                that.snapshotList.push(v);
+                that.eduList.push(v);
               })
-              that.snapshotPage++;
+              that.eduPage++;
             } else {
               that.roomEnd = true;
             }
@@ -785,99 +740,68 @@
           that.$vux.loading.hide();
         });
       },
-      // 弹窗显示图片
-      showDialog(item, type){
-        this.dialogInfo.link = item;
-        this.dialogInfo.type = type; // 1 图片  2视频
-        this.dialogInfo.showDialog = true;
-      },
-      hideDialog(){
-
-      },
-      showVideoDialog(item){
-        this.VideoCoverImg = '';
-        $('#player2').empty() //id为html里指定的播放器的容器id
+      // 获取文章列表
+      getArticleList(){
         var that = this;
-        // 销毁之前播放器
-        var video_config = {
-          "id": "player2",
-          "source": item,
-          "cover": "https://yc.adaxiang.com/front/static/images/video_load.gif",
-          //"cover": "https://ycycc-hb.oss-cn-beijing.aliyuncs.com/yc-ycc-images/live-hb/ycbdh003.jpg",
-          "width": "100%",
-          "height": "100%",
-          "autoplay": false,
-          "isLive": false,
-          "rePlay": false,
-          "playsinline": true,
-          "preload": false,
-          "controlBarVisibility": "hover",
-          "useH5Prism": true,
-          "x5_type": "video",
-          "skinLayout": [
-            {
-              "name": "controlBar",
-              "align": "blabs",
-              "x": 0,
-              "y": 0,
-              "children": [
-                {
-                  "name": "progress",
-                  "align": "blabs",
-                  "x": 0,
-                  "y": 44
-                },
-                {
-                  "name": "playButton",
-                  "align": "tl",
-                  "x": 15,
-                  "y": 12
-                },
-                {
-                  "name": "timeDisplay",
-                  "align": "tl",
-                  "x": 10,
-                  "y": 7
-                },
-                {
-                  "name": "fullScreenButton",
-                  "align": "tr",
-                  "x": 10,
-                  "y": 12
-                },
-                {
-                  "name": "volume",
-                  "align": "tr",
-                  "x": 5,
-                  "y": 10
-                }
-              ]
+        that.loadding = true;
+        var formdata = new URLSearchParams();
+        formdata.append('page', that.page);
+        formdata.append('room_id', that.room_id);
+        that.axiosPost("/room/article", formdata).then((res) => {
+          that.loadding = false;
+          that.$vux.loading.hide();
+          if(res.status == 200){
+            if(res.data.length > 0) {
+              res.data.forEach((v, k) => {
+                that.articleList.push(v);
+              })
+              that.page++;
+            } else {
+              that.roomEnd = true;
             }
-          ]
+          } else {
+            that.$vux.alert.show({
+              title: '温馨提示',
+              content: res.message});
+          }
+        }, (err) => {
+          that.$vux.loading.hide();
+        });
+      },
+      changeIndex(item) {
+        var that = this;
+        that.switchContent(0); // 自适应高度
+        switch (item) {
+          case "live":
+            that.showArticle = false;
+            break;
+          case "article":
+            that.showArticle = true;
+            break;
+          case "my":
+            //滑动底部
+            var h = $(document).height()-$(window).height();
+            $(document).scrollTop(h);
+            that.showArticle = false;
+            break;
         }
-        that.player2 = new Aliplayer(video_config);
-        $(".play-btn").show();
-        $(".video-dialog").show();
+        that.findex = item;
       },
-      playervideo(){
-        $(".play-btn").hide();
-        this.player2.play();
-      },
-      hideVideoDialog(){
-        $(".video-dialog").hide();
-        this.player2.stop();
-        this.player2.dispose(); //销毁
-        $('#player2').empty() //id为html里指定的播放器的容器id
+      goArticle(item){
+        if(this.DEBUG == 1){
+          this.$router.replace({path: '/article', query:{room_id:item.room_id, aid: item.id, from:"groupmessage", isappinstalled:0}})
+        } else {
+          window.location.replace(location.protocol + '//' + document.domain+'/front/#/article?room_id='+item.room_id+'&aid='+item.id);
+        }
       }
-
     }
 
   }
-
-
 </script>
 
-
+<style>
+  .edu .banner .live-banner-active{background: #E25029 !important;}
+</style>
 <style scoped>
   .room-info .gallery-top, .tabCon, .con{width: 100%; }
   .live-room-main{
@@ -899,25 +823,24 @@
     right: 0;
     left: 0;}
   .prism-player video{object-fit: fill !important;}
-  .snapshot .videoList dl{ width: 33.333%; box-sizing: border-box;}
-  .snapshot-header{}
-  .company-info{position: relative; height: 5.8rem;}
-  .company{background: white; padding: 10px 15px;}
+  .edu{}
+
   .source-info{position: absolute; top: 20px; right: 10px; text-align: right; }
   .source-info p{color: #666; font-size: 13px}
-  .snapshot .room-banner-container{padding: 0.5rem;}
-  .snapshot .room-banner-container .room-banner{border-radius: 0.5rem; margin: 0.5rem; position: relative}
-  .snapshot .room-banner-container .room-banner img{border-radius: 4px}
-  .snapshot .live-room-main{position: inherit; height: auto;}
-  .snapshot .fix-tab-menu{position: fixed; top: 0; z-index: 999; width: inherit;}
-  .snapshot .videoList{ white-space: inherit;}
-  .snapshot .videoList .video{height: auto;}
-  .snapshot .swiper-wrapper tabCon{height: auto !important;}
-  .snapshot .video-container .lens{padding: 0 0.5rem;}
-  .snapshot .video-container .videoList{ padding: 0;  white-space: nowrap;}
-  .snapshot .video-container .videoList dl{ background-color: #C8C8C8; margin: 0 10px;}
-  .snapshot .video-container .videoList dl dd{color: white;}
-  .snapshot .video-container .videoList .active{background-color: #68B735;}
+  .edu .room-banner-container{padding: 0.5rem; }
+  .edu .room-banner-container .room-banner{border-radius: 0.5rem; margin: 0.5rem; position: relative}
+  .edu .room-banner-container .room-banner img{border-radius: 4px}
+  .edu .live-room-main{position: inherit; height: auto;}
+  .edu .fix-tab-menu{position: fixed; top: 0; z-index: 999; width: inherit;}
+  .edu .tabMenu .cur:after{background: #E25029}
+  .edu .videoList{ white-space: inherit;}
+  .edu .videoList .video{height: auto;}
+  .edu .swiper-wrapper tabCon{height: auto !important;}
+  .edu .video-container .lens{padding: 0 0.5rem;}
+  .edu .video-container .videoList{ padding: 0;  white-space: nowrap;}
+  .edu .video-container .videoList dl{ background-color: #C8C8C8; margin: 0 10px;}
+  .edu .video-container .videoList dl dd{color: white;}
+  .edu .video-container .videoList .active{background-color: #68B735;}
   .online_video{display: block !important; z-index: 10}
   .outline_video{display: none !important;}
   .company dd h3{padding-bottom: 2px}

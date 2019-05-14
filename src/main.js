@@ -22,6 +22,7 @@ import LiveOrder from './components/LiveOrder'
 import LiveOrderDetail from './components/LiveOrderDetail'
 import LiveAddress from './components/LiveAddress'
 import LiveStart from './components/LiveStart'
+import Article from  './components/Article'
 import axios from 'axios'
 import VueWechatTitle from 'vue-wechat-title'
 import VueScroller  from 'vue-scroller'
@@ -195,6 +196,11 @@ const routes = [
         component: IndexNew,
         meta: { title: '云窗-农业可视溯源平台' },
     },
+   {
+     path: '/article',
+     component: Article,
+     meta: {title: '文章详情'}
+   }
 ]
 
 
