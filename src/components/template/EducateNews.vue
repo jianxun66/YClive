@@ -123,7 +123,7 @@
         <div class="article-list"  v-show="showArticle">
           <div class="article-item" v-for="(item, index) in articleList" @click="goArticle(item)">
             <div class="title">
-              <p>{{item.title}}</p>
+              <p><span class="spot">·</span>{{item.title}}</p>
             </div>
             <div class="cover">
               <img :src="item.pic_path"/>
@@ -692,10 +692,18 @@
       },
       stopMUisc(){
         this.musicFlag = false;
-        this.liveMusicObj.pause();
-        this.lensMusicObj.pause();
+        if(this.liveMusicObj && this.liveMusicObj.hasOwnProperty('pause')){
+          this.liveMusicObj.pause();
+        }
+        if (this.lensMusicObj &&  this.lensMusicObj.hasOwnProperty('pause')) {
+          this.lensMusicObj.pause();
+        }
+
         // 暂停视频
-        this.player.pause();
+        if (this.player && this.player.hasOwnProperty('pause')){
+          this.player.pause();
+        }
+
       },
       checkLogin(){
         if(!cookie.get('uid')){
@@ -788,11 +796,12 @@
         that.findex = item;
       },
       goArticle(item){
-        if(this.DEBUG == 1){
+        this.$router.push({path: '/article', query:{room_id:item.room_id, aid: item.id, from:"groupmessage", isappinstalled:0}})
+        /*if(this.DEBUG == 1){
           this.$router.replace({path: '/article', query:{room_id:item.room_id, aid: item.id, from:"groupmessage", isappinstalled:0}})
         } else {
           window.location.replace(location.protocol + '//' + document.domain+'/front/#/article?room_id='+item.room_id+'&aid='+item.id);
-        }
+        }*/
       }
     }
 

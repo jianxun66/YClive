@@ -33,17 +33,20 @@
                 openid: "",
                 subStatus: false,
                 videoList:[],
-                player:{},
+                roomVideoPlayer:{},
                 video_height : 0,
                 aliplayer_config:{
                     id: '',
                     width: '100%',
                     height:'195px',
                     autoplay: true,
-                    playsinline:true,
-                    showBuffer:true,
-                    isLive:false,
-                    x5_type:true,
+                    isLive: false,
+                    rePlay: false,
+                    playsinline: true,
+                    preload: false,
+                    controlBarVisibility: "hover",
+                    useH5Prism: true,
+                    x5_type: "video",
                     //支持播放地址播放,此播放优先级最高
                     source : 'http://aliplay.adaxiang.com/kr/wc001.m3u8',
                     cover: "",
@@ -57,7 +60,6 @@
                         {
                             name: "controlBar", align: "blabs", x: 0, y: 0,
                             children: [
-                                {name:"liveDisplay", align:"tlabs", x: 15, y:6},
                                 {name: "progress", align: "blabs", x: 0, y: 44},
                                 {name: "playButton", align: "tl", x: 15, y: 12},
                                 {name: "timeDisplay", align: "tl", x: 10, y: 7},
@@ -131,16 +133,19 @@
             },
             playervideo(id, source, item){
                 // 暂停背景音乐
-                this.$parent.stopMUisc();
+                if (this.$parent && this.$parent.hasOwnProperty('stopMUisc')) {
+                  this.$parent.stopMUisc();
+                }
+
 
                 item.status = 0;
-                if(this.player.length > 0){
-                    this.player.dispose() //销毁
+                if(this.roomVideoPlayer.length > 0){
+                    this.roomVideoPlayer.dispose() //销毁
                 }
                 var that = this;
                 that.aliplayer_config.source = source;
                 that.aliplayer_config.id = id;
-                this.player =  new Aliplayer(that.aliplayer_config);
+                this.roomVideoPlayer =  new Aliplayer(that.aliplayer_config);
                 this.clickNum(item);
 
             },

@@ -726,10 +726,17 @@
           },
           stopMUisc(){
             this.musicFlag = false;
-            this.liveMusicObj.pause();
-            this.lensMusicObj.pause();
+            if(this.liveMusicObj && this.liveMusicObj.hasOwnProperty('pause')){
+              this.liveMusicObj.pause();
+            }
+            if (this.lensMusicObj &&  this.lensMusicObj.hasOwnProperty('pause')) {
+              this.lensMusicObj.pause();
+            }
+
             // 暂停视频
-            this.player.pause();
+            if (this.player && this.player.hasOwnProperty('pause')){
+              this.player.pause();
+            }
           },
           checkLogin(){
             if(!cookie.get('uid')){
