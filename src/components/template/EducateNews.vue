@@ -234,6 +234,7 @@
           online_url: '',
           online_cover: '',
           mobile: '',
+          wx_logo: '',
         },
         firstMusic: false,
         musicFlag: false,
@@ -490,6 +491,7 @@
           that.roomBasic.online_url = res.data.online_url;
           that.roomBasic.online_cover = res.data.online_cover;
           that.roomBasic.mobile = res.data.mobile;
+          that.roomBasic.wx_logo = res.data.wx_logo;
 
           that.$route.meta.title = res.data.room_name;
           that.deliver = res.data.deliver;
@@ -596,7 +598,7 @@
                 title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
                 desc: that.roomBasic.introduce,   // 分享描述
                 link: share_url,       // 分享链接 默认以当前链接
-                imgUrl: that.roomBasic.logo_img,// 分享图标
+                imgUrl: that.roomBasic.wx_logo,// 分享图标
                 // 用户确认分享后执行的回调函数
                 success: function () {
 
@@ -609,7 +611,7 @@
               that.$wechat.onMenuShareTimeline({
                 title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
                 link: share_url,       // 分享链接 默认以当前链接
-                imgUrl: that.roomBasic.logo_img,// 分享图标
+                imgUrl: that.roomBasic.wx_logo,// 分享图标
                 success: function () {
                   // 用户确认分享后执行的回调函数
                   //alert('分享成功');

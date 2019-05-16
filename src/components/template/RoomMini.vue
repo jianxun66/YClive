@@ -413,7 +413,7 @@
           this.checkVideoPlayer(item);
         }
 
-
+        that.stopMUisc(); //暂停音乐
         that.currentVideo = item;
         that.initMusic();
         /*if(that.play_status == 2){ // 自动播放背景音乐
