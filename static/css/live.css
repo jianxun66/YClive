@@ -515,7 +515,7 @@ edu .image-list .image-item .image-time{position:absolute; top:0; right: 0.5rem;
   border-bottom: 1px #EEEEEE solid;}
 .edu .article-list .article-item .title{text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 2;
   -webkit-box-orient: vertical; display: inline-block; font-size: 1rem; }
-.edu .article-list .article-item  .spot{color : #E25029; margin: 0 0.5rem;}
+.edu .article-list .article-item .spot{color : #E25029; margin: 0 0.5rem;}
 .edu .article-list .article-item .cover{position: absolute; right: 0.5rem;
   top: 0rem; width: 5rem; height: 4.2rem;}
 .edu .article-list .article-item .cover img{width: 100% !important; height: 100% !important;}

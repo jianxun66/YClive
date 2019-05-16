@@ -24,7 +24,9 @@
         <div class="swiper-container banner">
           <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="(bitem , bkey) in bannerList" :key="bkey">
-              <a :href="bitem.links != '' ? bitem.links : 'javascript:void(0);' "><img  @click="goBanner(bitem)" @click.stop :src="bitem.cover"></a>
+              <a :href="bitem.links != '' ? bitem.links : 'javascript:void(0);' "><img @click="goBanner(bitem)"
+                                                                                       @click.stop
+                                                                                       :src="bitem.cover"></a>
             </div>
           </div>
           <div class="swiper-pagination"></div>
@@ -50,22 +52,23 @@
               <div class="swiper-container">
                 <div class="swiper-wrapper">
                   <div class="swiper-slide">
-                   <!--镜头-->
+                    <!--镜头-->
                     <div class="lens-list">
                       <div class="videoList">
                         <div class="video" @click="imgCover">
                           <div class="prism-player " id="J_prismPlayer"></div>
-                          <div v-bind:class=" (play_status == 1 && playing != 1 ) || playinit == 1 ? 'videoCover online_video' : 'videoCover outline_video'" >
+                          <div
+                            v-bind:class=" (play_status == 1 && playing != 1 ) || playinit == 1 ? 'videoCover online_video' : 'videoCover outline_video'">
                             <img :src="VideoCoverImg">
                           </div>
                         </div>
-                        <dl class="live-1"  v-for="len in lens" @click="switchVideo(len, 1)">
+                        <dl class="live-1" v-for="len in lens" @click="switchVideo(len, 1)">
                           <dt><img :src="len.cover_img"></dt>
                           <dd>{{len.name}}</dd>
                         </dl>
                       </div>
                     </div>
-                   <!--镜头-->
+                    <!--镜头-->
                   </div>
                 </div>
               </div>
@@ -78,8 +81,8 @@
                     <div class="room_content" v-html="roomBasic.content">
                       {{roomBasic.content}}
                     </div>
+                  </div>
                 </div>
-              </div>
               </div>
             </div>
             <!--溯源视频-->
@@ -108,7 +111,8 @@
                         <div class="video-edit">操作</div>
                       </div>
                       <div class="video-main">
-                        <div class="video-item" v-for="(vitem, vindex) in videoList" @click="showVideoDialog(vitem.uri)">
+                        <div class="video-item" v-for="(vitem, vindex) in videoList"
+                             @click="showVideoDialog(vitem.uri)">
                           <div class="num">{{vindex + 1}}</div>
                           <div class="create-time">{{vitem.start_time}}</div>
                           <div class="video-len">{{vitem.duration}}秒</div>
@@ -169,14 +173,15 @@
 
 <script>
   import importJs from '../../../static/js/importJs'
-  import { cookie, XDialog  } from 'vux'
-  import { TransferDomDirective as TransferDom } from 'vux'
+  import {cookie, XDialog} from 'vux'
+  import {TransferDomDirective as TransferDom} from 'vux'
   import RoomVideo from "../RoomVideoNew"
   import Product from "../Product"
   import Comments from "../Comment"
+
   export default {
     name: 'snapshot',
-    components:{
+    components: {
       "room-video": RoomVideo,
       "Product": Product,
       "Comments": Comments,
@@ -185,24 +190,24 @@
     directives: {
       TransferDom
     },
-    data () {
+    data() {
       return {
         bannerList: [],
         contabObj: {},
         contentSwiper: {},
-        currentVideo : {},
+        currentVideo: {},
         playing: 2,
         playinit: 2,
         VideoCoverImg: "",
         showCover: false,
         galleryTop: {},
-        play_status : 1,
+        play_status: 1,
         room_id: 0,
         room_info: {},
         showComment: true,
-        comment:"",
+        comment: "",
         total_price: 0,
-        lens:{},
+        lens: {},
         player: {},
         deliver: 0, //起送金额
         aliplayer_config: {
@@ -268,10 +273,10 @@
           showDialog: false,
         },
         snapshotList: [],
-        videoList:[],
+        videoList: [],
         videoLensId: 0,
-        videoPage:1,
-        player2:{},
+        videoPage: 1,
+        player2: {},
         roomEnd: false,
       }
     },
@@ -290,7 +295,7 @@
       this.getSnapshot();
       localStorage.setItem('roomid', this.room_id); // 直播间ID
     },
-    mounted () {
+    mounted() {
       var that = this;
       $('.prism-big-play-btn').click(function () {
         $('.videoCover').fadeOut()
@@ -298,7 +303,7 @@
 
 
       setTimeout(that.initSwiper, 1000)
-      var height = $('.prism-player').width() ;
+      var height = $('.prism-player').width();
       $('.prism-player').height(height / 16 * 9)
       if (!that.isAndroid) {
         that.playinit = 1;
@@ -309,7 +314,7 @@
         that.checkVideoPlayer(that.currentVideo);
         that.musicFlag = true;
         that.playBgMusic();
-		    console.log(that.player);
+        console.log(that.player);
         if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
         }
       })
@@ -322,31 +327,27 @@
         }
       })
 
-      this.timer = setInterval(function() {
+      this.timer = setInterval(function () {
         that.getCurrentTime();//修改数据date
       }, 1000);
 
 
-      document.addEventListener('visibilitychange', function(){
+      document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'hidden') {
           that.musicFlag = false;
-          if (that.lensMusicObj && that.lensMusicObj.hasOwnProperty("pause")) {
-			that.lensMusicObj.currentTime = 0;
-		  }
-		  if (that.liveMusicObj && that.liveMusicObj.hasOwnProperty("pause")) {
-			that.liveMusicObj.currentTime = 0;
-		  }
+          that.lensMusicObj.currentTime = 0;
+          that.liveMusicObj.currentTime = 0;
         }
       });
 
       $(function () {
         // 监听滑动高度
         var navH = $("#tabMenu").offset().top + 150;
-        $(window).scroll(function(){
+        $(window).scroll(function () {
           var scroH = $(this).scrollTop();
-          if(scroH >= navH){
+          if (scroH >= navH) {
             $("#tabMenu").addClass("fix-tab-menu");
-          }else if(scroH < navH){
+          } else if (scroH < navH) {
             $("#tabMenu").removeClass("fix-tab-menu");
           }
 
@@ -354,25 +355,25 @@
           var scrollTop = $(this).scrollTop();    //滚动条距离顶部的高度
           var scrollHeight = $(document).height();   //当前页面的总高度
           var clientHeight = $(this).height();    //当前可视的页面高度
-          if(scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomEnd){
+          if (scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomEnd) {
             that.getVideoList();
           }
         });
 
         that.switchContent(0); // 自适应高度
-        setTimeout(function(){
+        setTimeout(function () {
           that.$previewRefresh(); // 图片预览
         }, 1000);
       });
       document.querySelector('body').setAttribute('style', 'background-color:#F3F4F6')
     },
     watch: {
-      "$route"(){
+      "$route"() {
       },
     },
     methods: {
       // 轮播图
-      getBanner(){
+      getBanner() {
         var that = this;
         var formdata = new URLSearchParams();
         formdata.append('id', this.room_id);
@@ -381,14 +382,14 @@
         });
       },
 
-      showMoreInfo (obj) {
+      showMoreInfo(obj) {
         if ($(obj).hasClass('hide')) {
           $(obj).removeClass('hide')
         } else {
           $(obj).addClass('hide')
         }
       },
-      initSwiper(){
+      initSwiper() {
         var that = this;
         // 轮播图
         var banner = new Swiper('.banner', {
@@ -405,7 +406,7 @@
           },
         })
       },
-      switchVideo (item, isreplay) {
+      switchVideo(item, isreplay) {
         this.playinit = 2;
         clearTimeout(this.contabObj);// 清除定时器
         $('.videoCover').fadeOut()
@@ -415,7 +416,7 @@
         this.play_status = 1;
         var that = this;
 
-        if(isreplay == 2){ // 切流播放
+        if (isreplay == 2) { // 切流播放
           that.play_status = 2;
           that.aliplayer_config.autoplay = false;
 
@@ -434,7 +435,7 @@
           that.aliplayer_config.source = item.vurl;
         }
 
-        if(that.aliplayer_config.source.indexOf('.m3u8') != -1){ // 直播源
+        if (that.aliplayer_config.source.indexOf('.m3u8') != -1) { // 直播源
           that.aliplayer_config.isLive = true;
           that.aliplayer_config.autoplay = false;
           that.aliplayer_config.rePlay = false;
@@ -457,9 +458,9 @@
         that.currentVideo = item;
         that.initMusic();
       },
-      switchContent (index) {
+      switchContent(index) {
         $('.tabMenu .swiper-slide').each(function (item) {
-          if(item == index) {
+          if (item == index) {
             $(this).addClass('cur');
           } else {
             $(this).removeClass('cur');
@@ -467,17 +468,17 @@
         });
 
         $(".con").each(function (item) {
-          if(item == index) {
+          if (item == index) {
             $(this).show();
           } else {
             $(this).hide();
           }
         })
       },
-      getData(){
+      getData() {
         var that = this;
         var formdata = new URLSearchParams();
-        that.axiosPost("/room/info?id="+this.room_id, formdata).then((res) => {
+        that.axiosPost("/room/info?id=" + this.room_id, formdata).then((res) => {
           that.roomBasic.room_name = res.data.room_name;
           that.roomBasic.logo_img = res.data.logo_img;
           that.roomBasic.click_num = res.data.click_num;
@@ -498,7 +499,7 @@
 
           that.$route.meta.title = res.data.room_name;
           that.deliver = res.data.deliver;
-          if(that.roomBasic.cover_img ){
+          if (that.roomBasic.cover_img) {
             that.showCover = true;
           }
           that.WxShare();
@@ -506,14 +507,14 @@
           console.log(err);
         });
       },
-      getLens(){
+      getLens() {
         var that = this;
         var formdata = new URLSearchParams();
-        that.axiosPost("/room/lens?id="+this.room_id, formdata).then((res) => {
+        that.axiosPost("/room/lens?id=" + this.room_id, formdata).then((res) => {
           that.$vux.loading.hide();
-          if(res.status == 200){
+          if (res.status == 200) {
             that.lens = res.data;
-            if(that.lens[0].vurl.indexOf('.m3u8') != -1){ // 直播源
+            if (that.lens[0].vurl.indexOf('.m3u8') != -1) { // 直播源
               that.aliplayer_config.isLive = true;
               that.aliplayer_config.autoplay = false;
               that.aliplayer_config.rePlay = false;
@@ -533,11 +534,11 @@
             that.player = new Aliplayer(that.aliplayer_config);
             that.player.on('x5requestFullScreen', this.fullScreenHandle);
             that.player.on('x5cancelFullScreen', this.cancelFullScreenHandel);
-            if ( that.aliplayer_config.autoplay) {
+            if (that.aliplayer_config.autoplay) {
               that.checkVideoPlayer(that.lens[0]);
             }
 
-            for(var sindex in that.lens) {
+            for (var sindex in that.lens) {
               if (that.lens[sindex].source_type == 'lens') {
                 that.videoLensId = that.lens[sindex].aid;
                 that.getVideoList();
@@ -549,31 +550,32 @@
           } else {
             this.$vux.alert.show({
               title: '温馨提示',
-              content: res.message});
+              content: res.message
+            });
           }
         }, (err) => {
           that.$vux.loading.hide();
         });
       },
 
-      subComment(){
+      subComment() {
         this.$refs.comment.setComment(this.comment);
       },
-      clearParent(){
+      clearParent() {
         this.comment = "";
       },
       reload() {
         this.showComment = false;
-        this.$nextTick(function(){
+        this.$nextTick(function () {
           this.showComment = true;
 
         })
       },
-      checkVideoPlayer(item){ // 断流切换
+      checkVideoPlayer(item) { // 断流切换
         var that = this;
         that.contabObj = setTimeout(function () {
           var play_time = that.player.getCurrentTime();
-          if(play_time <= 0){ // 直播
+          if (play_time <= 0) { // 直播
             //item.vurl = item.vurl_reback; // 替换镜头回放地址
             //item.pic = item.reback_img; // 替换镜头回放封面地址
             that.switchVideo(item, 2); //切换视频
@@ -585,12 +587,12 @@
         this.playing = 1;
         $(".videoCover").css("z-index", "-1 !important");
       },
-      hideCoverImg(){
-        if(this.roomBasic.cover_img && this.showCover){
+      hideCoverImg() {
+        if (this.roomBasic.cover_img && this.showCover) {
           this.showCover = false;
         }
       },
-      WxShare(){
+      WxShare() {
         var url = window.location.href;
         var that = this;
         var formdata = new URLSearchParams();
@@ -600,12 +602,12 @@
 
         that.axiosPost("/wechat/jssdk", formdata).then((res) => {
           that.$vux.loading.hide();
-          if(res.status == 200){
+          if (res.status == 200) {
             that.$wechat.config(JSON.parse(res.data));
             that.$wechat.ready(function () {
-              var share_url = location.protocol + '//' + document.domain+'/front/#/room?room_id='+that.room_id;
+              var share_url = location.protocol + '//' + document.domain + '/front/#/room?room_id=' + that.room_id;
               that.$wechat.onMenuShareAppMessage({
-                title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                title: that.roomBasic.title + " " + that.roomBasic.sub_title,       // 分享标题
                 desc: that.roomBasic.introduce,   // 分享描述
                 link: share_url,       // 分享链接 默认以当前链接
                 imgUrl: that.roomBasic.logo_img,// 分享图标
@@ -619,7 +621,7 @@
               });
 
               that.$wechat.onMenuShareTimeline({
-                title: that.roomBasic.title+" "+that.roomBasic.sub_title,       // 分享标题
+                title: that.roomBasic.title + " " + that.roomBasic.sub_title,       // 分享标题
                 link: share_url,       // 分享链接 默认以当前链接
                 imgUrl: that.roomBasic.logo_img,// 分享图标
                 success: function () {
@@ -636,36 +638,33 @@
           } else {
             this.$vux.alert.show({
               title: '温馨提示',
-              content: "微信参数错误"});
+              content: "微信参数错误"
+            });
           }
         }, (err) => {
           that.$vux.loading.hide();
         });
 
       },
-      initMusic(){
-        this.musicFlag = this.firstMusic ? false: true;
+      initMusic() {
+        this.musicFlag = this.firstMusic ? false : true;
         this.firstMusic = false;
         this.lensMusicObj = document.getElementById('lens-music');
         this.liveMusicObj = document.getElementById('live-music');
 
-        if (this.lensMusicObj && this.lensMusicObj.hasOwnProperty("currentTime")) {
-          this.lensMusicObj.currentTime = 0;
-        }
-        if (this.liveMusicObj && this.liveMusicObj.hasOwnProperty("currentTime")) {
-          this.liveMusicObj.currentTime = 0;
-        }
+        this.lensMusicObj.currentTime = 0;
+        this.liveMusicObj.currentTime = 0;
 
       },
-      playBgMusic(){
+      playBgMusic() {
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
           that.liveMusicObj.play();
         }, 500)
       },
-      playMusic(){
-        if(this.musicFlag){ //暂停
+      playMusic() {
+        if (this.musicFlag) { //暂停
           this.musicFlag = false;
           this.liveMusicObj.pause();
           this.lensMusicObj.play();
@@ -675,48 +674,43 @@
           this.musicFlag = true;
         }
       },
-      getCurrentTime(){
+      getCurrentTime() {
         var date = new Date();
-        var year=date.getFullYear();
-        var month= date.getMonth()+1<10 ? "0"+(date.getMonth()+1) : date.getMonth()+1;
-        var day=date.getDate()<10 ? "0"+date.getDate() : date.getDate();
-        var hours=date.getHours()<10 ? "0"+date.getHours() : date.getHours();
-        var minutes=date.getMinutes()<10 ? "0"+date.getMinutes() : date.getMinutes();
-        var seconds=date.getSeconds()<10 ? "0"+date.getSeconds() : date.getSeconds();
-        this.date = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+        var year = date.getFullYear();
+        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+        var day = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+        var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+        var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+        var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+        this.date = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
       },
-      goHome(){
+      goHome() {
         this.$router.replace({path: '/'});
       },
 
       // 进入同层全屏事件
-      fullScreenHandle(){
+      fullScreenHandle() {
       },
 
       // 退出同层全屏事件
-      cancelFullScreenHandel(){
+      cancelFullScreenHandel() {
       },
-      stopMUisc(){
+      stopMUisc() {
         this.musicFlag = false;
-        if(this.liveMusicObj && this.liveMusicObj.hasOwnProperty('pause')){
-          this.liveMusicObj.pause();
-        }
-        if (this.lensMusicObj &&  this.lensMusicObj.hasOwnProperty('pause')) {
-          this.lensMusicObj.pause();
-        }
+        this.liveMusicObj.pause();
+        this.lensMusicObj.pause();
 
         // 暂停视频
-        if (this.player && this.player.hasOwnProperty('pause')){
-          this.player.pause();
-        }
+        this.player.pause();
       },
-      checkLogin(){
-        if(!cookie.get('uid')){
+      checkLogin() {
+        if (!cookie.get('uid')) {
           this.$vux.alert.show({
             title: '温馨提示',
-            content: '请先登录'});
+            content: '请先登录'
+          });
 
-          cookie.set('refer', '/room?room_id='+this.room_id, {
+          cookie.set('refer', '/room?room_id=' + this.room_id, {
             path: '/',
             expires: 7200
           });
@@ -726,7 +720,7 @@
         }
       },
       // 获取视频列表
-      getVideoList(){
+      getVideoList() {
         var that = this;
         that.loadding = true;
         var formdata = new URLSearchParams();
@@ -736,8 +730,8 @@
         that.axiosPost("/room/source-video", formdata).then((res) => {
           that.loadding = false;
           that.$vux.loading.hide();
-          if(res.status == 200){
-            if(res.data.length > 0) {
+          if (res.status == 200) {
+            if (res.data.length > 0) {
               res.data.forEach((v, k) => {
                 that.videoList.push(v);
               })
@@ -748,13 +742,14 @@
           } else {
             that.$vux.alert.show({
               title: '温馨提示',
-              content: res.message});
+              content: res.message
+            });
           }
         }, (err) => {
           that.$vux.loading.hide();
         });
       },
-      changeVideo(item){
+      changeVideo(item) {
         // 切换样式
 
         this.videoLensId = item.aid;
@@ -763,7 +758,7 @@
         this.getVideoList();
       },
       // 获取截图列表
-      getSnapshot(){
+      getSnapshot() {
         var that = this;
         that.loadding = true;
         var formdata = new URLSearchParams();
@@ -772,8 +767,8 @@
         that.axiosPost("/room/snapshot", formdata).then((res) => {
           that.loadding = false;
           that.$vux.loading.hide();
-          if(res.status == 200){
-            if(res.data.length > 0) {
+          if (res.status == 200) {
+            if (res.data.length > 0) {
               res.data.forEach((v, k) => {
                 that.snapshotList.push(v);
               })
@@ -784,22 +779,23 @@
           } else {
             that.$vux.alert.show({
               title: '温馨提示',
-              content: res.message});
+              content: res.message
+            });
           }
         }, (err) => {
           that.$vux.loading.hide();
         });
       },
       // 弹窗显示图片
-      showDialog(item, type){
+      showDialog(item, type) {
         this.dialogInfo.link = item;
         this.dialogInfo.type = type; // 1 图片  2视频
         this.dialogInfo.showDialog = true;
       },
-      hideDialog(){
+      hideDialog() {
 
       },
-      showVideoDialog(item){
+      showVideoDialog(item) {
         this.VideoCoverImg = '';
         $('#player2').empty() //id为html里指定的播放器的容器id
         var that = this;
@@ -864,11 +860,11 @@
         $(".play-btn").show();
         $(".video-dialog").show();
       },
-      playervideo(){
+      playervideo() {
         $(".play-btn").hide();
         this.player2.play();
       },
-      hideVideoDialog(){
+      hideVideoDialog() {
         $(".video-dialog").hide();
         this.player2.stop();
         this.player2.dispose(); //销毁
@@ -884,48 +880,142 @@
 
 
 <style scoped>
-  .room-info .gallery-top, .tabCon, .con{width: 100%; }
-  .live-room-main{
+  .room-info .gallery-top, .tabCon, .con {
+    width: 100%;
+  }
+
+  .live-room-main {
     position: absolute;
-    top: calc(100vw/(16/9));
+    top: calc(100vw / (16 / 9));
     width: 100%;
     background-color: #fff;
-    height: calc(100vh - 100vw/(16/9));
+    height: calc(100vh - 100vw / (16 / 9));
     z-index: 10 !important;
     overflow: hidden;
   }
 
-  .live-room-content{
+  .live-room-content {
     border-width: 0;
     background-color: transparent;
     overflow: hidden;
     z-index: 2;
     top: 42px;
     right: 0;
-    left: 0;}
-  .prism-player video{object-fit: fill !important;}
-  .snapshot .videoList dl{ width: 33.333%; box-sizing: border-box;}
-  .snapshot-header{}
-  .company-info{position: relative; height: 5.8rem;}
-  .company{background: white; padding: 10px 15px;}
-  .source-info{position: absolute; top: 20px; right: 10px; text-align: right; }
-  .source-info p{color: #666; font-size: 13px}
-  .snapshot .room-banner-container{padding: 0.5rem;}
-  .snapshot .room-banner-container .room-banner{border-radius: 0.5rem; margin: 0.5rem; position: relative}
-  .snapshot .room-banner-container .room-banner img{border-radius: 4px}
-  .snapshot .live-room-main{position: inherit; height: auto;}
-  .snapshot .fix-tab-menu{position: fixed; top: 0; z-index: 999; width: inherit;}
-  .snapshot .videoList{ white-space: inherit;}
-  .snapshot .videoList .video{height: auto;}
-  .snapshot .swiper-wrapper tabCon{height: auto !important;}
-  .snapshot .video-container .lens{padding: 0 0.5rem;}
-  .snapshot .video-container .videoList{ padding: 0;  white-space: nowrap;}
-  .snapshot .video-container .videoList dl{ background-color: #C8C8C8; margin: 0 10px;}
-  .snapshot .video-container .videoList dl dd{color: white;}
-  .snapshot .video-container .videoList .active{background-color: #68B735;}
-  .online_video{display: block !important; z-index: 10}
-  .outline_video{display: none !important;}
-  .company dd h3{padding-bottom: 2px}
-  .videoList dl dt{padding-bottom: 5px;}
-  .videoList dl{padding: 5px 5px 0 5px;}
+    left: 0;
+  }
+
+  .prism-player video {
+    object-fit: fill !important;
+  }
+
+  .snapshot .videoList dl {
+    width: 33.333%;
+    box-sizing: border-box;
+  }
+
+  .snapshot-header {
+  }
+
+  .company-info {
+    position: relative;
+    height: 5.8rem;
+  }
+
+  .company {
+    background: white;
+    padding: 10px 15px;
+  }
+
+  .source-info {
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    text-align: right;
+  }
+
+  .source-info p {
+    color: #666;
+    font-size: 13px
+  }
+
+  .snapshot .room-banner-container {
+    padding: 0.5rem;
+  }
+
+  .snapshot .room-banner-container .room-banner {
+    border-radius: 0.5rem;
+    margin: 0.5rem;
+    position: relative
+  }
+
+  .snapshot .room-banner-container .room-banner img {
+    border-radius: 4px
+  }
+
+  .snapshot .live-room-main {
+    position: inherit;
+    height: auto;
+  }
+
+  .snapshot .fix-tab-menu {
+    position: fixed;
+    top: 0;
+    z-index: 999;
+    width: inherit;
+  }
+
+  .snapshot .videoList {
+    white-space: inherit;
+  }
+
+  .snapshot .videoList .video {
+    height: auto;
+  }
+
+  .snapshot .swiper-wrapper tabCon {
+    height: auto !important;
+  }
+
+  .snapshot .video-container .lens {
+    padding: 0 0.5rem;
+  }
+
+  .snapshot .video-container .videoList {
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  .snapshot .video-container .videoList dl {
+    background-color: #C8C8C8;
+    margin: 0 10px;
+  }
+
+  .snapshot .video-container .videoList dl dd {
+    color: white;
+  }
+
+  .snapshot .video-container .videoList .active {
+    background-color: #68B735;
+  }
+
+  .online_video {
+    display: block !important;
+    z-index: 10
+  }
+
+  .outline_video {
+    display: none !important;
+  }
+
+  .company dd h3 {
+    padding-bottom: 2px
+  }
+
+  .videoList dl dt {
+    padding-bottom: 5px;
+  }
+
+  .videoList dl {
+    padding: 5px 5px 0 5px;
+  }
 </style>

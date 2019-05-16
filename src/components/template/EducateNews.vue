@@ -327,12 +327,8 @@
       document.addEventListener('visibilitychange', function(){
         if (document.visibilityState === 'hidden') {
           that.musicFlag = false;
-          if (that.lensMusicObj && that.lensMusicObj.hasOwnProperty("pause")) {
-			      that.lensMusicObj.currentTime = 0;
-          }
-          if (that.liveMusicObj && that.liveMusicObj.hasOwnProperty("pause")) {
-            that.liveMusicObj.currentTime = 0;
-          }
+          that.lensMusicObj.currentTime = 0;
+          that.liveMusicObj.currentTime = 0;
         }
       });
 
@@ -640,13 +636,8 @@
         this.firstMusic = false;
         this.lensMusicObj = document.getElementById('lens-music');
         this.liveMusicObj = document.getElementById('live-music');
-
-        if (this.lensMusicObj && this.lensMusicObj.hasOwnProperty("currentTime")) {
-          this.lensMusicObj.currentTime = 0;
-        }
-        if (this.liveMusicObj && this.liveMusicObj.hasOwnProperty("currentTime")) {
-          this.liveMusicObj.currentTime = 0;
-        }
+        this.lensMusicObj.currentTime = 0;
+        this.liveMusicObj.currentTime = 0;
 
       },
       playBgMusic(){
@@ -690,17 +681,11 @@
       },
       stopMUisc(){
         this.musicFlag = false;
-        if(this.liveMusicObj && this.liveMusicObj.hasOwnProperty('pause')){
-          this.liveMusicObj.pause();
-        }
-        if (this.lensMusicObj &&  this.lensMusicObj.hasOwnProperty('pause')) {
-          this.lensMusicObj.pause();
-        }
+        this.liveMusicObj.pause();
+        this.lensMusicObj.pause();
 
         // 暂停视频
-        if (this.player && this.player.hasOwnProperty('pause')){
-          this.player.pause();
-        }
+        this.player.pause();
 
       },
       checkLogin(){
