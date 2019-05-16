@@ -333,8 +333,8 @@
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'hidden') {
           that.musicFlag = false;
-          that.lensMusicObj.currentTime = 0;
-          that.liveMusicObj.currentTime = 0;
+          that.lensMusicObj.pause();
+          that.liveMusicObj.pause();
           // 暂停视频
           that.player.pause();
 
