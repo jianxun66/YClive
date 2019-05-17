@@ -448,6 +448,7 @@
         if (that.aliplayer_config.autoplay) {
           this.checkVideoPlayer(item);
         }
+        that.stopMUisc(); //暂停音乐
         that.currentVideo = item;
         that.initMusic();
       },
@@ -643,6 +644,10 @@
 
       },
       playBgMusic(){
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
+
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
@@ -650,6 +655,10 @@
         }, 500)
       },
       playMusic(){
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
+
         if(this.musicFlag){ //暂停
           this.musicFlag = false;
           this.liveMusicObj.pause();
@@ -683,8 +692,8 @@
       },
       stopMUisc(){
         this.musicFlag = false;
-        this.liveMusicObj.pause();
-        this.lensMusicObj.pause();
+        //this.liveMusicObj.pause();
+        //this.lensMusicObj.pause();
 
         // 暂停视频
         this.player.pause();
@@ -767,6 +776,7 @@
         switch (item) {
           case "live":
             that.showArticle = false;
+            that.switchContent(1); // 自适应高度
             break;
           case "article":
             that.showArticle = true;

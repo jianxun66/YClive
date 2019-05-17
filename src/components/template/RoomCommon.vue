@@ -8,7 +8,7 @@
           <img :src="VideoCoverImg">
         </div>
         <div class="logo"><img src="../../../static/images/logo.png"></div>
-        <div class="live-music" v-if="currentVideo.live_music">
+        <div class="live-music" v-if="currentVideo.live_music && !liveCommon.checkAndroid()">
           <div :class="musicFlag ? 'live-music-icon active' : 'live-music-icon'" @click="playMusic"></div>
         </div>
         <div class="live-home-icon" @click="goHome"></div>
@@ -409,7 +409,7 @@
           this.checkVideoPlayer(item);
         }
 
-
+        that.stopMUisc(); //暂停音乐
         that.currentVideo = item;
         that.initMusic();
         /*if(that.play_status == 2){ // 自动播放背景音乐
@@ -651,6 +651,10 @@
         this.liveMusicObj.currentTime = 0;
       },
       playBgMusic() {
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
+
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
@@ -658,6 +662,10 @@
         }, 500)
       },
       playMusic() {
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
+
         if (this.musicFlag) { //暂停
           this.musicFlag = false;
           this.liveMusicObj.pause();

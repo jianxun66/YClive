@@ -455,6 +455,7 @@
         if (that.aliplayer_config.autoplay) {
           this.checkVideoPlayer(item);
         }
+        that.stopMUisc(); //暂停音乐
         that.currentVideo = item;
         that.initMusic();
       },
@@ -657,6 +658,9 @@
 
       },
       playBgMusic() {
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
@@ -664,6 +668,10 @@
         }, 500)
       },
       playMusic() {
+        if (this.liveCommon.checkAndroid()) {
+          return false;
+        }
+
         if (this.musicFlag) { //暂停
           this.musicFlag = false;
           this.liveMusicObj.pause();

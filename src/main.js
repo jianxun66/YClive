@@ -32,6 +32,9 @@ import md5 from 'js-md5';
 import 'url-search-params-polyfill';
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
+
+//公共js
+import liveCommon from '../static/js/common.js'
 require('es6-promise').polyfill()
 Es6Promise.polyfill()
 
@@ -53,7 +56,7 @@ Vue.use(VueWechatTitle)
 Vue.use(VueScroller)
 Vue.use(preview)
 
-
+Vue.prototype.liveCommon = liveCommon
 axios.defaults.baseURL = document.domain == 'localhost' ? 'http://www.yc.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 //axios.defaults.baseURL = document.domain == 'localhost' ? 'https://yc.adaxiang.com/rest/v1/' : location.protocol + '//' + document.domain+'/rest/v1/';
 
