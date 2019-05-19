@@ -647,8 +647,12 @@
         this.lensMusicObj = document.getElementById('lens-music');
         this.liveMusicObj = document.getElementById('live-music');
 
-        this.lensMusicObj.currentTime = 0;
-        this.liveMusicObj.currentTime = 0;
+        if (this.lensMusicObj) {
+          this.lensMusicObj.currentTime = 0;
+        }
+        if (this.liveMusicObj) {
+          this.liveMusicObj.currentTime = 0;
+        }
       },
       playBgMusic() {
         if (this.liveCommon.checkAndroid()) {

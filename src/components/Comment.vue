@@ -1,6 +1,7 @@
 <template>
     <div class="comments">
-        <h3 class="tit allMessIcon">全部评论({{total}})</h3>
+        <!--<h3 class="tit allMessIcon">全部评论({{total}})</h3>-->
+        <h3 class="tit">全部评论({{total}})</h3>
         <div class="messList">
             <dl v-for="(item, index) in commentList">
                 <dt>
@@ -126,7 +127,7 @@
                         content = "";
                         //that.commentList.push(res.data);
                         that.$emit('clearComment', '')
-                        that.reload();
+                        that.getData();
                     } else {
                         that.$vux.alert.show({
                             title: '温馨提示',

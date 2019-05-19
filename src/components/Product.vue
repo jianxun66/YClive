@@ -1,21 +1,24 @@
 <template>
+  <div class="shopList">
     <div class="product-list">
-        <dl v-for="product in productList">
-            <dt><img :src="product.pic"></dt>
-            <dd>
-                <h3>{{product.title}}</h3>
-                <p>{{product.desc}}</p>
-                <span class="money">&yen;{{product.price}}</span>
-                <span class="num">
+      <dl v-for="product in productList">
+        <dt><img :src="product.pic"></dt>
+        <dd>
+          <h3>{{product.title}}</h3>
+          <p>{{product.desc}}</p>
+          <span class="money">&yen;{{product.price}}</span>
+          <span class="num">
 							<a href="javascript:void(0);" @click="changeNum(1, product)">-</a>
 							<i>{{product.buy_num}}</i>
 							<a href="javascript:void(0);" @click="changeNum(2, product)">+</a>
 						</span>
-            </dd>
-        </dl>
+        </dd>
+      </dl>
 
 
     </div>
+  </div>
+
 </template>
 
 <script>

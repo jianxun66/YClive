@@ -120,15 +120,8 @@
             </div>
           </div>
         </div>
-        <div class="article-list"  v-show="showArticle">
-          <div class="article-item" v-for="(item, index) in articleList" @click="goArticle(item)">
-            <div class="title">
-              <p><span class="spot">·</span>{{item.title}}</p>
-            </div>
-            <div class="cover">
-              <img :src="item.pic_path"/>
-            </div>
-          </div>
+        <div class="tab-content" v-show="showArticle">
+          <article-list :room_id="room_id"></article-list>
         </div>
       </div>
     </div>
@@ -155,6 +148,7 @@
   import RoomVideo from "../RoomVideoNew"
   import Product from "../Product"
   import Comments from "../Comment"
+  import ArticleList from "../ArticleList"
   export default {
     name: 'educate-news',
     components:{
@@ -162,6 +156,7 @@
       "Product": Product,
       "Comments": Comments,
       XDialog,
+      ArticleList,
     },
     directives: {
       TransferDom
@@ -286,7 +281,6 @@
       this.getData();
       this.getLens();
       this.getSnaphot();
-      this.getArticleList();
       localStorage.setItem('roomid', this.room_id); // 直播间ID
     },
     mounted () {
@@ -344,13 +338,6 @@
             $("#tabMenu").removeClass("fix-tab-menu");
           }
 
-          // 加载更多视频
-          var scrollTop = $(this).scrollTop();    //滚动条距离顶部的高度
-          var scrollHeight = $(document).height();   //当前页面的总高度
-          var clientHeight = $(this).height();    //当前可视的页面高度
-          if(scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomEnd){
-            that.getArticleList();
-          }
         });
 
         that.switchContent(0); // 自适应高度
@@ -392,6 +379,7 @@
             type: 'bullets',
             bulletActiveClass: 'live-banner-active',
           },
+          autoHeight: true,
           autoplay: {
             delay: 3000,
             stopOnLastSlide: false,
@@ -742,34 +730,7 @@
           that.$vux.loading.hide();
         });
       },
-      // 获取文章列表
-      getArticleList(){
-        var that = this;
-        that.loadding = true;
-        var formdata = new URLSearchParams();
-        formdata.append('page', that.page);
-        formdata.append('room_id', that.room_id);
-        that.axiosPost("/room/article", formdata).then((res) => {
-          that.loadding = false;
-          that.$vux.loading.hide();
-          if(res.status == 200){
-            if(res.data.length > 0) {
-              res.data.forEach((v, k) => {
-                that.articleList.push(v);
-              })
-              that.page++;
-            } else {
-              that.roomEnd = true;
-            }
-          } else {
-            that.$vux.alert.show({
-              title: '温馨提示',
-              content: res.message});
-          }
-        }, (err) => {
-          that.$vux.loading.hide();
-        });
-      },
+
       changeIndex(item) {
         var that = this;
         that.switchContent(0); // 自适应高度
@@ -790,14 +751,7 @@
         }
         that.findex = item;
       },
-      goArticle(item){
-        this.$router.push({path: '/article', query:{room_id:item.room_id, aid: item.id, from:"groupmessage", isappinstalled:0}})
-        /*if(this.DEBUG == 1){
-          this.$router.replace({path: '/article', query:{room_id:item.room_id, aid: item.id, from:"groupmessage", isappinstalled:0}})
-        } else {
-          window.location.replace(location.protocol + '//' + document.domain+'/front/#/article?room_id='+item.room_id+'&aid='+item.id);
-        }*/
-      }
+
     }
 
   }

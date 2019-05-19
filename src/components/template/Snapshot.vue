@@ -15,7 +15,7 @@
             </dd>
           </dl>
           <div class="source-info">
-            <p>溯源编码: YC304190201</p>
+            <p>溯源码: YC304190201</p>
             <p>查询次数: 1</p>
           </div>
         </div>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="live-room-content" id="live-room-content">
-        <div class="swiper-container gallery-top">
+        <div class="swiper-container gallery-top" v-show="!showExtContent">
           <div class="swiper-wrapper tabCon">
             <!--直播间信息-->
             <div class="swiper-slide con">
@@ -151,6 +151,47 @@
             </div>
           </div>
         </div>
+        <div class="ext-content" v-show="showExtContent">
+          <div class="ext-content-shop" v-show="findex == 'shop'">
+            <div>
+              <div class="snapshot-intro-header">
+                <div class="title">全场满100元，基地包邮到家</div>
+                <div class="mark">
+                  <router-link :to="{path:'orders'}"><span>个人中心></span></router-link>
+                </div>
+              </div>
+
+            </div>
+            <div class="">
+              <product :room_id="room_id" ref="product" v-on:buy_price="countPrice"></product>
+            </div>
+
+            <div class="footer-menu-fixed">
+              <div class="footer-menu-fixed-container">
+                <div class="container shop-cart">
+                  已选订单金额&yen;{{total_price}}
+                </div>
+                <div class="button" @click="tobuy">结算</div>
+              </div>
+            </div>
+          </div>
+          <div class="ext-content-comment" v-show="findex == 'comment'">
+            <comments :room_id="room_id" @clearComment="clearParent" ref="comment"></comments>
+            <div class="footer-menu-fixed">
+              <div class="footer-menu-fixed-container">
+                <div class="container comment">
+                  <div class="input-container">
+                    <input type="text" placeholder="点击输入评论" v-on:input="checkLogin" v-model="comment"/>
+                  </div>
+                </div>
+                <div class="button" @click="subComment">发送</div>
+              </div>
+            </div>
+          </div>
+          <div class="ext-content-article" v-show="findex == 'article'">
+            <article-list :room_id="room_id"></article-list>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -165,6 +206,19 @@
 
     </div>
     <!--视频弹窗-->
+
+    <!--底部-->
+    <div class="footer">
+      <div class="item" v-for="(item, key) in footer" :key="key">
+        <div :class="item.fclass">
+          <div :class="findex == item.fname ? 'active' : ''" @click="changeIndex(item.fname)">
+            <div class="item-icon"></div>
+            <div class="item-text">{{item.ftext}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--底部-->
     <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
     <remote-script src="https://g.alicdn.com/de/prismplayer/2.8.1/aliplayer-min.js"></remote-script>
   </div>
@@ -178,6 +232,7 @@
   import RoomVideo from "../RoomVideoNew"
   import Product from "../Product"
   import Comments from "../Comment"
+  import ArticleList from "../ArticleList"
 
   export default {
     name: 'snapshot',
@@ -186,6 +241,7 @@
       "Product": Product,
       "Comments": Comments,
       XDialog,
+      ArticleList,
     },
     directives: {
       TransferDom
@@ -278,6 +334,28 @@
         videoPage: 1,
         player2: {},
         roomEnd: false,
+        findex: 'shop',
+        showExtContent: false,
+        footer: [
+          {
+            fname: 'shop',
+            fclass: 'live-foot-shop',
+            ftext: '基地商城',
+            path: '',
+          },
+          {
+            fname: 'comment',
+            fclass: 'live-foot-video',
+            ftext: '互动评论',
+            path: '',
+          },
+          {
+            fname: 'article',
+            fclass: 'live-foot-user',
+            ftext: '新闻中心',
+            path: ''
+          },
+        ],
       }
     },
     provide() {
@@ -460,6 +538,7 @@
         that.initMusic();
       },
       switchContent(index) {
+        this.showExtContent = false;
         $('.tabMenu .swiper-slide').each(function (item) {
           if (item == index) {
             $(this).addClass('cur');
@@ -558,7 +637,26 @@
           that.$vux.loading.hide();
         });
       },
+      countPrice(price) {
+        this.total_price = price;
+      },
+      tobuy() {
+        var that = this;
+        // 检测金额 起送金额
+        if (that.deliver > 0 && parseInt(that.total_price) < parseInt(that.deliver)) {
+          this.$vux.alert.show({
+            title: '温馨提示',
+            content: "满" + that.deliver + "元起送，基地包邮到家"
+          });
+          return false;
+        }
 
+        this.$refs.product.buy_product(that.roomBasic.id,
+          that.roomBasic.room_name,
+          that.roomBasic.logo_pic,
+          that.roomBasic.mobile,
+        );
+      },
       subComment() {
         this.$refs.comment.setComment(this.comment);
       },
@@ -652,10 +750,12 @@
         this.firstMusic = false;
         this.lensMusicObj = document.getElementById('lens-music');
         this.liveMusicObj = document.getElementById('live-music');
-
-        this.lensMusicObj.currentTime = 0;
-        this.liveMusicObj.currentTime = 0;
-
+        if (this.lensMusicObj) {
+          this.lensMusicObj.currentTime = 0;
+        }
+        if (this.liveMusicObj) {
+          this.liveMusicObj.currentTime = 0;
+        }
       },
       playBgMusic() {
         if (this.liveCommon.checkAndroid()) {
@@ -664,7 +764,9 @@
         var that = this;
         that.musicFlag = true;
         setTimeout(function () {
-          that.liveMusicObj.play();
+          if (that.liveMusicObj) {
+            that.liveMusicObj.play();
+          }
         }, 500)
       },
       playMusic() {
@@ -877,7 +979,13 @@
         this.player2.stop();
         this.player2.dispose(); //销毁
         $('#player2').empty() //id为html里指定的播放器的容器id
-      }
+      },
+      changeIndex(item) {
+        var that = this;
+        that.switchContent(0); // 自适应高度
+        that.showExtContent = true;
+        that.findex = item;
+      },
 
     }
 
