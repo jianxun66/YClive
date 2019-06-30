@@ -144,6 +144,8 @@
           } else {
             that.tip_message = res.message;
           }
+        },(err) => {
+          that.$vux.loading.hide();
         });
       },
       // 检测验证码 手机号码
@@ -179,6 +181,8 @@
               title: '温馨提示',
               content: res.message});
           }
+        },(err) => {
+          that.$vux.loading.hide();
         });
       },
       sendSms(){
