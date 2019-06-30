@@ -1,3 +1,4 @@
+import wx from 'weixin-js-sdk'
 export default {
   //检测是否是安卓 排除小程序
   checkAndroid : function (){

@@ -33,6 +33,7 @@ import 'url-search-params-polyfill';
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 
+
 //公共js
 import liveCommon from '../static/js/common.js'
 require('es6-promise').polyfill()

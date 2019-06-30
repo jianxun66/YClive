@@ -469,11 +469,6 @@
           }
           that.WxShare();
 
-          that.$nextTick(function () {
-            //that.galleryTop.slideTo(0, 0);
-            //that.galleryTop.update();
-            //alert(that.galleryTop.height);
-          })
         }, (err) => {
           console.log(err);
         });

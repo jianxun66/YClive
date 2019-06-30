@@ -21,12 +21,14 @@
     data() {
       return {
         articleList: [],
+        page:1,
       }
     },
     created() {
       this.getArticleList();
     },
     mounted() {
+      var that = this;
       $(function () {
         // 监听滑动高度
         $(window).scroll(function () {

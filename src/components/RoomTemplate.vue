@@ -1,13 +1,25 @@
 <template>
   <div>
     <!--秘钥授权界面-->
-    <div class="secret-input" v-if="check_secret">
+    <div class="secret-input auth_bg auth_bg_education" v-if="check_secret">
+      <div class="auth_education">家长远程观看</div>
       <div class="secret-input-box">
-        <div>
-          <input type="text" class="secret-key" id="secret-input" v-model="secret_key" placeholder="请输入密码或手机号"/>
+        <div class="input-container">
+          <input type="text" oninput="if(value.length>11) value=value.slice(0,11)" class="input-box auth_mobile" name="auth_mobile" v-model="auth_mobile" placeholder="请输入手机号码">
+        </div>
+        <div class="input-container">
+          <input type="text" oninput="if(value.length>4) value=value.slice(0,4)" class="input-box mobile_code" name="mobile-code" v-model="mobile_code" placeholder="请输入验证码">
+          <div class="send_message auth_bg_color">
+            <span class="send-code" @click="checkSecretKey" v-if="!smsStatus">{{smsModel}}</span>
+            <span class="send-code" v-else>{{smsModel}}</span>
+          </div>
+          <!--<input type="text" class="secret-key" id="secret-input" v-model="secret_key" placeholder="请输入密码或手机号"/>-->
+        </div>
+        <div class="input-container tip-message" v-if="tip_message">
+        {{tip_message}}
         </div>
         <div class="secret-input-btn">
-          <x-button type="primary" @click.native="checkSecretKey">提交</x-button>
+          <x-button type="primary" class="auth_bg_color" @click.native="checkAuth">登录</x-button>
         </div>
       </div>
     </div>
@@ -21,6 +33,7 @@
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
       <snapshot v-else-if="room_template == 9"></snapshot>
       <educate-news v-else-if="room_template == 10"></educate-news>
+      <snapshot-new v-else-if="room_template == 11"></snapshot-new>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
 
     </div>
@@ -38,6 +51,7 @@
   import roomCommonNoHome from './template/RoomCommonNoHome';
   import roomMini from "./template/RoomMini"
   import snapshot from "./template/Snapshot"
+  import snapshotNew from "./template/SnapshotNew"
   import educateNews from "./template/EducateNews"
   import wx from 'weixin-js-sdk'
   import { XButton } from 'vux'
@@ -45,7 +59,7 @@
   export default {
     name: "room_template",
     components: {roomMini, tea, educate, roomOld, roomNew, roomCommon,
-      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews},
+      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews, snapshotNew},
     data() {
       return {
         'room_template': 0,
@@ -53,6 +67,11 @@
         'check_secret': 0,
         'secret_key': '',
         'showPage': false,
+        'auth_mobile': '',
+        'mobile_code': '',
+        'smsModel': '获取验证码',
+        'smsStatus': 0,
+        'tip_message': '',
       }
     },
     mounted () {
@@ -101,10 +120,39 @@
       },
       checkSecretKey() {
         var that = this;
-        if(! this.secret_key){
+        if(! this.auth_mobile){
+          this.tip_message = '请填写手机号码';
+          return false;
+        }else {
+          this.tip_message = '';
+        }
+
+        that.$vux.loading.show({
+          text: '加载中~'
+        })
+        var formdata = new URLSearchParams();
+        formdata.append('id', this.room_id);
+        formdata.append('secretKey', this.auth_mobile);
+        that.axiosPost("/room/check-secret", formdata).then((res) => {
+          that.$vux.loading.hide();
+          if(res.status == 200){
+            if (res.data.check) {
+              that.sendSms();
+            } else {
+              that.tip_message = '无效手机号码';
+            }
+          } else {
+            that.tip_message = res.message;
+          }
+        });
+      },
+      // 检测验证码 手机号码
+      checkAuth() {
+        var that = this;
+        if(! this.auth_mobile || !this.mobile_code){
           this.$vux.alert.show({
             title: '温馨提示',
-            content: '请填写密钥'});
+            content: "请填写手机号码、验证码"});
           return false;
         }
 
@@ -113,20 +161,19 @@
         })
         var formdata = new URLSearchParams();
         formdata.append('id', this.room_id);
-        formdata.append('secretKey', this.secret_key);
-        that.axiosPost("/room/check-secret", formdata).then((res) => {
+        formdata.append('mobile', this.auth_mobile);
+        formdata.append('sms', this.mobile_code);
+        that.axiosPost("/room/auth-room", formdata).then((res) => {
           that.$vux.loading.hide();
           if(res.status == 200){
-            //that.commentList.push(res.data);
             if (res.data.check) {
               that.check_secret = false;
               window.scrollTo(0,0)   //页面滚动到顶部
             } else {
               that.$vux.alert.show({
                 title: '温馨提示',
-                content: '请输入正确密钥'});
+                content: res.message});
             }
-
           } else {
             that.$vux.alert.show({
               title: '温馨提示',
@@ -134,14 +181,53 @@
           }
         });
       },
+      sendSms(){
+        var that = this;
+        if(this.smsStatus){
+          return false;
+        }
+
+        if(!(/^1[34578]\d{9}$/.test(this.auth_mobile))){
+          this.tip_message = "请输入正确的手机号码";
+          return false;
+        }
+        //发送短信
+        var formdata = new URLSearchParams();
+        formdata.append('mobile', this.auth_mobile);
+        that.axiosPost("/client/sms", formdata).then((res) => {
+          that.$vux.loading.hide();
+          if(res.status == 200){
+            that.smsModel = 60;
+            that.smsStatus = true;
+            that.countDown();
+          } else {
+            that.smsStatus = 0;
+            that.tip_message = res.message;
+          }
+        }, (err) => {
+          that.smsStatus = 0;
+          that.$vux.loading.hide();
+        });
+
+
+      },
+      countDown(){
+        if(this.smsModel == 1) {
+          this.smsModel = "获取验证码";
+          this.smsStatus = 0;
+        } else {
+          this.smsModel --;
+          var that = this;
+          setTimeout(function() {
+            that.countDown();
+          },1000)
+        }
+      }
 
     }
   }
 </script>
 
 <style scoped>
-  .secret-input{width: 100%; height: 100%; background: white; position: absolute}
-  .secret-input-box{position: absolute; top:42%; width: 80%; text-align: center; left: 10%;}
-  .secret-input-box .secret-key{width: 100%; padding: 0.8rem; box-sizing: border-box; font-size: 1rem; border: 1px solid #DAD9DD}
-  .secret-input-box .secret-input-btn{margin-top: 1rem; text-align: center}
+
 </style>

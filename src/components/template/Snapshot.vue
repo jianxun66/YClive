@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="live-room-content" id="live-room-content">
-        <div class="swiper-container gallery-top" v-show="!showExtContent">
+        <div class="swiper-container gallery-top">
           <div class="swiper-wrapper tabCon">
             <!--直播间信息-->
             <div class="swiper-slide con">
@@ -151,47 +151,7 @@
             </div>
           </div>
         </div>
-        <div class="ext-content" v-show="showExtContent">
-          <div class="ext-content-shop" v-show="findex == 'shop'">
-            <div>
-              <div class="snapshot-intro-header">
-                <div class="title">全场满100元，基地包邮到家</div>
-                <div class="mark">
-                  <router-link :to="{path:'orders'}"><span>个人中心></span></router-link>
-                </div>
-              </div>
 
-            </div>
-            <div class="">
-              <product :room_id="room_id" ref="product" v-on:buy_price="countPrice"></product>
-            </div>
-
-            <div class="footer-menu-fixed">
-              <div class="footer-menu-fixed-container">
-                <div class="container shop-cart">
-                  已选订单金额&yen;{{total_price}}
-                </div>
-                <div class="button" @click="tobuy">结算</div>
-              </div>
-            </div>
-          </div>
-          <div class="ext-content-comment" v-show="findex == 'comment'">
-            <comments :room_id="room_id" @clearComment="clearParent" ref="comment"></comments>
-            <div class="footer-menu-fixed">
-              <div class="footer-menu-fixed-container">
-                <div class="container comment">
-                  <div class="input-container">
-                    <input type="text" placeholder="点击输入评论" v-on:input="checkLogin" v-model="comment"/>
-                  </div>
-                </div>
-                <div class="button" @click="subComment">发送</div>
-              </div>
-            </div>
-          </div>
-          <div class="ext-content-article" v-show="findex == 'article'">
-            <article-list :room_id="room_id"></article-list>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -207,18 +167,6 @@
     </div>
     <!--视频弹窗-->
 
-    <!--底部-->
-    <div class="footer">
-      <div class="item" v-for="(item, key) in footer" :key="key">
-        <div :class="item.fclass">
-          <div :class="findex == item.fname ? 'active' : ''" @click="changeIndex(item.fname)">
-            <div class="item-icon"></div>
-            <div class="item-text">{{item.ftext}}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--底部-->
     <div class="liveHome" v-if="showCover" @click="hideCoverImg"><img :src="roomBasic.cover_img"></div>
     <remote-script src="https://g.alicdn.com/de/prismplayer/2.8.1/aliplayer-min.js"></remote-script>
   </div>
@@ -1044,7 +992,7 @@
 
   .source-info {
     position: absolute;
-    top: 20px;
+    top: 1.45rem;
     right: 10px;
     text-align: right;
   }
@@ -1131,7 +1079,4 @@
     padding-bottom: 5px;
   }
 
-  .videoList dl {
-    padding: 5px 5px 0 5px;
-  }
 </style>
