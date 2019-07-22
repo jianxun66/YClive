@@ -1,7 +1,7 @@
 <template>
   <div>
     <!--秘钥授权界面-->
-    <div class="secret-input auth_bg auth_bg_education" v-if="check_secret">
+    <div class="secret-input auth_bg auth_bg_education" v-if="!localMobile && check_secret && !check_pass">
       <div class="auth_education">家长远程观看</div>
       <div class="secret-input-box">
         <div class="input-container">
@@ -34,6 +34,7 @@
       <snapshot v-else-if="room_template == 9"></snapshot>
       <educate-news v-else-if="room_template == 10"></educate-news>
       <snapshot-new v-else-if="room_template == 11"></snapshot-new>
+	  <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
 
     </div>
@@ -52,6 +53,7 @@
   import roomMini from "./template/RoomMini"
   import snapshot from "./template/Snapshot"
   import snapshotNew from "./template/SnapshotNew"
+  import snapshotNewVideo from "./template/SnapshotNewVideo"
   import educateNews from "./template/EducateNews"
   import wx from 'weixin-js-sdk'
   import { XButton } from 'vux'
@@ -59,7 +61,7 @@
   export default {
     name: "room_template",
     components: {roomMini, tea, educate, roomOld, roomNew, roomCommon,
-      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews, snapshotNew},
+      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews, snapshotNew, snapshotNewVideo},
     data() {
       return {
         'room_template': 0,
@@ -72,6 +74,8 @@
         'smsModel': '获取验证码',
         'smsStatus': 0,
         'tip_message': '',
+        'check_pass': false,
+        'localMobile': "",
       }
     },
     mounted () {
@@ -87,6 +91,7 @@
       var that = this;
       //this.room_template = this.$route.query.room_id;
       this.room_id = this.$route.query.room_id;
+      this.localMobile = localStorage.getItem("auth:room:"+this.room_id)
       this.getRoomTemplate();
     },
     methods: {
@@ -103,6 +108,9 @@
           that.$vux.loading.hide();
           that.room_template = res.data.template;
           that.check_secret = res.data.secret;
+          if (res.data.secret) {
+            that.checkLocalStoreMobile();
+          }
           var ua = window.navigator.userAgent.toLowerCase();
           if (ua.match(/MicroMessenger/i) == 'micromessenger') {    //判断是否是微信环境
             wx.miniProgram.getEnv(function (resMini) {
@@ -117,6 +125,24 @@
 
 
         });
+      },
+      checkLocalStoreMobile(){
+        var that = this;
+        var localStoreMobile = localStorage.getItem("auth:room:"+this.room_id);
+        if (localStoreMobile) {
+          var formdata = new URLSearchParams();
+          formdata.append('id', this.room_id);
+          formdata.append('secretKey', localStoreMobile);
+          that.axiosPost("/room/check-secret", formdata).then((res) => {
+            if(res.status == 200){
+              if (res.data.check) {
+                this.check_pass = true;
+              }
+            }
+          },(err) => {
+            that.$vux.loading.hide();
+          });
+        }
       },
       checkSecretKey() {
         var that = this;
@@ -169,8 +195,10 @@
           that.$vux.loading.hide();
           if(res.status == 200){
             if (res.data.check) {
+              localStorage.setItem("auth:room:"+that.room_id, that.auth_mobile);
               that.check_secret = false;
               window.scrollTo(0,0)   //页面滚动到顶部
+
             } else {
               that.$vux.alert.show({
                 title: '温馨提示',
