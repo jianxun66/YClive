@@ -334,6 +334,7 @@
         videoPage: 1,
         player2: {},
         roomEnd: false,
+		roomVideoEnd: false,
         findex: '',
         showExtContent: false,
         footer: [
@@ -433,7 +434,7 @@
           var scrollTop = $(this).scrollTop();    //滚动条距离顶部的高度
           var scrollHeight = $(document).height();   //当前页面的总高度
           var clientHeight = $(this).height();    //当前可视的页面高度
-          if (scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomEnd) {
+          if (scrollTop + clientHeight >= scrollHeight && !that.loadding && !that.roomVideoEnd) {
             that.getVideoList();
           }
         });
@@ -848,7 +849,7 @@
               })
               that.videoPage++;
             } else {
-              that.roomEnd = true;
+              that.roomVideoEnd = true;
             }
           } else {
             that.$vux.alert.show({

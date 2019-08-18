@@ -1,8 +1,9 @@
 <template>
   <div>
     <!--秘钥授权界面-->
-    <div class="secret-input auth_bg auth_bg_education" v-if="!localMobile && check_secret && !check_pass">
-      <div class="auth_education">家长远程观看</div>
+    <div :class="room_id == 10 ? 'secret-input auth_bg auth_bg_education' : 'secret-input auth_bg auth_bg_pets'" v-if="!localMobile && check_secret && !check_pass">
+      <div class="auth_education" v-if="room_id == 10">家长远程观看</div>
+	  <div class="auth_education" v-if="room_id == 13">主人远程观看</div>
       <div class="secret-input-box">
         <div class="input-container">
           <input type="text" oninput="if(value.length>11) value=value.slice(0,11)" class="input-box auth_mobile" name="auth_mobile" v-model="auth_mobile" placeholder="请输入手机号码">
@@ -32,7 +33,7 @@
       <room-no-home v-else-if="room_template == 5"></room-no-home>
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
       <snapshot v-else-if="room_template == 9"></snapshot>
-      <educate-news v-else-if="room_template == 10"></educate-news>
+      <educate-news v-else-if="room_template == 10 || || room_template == 13"></educate-news>
       <snapshot-new v-else-if="room_template == 11"></snapshot-new>
 	  <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
