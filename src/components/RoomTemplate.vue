@@ -1,9 +1,8 @@
 <template>
   <div>
     <!--秘钥授权界面-->
-    <div :class="room_id == 10 ? 'secret-input auth_bg auth_bg_education' : 'secret-input auth_bg auth_bg_pets'" v-if="!localMobile && check_secret && !check_pass">
-      <div class="auth_education" v-if="room_id == 10">家长远程观看</div>
-	  <div class="auth_education" v-if="room_id == 13">主人远程观看</div>
+    <div :class="auth_template == 1 ? 'secret-input auth_bg auth_bg_education':'secret-input auth_bg auth_bg_pets'" v-if="!localMobile && check_secret && !check_pass">
+      <div class="auth_education">{{auth_template == 1 ? '家长远程观看' : '主人远程观看'}}</div>
       <div class="secret-input-box">
         <div class="input-container">
           <input type="text" oninput="if(value.length>11) value=value.slice(0,11)" class="input-box auth_mobile" name="auth_mobile" v-model="auth_mobile" placeholder="请输入手机号码">
@@ -33,7 +32,7 @@
       <room-no-home v-else-if="room_template == 5"></room-no-home>
       <room-common-no-home v-else-if="room_template == 6"></room-common-no-home>
       <snapshot v-else-if="room_template == 9"></snapshot>
-      <educate-news v-else-if="room_template == 10 || || room_template == 13"></educate-news>
+      <educate-news v-else-if="room_template == 10 || room_template == 13"></educate-news>
       <snapshot-new v-else-if="room_template == 11"></snapshot-new>
 	  <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
@@ -77,6 +76,7 @@
         'tip_message': '',
         'check_pass': false,
         'localMobile': "",
+		auth_template: 1
       }
     },
     mounted () {
@@ -108,6 +108,7 @@
         that.axiosPost("/room/template", formdata).then((res) => {
           that.$vux.loading.hide();
           that.room_template = res.data.template;
+		  that.auth_template = res.data.auth_template;
           that.check_secret = res.data.secret;
           if (res.data.secret) {
             that.checkLocalStoreMobile();
@@ -136,9 +137,12 @@
           formdata.append('secretKey', localStoreMobile);
           that.axiosPost("/room/check-secret", formdata).then((res) => {
             if(res.status == 200){
-              if (res.data.check) {
-                this.check_pass = true;
-              }
+              if (res.data.check === true) {
+                that.check_pass = true;
+              } else {
+				that.check_pass = false;
+				localStorage.removeItem("auth:room:"+this.room_id, )
+			  }
             }
           },(err) => {
             that.$vux.loading.hide();
