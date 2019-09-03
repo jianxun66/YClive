@@ -161,7 +161,7 @@
                 return false;
               }
 
-              if(!(/^1[34578]\d{9}$/.test(this.addrInfo.mobile))){
+              if(!(/^1[3456789]\d{9}$/.test(this.addrInfo.mobile))){
                 this.$vux.alert.show({
                   title: '温馨提示',
                   content: '请输入正确的手机号码'});

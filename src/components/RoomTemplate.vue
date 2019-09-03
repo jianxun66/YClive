@@ -224,7 +224,7 @@
           return false;
         }
 
-        if(!(/^1[34578]\d{9}$/.test(this.auth_mobile))){
+        if(!(/^1[3456789]\d{9}$/.test(this.auth_mobile))){
           this.tip_message = "请输入正确的手机号码";
           return false;
         }
