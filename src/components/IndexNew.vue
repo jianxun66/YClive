@@ -30,7 +30,7 @@
               <!--轮播图-->
 
               <!--活动通知-->
-              <div class="live-activity" v-if="activity.hasOwnProperty('title') && activity.title">
+              <div class="live-activity" v-if="activity &&activity.hasOwnProperty('title') && activity.title">
                 <div class="live-activity-head">活动</div>
                 <div class="live-activity-box">
                   <div class="live-activity-content">

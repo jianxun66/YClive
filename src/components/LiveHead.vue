@@ -6,7 +6,7 @@
         <div class="live-search-box">
           <div class="search-box">
             <i class="live-search-icon"></i>
-            <input class="search-input" placeholder="刘老头米店" v-model.trim="searchStr"/>
+            <input class="search-input" placeholder="直播间名称" v-model.trim="searchStr"/>
             <i class="live-search-next" @click="searchRoom"></i>
           </div>
         </div>
