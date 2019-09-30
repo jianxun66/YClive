@@ -35,6 +35,7 @@
       <educate-news v-else-if="room_template == 10 || room_template == 13"></educate-news>
       <snapshot-new v-else-if="room_template == 11"></snapshot-new>
 	  <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
+	  <educate-common v-else-if="room_template == 14"></educate-common>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
 
     </div>
@@ -55,13 +56,14 @@
   import snapshotNew from "./template/SnapshotNew"
   import snapshotNewVideo from "./template/SnapshotNewVideo"
   import educateNews from "./template/EducateNews"
+  import educateCommon from "./template/EducateCommon"
   import wx from 'weixin-js-sdk'
   import { XButton } from 'vux'
 
   export default {
     name: "room_template",
     components: {roomMini, tea, educate, roomOld, roomNew, roomCommon,
-      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews, snapshotNew, snapshotNewVideo},
+      roomNoHome, roomCommonNoHome, XButton, snapshot, educateNews, snapshotNew, snapshotNewVideo, educateCommon},
     data() {
       return {
         'room_template': 0,
