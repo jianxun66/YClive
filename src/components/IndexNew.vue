@@ -158,7 +158,6 @@
     },
     mounted(){
       var that = this;
-      setTimeout(that.initSwiperBanner(), 500);
       window.addEventListener('scroll', this.handleScroll, true);
 
       setTimeout(function () {
@@ -392,6 +391,7 @@
         that.axiosPost("/live/banner", formdata).then((res) => {
           if(res.status == 200){
             that.bannerList = res.data;
+			that.initSwiperBanner();
           } else {
             that.$vux.alert.show({
               title: '温馨提示',
