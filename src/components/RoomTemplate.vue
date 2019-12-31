@@ -1,8 +1,8 @@
 <template>
   <div>
     <!--秘钥授权界面-->
-    <div :class="auth_template == 1 ? 'secret-input auth_bg auth_bg_education':'secret-input auth_bg auth_bg_pets'" v-if="!localMobile && check_secret && !check_pass">
-      <div class="auth_education">{{auth_template == 1 ? '家长远程观看' : '主人远程观看'}}</div>
+    <div :class="auth_template == 1 || auth_template == 3 ? 'secret-input auth_bg auth_bg_education':'secret-input auth_bg auth_bg_pets'" v-if="!localMobile && check_secret && !check_pass">
+      <div class="auth_education">{{auth_template == 1 || auth_template == 3 ? '家长远程观看' : '主人远程观看'}}</div>
       <div class="secret-input-box">
         <div class="input-container">
           <input type="text" oninput="if(value.length>11) value=value.slice(0,11)" class="input-box auth_mobile" name="auth_mobile" v-model="auth_mobile" placeholder="请输入手机号码">
@@ -34,8 +34,8 @@
       <snapshot v-else-if="room_template == 9"></snapshot>
       <educate-news v-else-if="room_template == 10 || room_template == 13"></educate-news>
       <snapshot-new v-else-if="room_template == 11"></snapshot-new>
-	  <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
-	  <educate-common v-else-if="room_template == 14"></educate-common>
+	    <snapshot-new-video v-else-if="room_template == 12"></snapshot-new-video>
+	    <educate-common v-else-if="room_template == 14"></educate-common>
       <room-mini v-else-if="room_template == 9999 && showPage"></room-mini>
 
     </div>
@@ -110,7 +110,7 @@
         that.axiosPost("/room/template", formdata).then((res) => {
           that.$vux.loading.hide();
           that.room_template = res.data.template;
-		  that.auth_template = res.data.auth_template;
+		      that.auth_template = res.data.auth_template;
           that.check_secret = res.data.secret;
           if (res.data.secret) {
             that.checkLocalStoreMobile();
@@ -133,18 +133,21 @@
       checkLocalStoreMobile(){
         var that = this;
         var localStoreMobile = localStorage.getItem("auth:room:"+this.room_id);
+        var localStoreRoomSign = localStorage.getItem("auth:room:sign:"+this.room_id);
         if (localStoreMobile) {
           var formdata = new URLSearchParams();
           formdata.append('id', this.room_id);
           formdata.append('secretKey', localStoreMobile);
+          formdata.append('roomSign', localStoreRoomSign);
           that.axiosPost("/room/check-secret", formdata).then((res) => {
             if(res.status == 200){
               if (res.data.check === true) {
                 that.check_pass = true;
               } else {
-				that.check_pass = false;
-				localStorage.removeItem("auth:room:"+this.room_id, )
-			  }
+                that.check_pass = false;
+                localStorage.removeItem("auth:room:"+this.room_id, )
+                localStorage.removeItem("auth:room:sign:"+this.room_id )
+              }
             }
           },(err) => {
             that.$vux.loading.hide();
@@ -194,15 +197,18 @@
         that.$vux.loading.show({
           text: '加载中~'
         })
+        var localStoreRoomSign = localStorage.getItem("auth:room:sign:"+this.room_id);
         var formdata = new URLSearchParams();
         formdata.append('id', this.room_id);
         formdata.append('mobile', this.auth_mobile);
         formdata.append('sms', this.mobile_code);
+        formdata.append('roomSign', localStoreRoomSign);
         that.axiosPost("/room/auth-room", formdata).then((res) => {
           that.$vux.loading.hide();
           if(res.status == 200){
             if (res.data.check) {
               localStorage.setItem("auth:room:"+that.room_id, that.auth_mobile);
+              localStorage.setItem("auth:room:sign:"+that.room_id, res.data.token);
               that.check_secret = false;
               window.scrollTo(0,0)   //页面滚动到顶部
 
